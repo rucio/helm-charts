@@ -1,0 +1,21 @@
+apiVersion: v1
+entries:
+  rucio-server:
+  - apiVersion: v1
+    created: 2018-08-17T15:55:31.181274019+02:00
+    description: A Helm chart to deploy servers for Rucio
+    digest: 6ec924ad207d29ae89909e3b4678f3f885e6bb4ddbc5f311a1cdf9353220b379
+    home: https://rucio.cern.ch/
+    keywords:
+    - data-management
+    - science
+    maintainers:
+    - email: thomas.beermann@cern.ch
+      name: Thomas Beermann
+    name: rucio-server
+    sources:
+    - https://github.com/rucio/rucio
+    urls:
+    - https://rucio.github.io/helm-charts/rucio-server-0.2.0.tgz
+    version: 0.2.0
+generated: 2018-08-17T15:55:31.176187915+02:00
