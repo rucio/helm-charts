@@ -6,14 +6,11 @@ Rucio is a project that provides services and associated libraries for allowing 
 
 ## QuickStart
 
-Download the tgz archive or clone this repository and run either of the two commands:
+Add the Rucio Helm repository to your local Helm installation and install it using:
 
 ```bash
-$ helm install rucio-server-0.1.0.tgz
-```
-
-```bash
-$ helm install rucio-server/
+$ helm repo add rucio https://rucio.github.io/helm-charts
+$ helm install rucio/rucio-server
 ```
 
 ## Introduction
@@ -25,7 +22,7 @@ This chart bootstraps a Rucio server deployment and service on a Kubernetes clus
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release rucio-server-0.1.0.tgz
+$ helm install --name my-release rucio/rucio-server
 ```
 
 The command deploys a Rucio server on the Kubernetes cluster in the default configuration, i.e., 2 replicas using an un-initialised SQLite database without an ingress. To fully use this chart an already bootstraped database is necessary. The server can then be configured to use the DB.
@@ -33,7 +30,7 @@ The command deploys a Rucio server on the Kubernetes cluster in the default conf
 To install the chart so that is will connected to a MySQL DB running at `mysql.db` with the user `rucio` and password `rucio`:
 
 ```bash
-$ helm install --name my-release --set config.database.default="mysql://rucio:rucio@mysql.db/rucio" rucio-server-0.1.0.tgz
+$ helm install --name my-release --set config.database.default="mysql://rucio:rucio@mysql.db/rucio" rucio/rucio-server
 ```
 
 ## Configuration
@@ -41,7 +38,7 @@ $ helm install --name my-release --set config.database.default="mysql://rucio:ru
 The default configuration values for this chart are listed in `values.yaml` our you can get them with:
 
 ```bash
-$ helm inspect values rucio-server-0.1.0.tgz
+$ helm inspect values rucio/rucio-server
 ```
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install` as shown before.
@@ -49,7 +46,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml rucio-server-0.1.0.tgz
+$ helm install --name my-release -f values.yaml rucio/rucio-server
 ```
 
 ## Ingress
