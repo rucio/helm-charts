@@ -1,14 +1,15 @@
+{{- if gt .Values.reaperCount 0.0 -}}
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: {{ template "rucio.fullname" . }}
+  name: {{ .Release.Name }}-reaper
   labels:
     app: {{ template "rucio.name" . }}
     chart: {{ template "rucio.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.reaperCount }}
   selector:
     matchLabels:
       app: {{ template "rucio.name" . }}
@@ -28,29 +29,23 @@ spec:
         app: {{ template "rucio.name" . }}
         release: {{ .Release.Name }}
     spec:
+      volumes:
+      - name: proxy-volume
+        secret:
+          secretName: {{ .Release.Name }}-rucio-x509up
+      - name: ca-volume
+        secret:
+          secretName: {{ .Release.Name }}-rucio-ca-bundle-reaper
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          ports:
-            - name: http
-              containerPort: 80
-              protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /ping
-              port: 80
-            initialDelaySeconds: 10
-            periodSeconds: 20
-            timeoutSeconds: 5
+          volumeMounts:
+            - name: proxy-volume
+              mountPath: /opt/proxy
+            - name: ca-volume
+              mountPath: /etc/grid-security/certificates
           env:
-            {{- range $key, $val := .Values.httpd_config }}
-            - name: RUCIO_HTTPD_{{ $key | upper }}
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "rucio.fullname" $ }}.cfg
-                  key: {{ $key }}
-            {{- end}}
             {{- range $key1, $val1 := .Values.config }}
             {{- range $key2, $val2 := $val1}}
             - name: RUCIO_CFG_{{ $key1 | upper }}_{{ $key2 | upper }}
@@ -60,21 +55,14 @@ spec:
                   key: {{ $key1 }}_{{ $key2 }}
             {{- end}}
             {{- end}}
-            - name: RUCIO_ENABLE_SSL
-              value: "False"
-            - name: RUCIO_LOG_FORMAT
-              value: '[%{%Y-%m-%d %H:%M:%S}t]\t%v\t%h\t%{X-Forwarded-For}i\t%{X-Rucio-RequestId}i\t%>s\t%I\t%B\t%D\t\"%r\"\t\"%{X-Rucio-Auth-Token}i\"\t\"%{User-Agent}i\"\t%{X-Rucio-Script}i'
-          resources:
-{{ toYaml .Values.resources | indent 12 }}
-    {{- with .Values.nodeSelector }}
-      nodeSelector:
-{{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.affinity }}
-      affinity:
-{{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.tolerations }}
-      tolerations:
-{{ toYaml . | indent 8 }}
-    {{- end }}
+            - name: RUCIO_DAEMON
+              value: "reaper"
+            - name: RUCIO_DAEMON_ARGS
+              value: '{{ if .Values.reaper.greedy }} --greedy {{ end }} --total-workers {{ .Values.reaper.workers }}  --threads-per-worker {{ .Values.reaper.threadsPerWorker }} {{ if .Values.reaper.scheme }}--scheme {{ .Values.reaper.scheme }}{{ end }}{{ if .Values.reaper.includeRses }} --include-rses="{{ .Values.reaper.includeRses }}"{{ end }}{{ if .Values.reaper.rses }} --rses "{{ .Values.reaper.rses }}"{{ end }}'
+            - name: GLOBUS_THREAD_MODEL
+              value: "pthread"
+            - name: RUCIO_HOME
+              value: "/opt/rucio/reaper"
+            - name: X509_USER_PROXY
+              value: "/opt/proxy/x509up"
+{{ end }}

@@ -14,6 +14,7 @@ judgeEvaluatorCount: 0
 judgeInjectorCount: 0
 judgeRepairerCount: 0
 undertakerCount: 0
+reaperCount: 1
 
 image:
   repository: rucio/rucio-daemons
@@ -69,6 +70,13 @@ hermes:
 
 undertaker:
   threads: 1
+
+reaper:
+  greedy: 0
+  scheme: ""
+  workers: 1
+  threadsPerWorker: 4
+  includeRses: ""
 
 ## common config values used to configure the Rucio daemons
 config:

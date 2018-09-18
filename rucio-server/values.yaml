@@ -82,6 +82,14 @@ authIngress:
   #     -----BEGIN CERTIFICATE-----
   #     -----END CERTIFICATE-----
 
+## values used to configure apache
+httpd_config:
+  # start_servers: "8"
+  # min_spare_servers: "5"
+  # max_spare_servers: "20"
+  # server_limit: "256"
+  # max_clients: "256"
+  # max_requests_per_child: "4000"
 
 ## values used to configure Rucio
 config:
