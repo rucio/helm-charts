@@ -2,7 +2,24 @@ apiVersion: v1
 entries:
   rucio-daemons:
   - apiVersion: v1
-    created: 2018-08-31T14:07:14.888801629+02:00
+    created: 2018-09-20T15:17:00.070082918+02:00
+    description: A Helm chart to deploy daemons for Rucio
+    digest: d6daa43efdb1766c3c736b121ebebd07c48ce8c1c261fd5ec82a1b48b89be1ea
+    home: https://rucio.cern.ch/
+    keywords:
+    - data-management
+    - science
+    maintainers:
+    - email: thomas.beermann@cern.ch
+      name: Thomas Beermann
+    name: rucio-daemons
+    sources:
+    - https://github.com/rucio/rucio
+    urls:
+    - rucio-daemons-0.2.0.tgz
+    version: 0.2.0
+  - apiVersion: v1
+    created: 2018-09-20T15:17:00.069559007+02:00
     description: A Helm chart to deploy daemons for Rucio
     digest: 985288846abe9ec9970d8cd61dce24917dcb3dbf6d80b4534d240044a1e3325c
     home: https://rucio.cern.ch/
@@ -16,11 +33,28 @@ entries:
     sources:
     - https://github.com/rucio/rucio
     urls:
-    - https://rucio.github.io/helm-charts/rucio-daemons-0.1.0.tgz
+    - rucio-daemons-0.1.0.tgz
     version: 0.1.0
   rucio-server:
   - apiVersion: v1
-    created: 2018-08-31T14:07:14.889386831+02:00
+    created: 2018-09-20T15:17:00.071058083+02:00
+    description: A Helm chart to deploy servers for Rucio
+    digest: 11085bca4609cca989c3d6ec9d624f2b4970d6135ac8ddb48c320b775ff9826c
+    home: https://rucio.cern.ch/
+    keywords:
+    - data-management
+    - science
+    maintainers:
+    - email: thomas.beermann@cern.ch
+      name: Thomas Beermann
+    name: rucio-server
+    sources:
+    - https://github.com/rucio/rucio
+    urls:
+    - rucio-server-0.3.0.tgz
+    version: 0.3.0
+  - apiVersion: v1
+    created: 2018-09-20T15:17:00.070598927+02:00
     description: A Helm chart to deploy servers for Rucio
     digest: 6ec924ad207d29ae89909e3b4678f3f885e6bb4ddbc5f311a1cdf9353220b379
     home: https://rucio.cern.ch/
@@ -34,6 +68,6 @@ entries:
     sources:
     - https://github.com/rucio/rucio
     urls:
-    - https://rucio.github.io/helm-charts/rucio-server-0.2.0.tgz
+    - rucio-server-0.2.0.tgz
     version: 0.2.0
-generated: 2018-08-31T14:07:14.887618285+02:00
+generated: 2018-09-20T15:17:00.068773727+02:00
