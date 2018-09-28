@@ -14,11 +14,11 @@ judgeEvaluatorCount: 0
 judgeInjectorCount: 0
 judgeRepairerCount: 0
 undertakerCount: 0
-reaperCount: 1
+reaperCount: 0
 
 image:
   repository: rucio/rucio-daemons
-  tag: release-1.17.7
+  tag: release-1.18.0
   pullPolicy: Always
 
 strategy:

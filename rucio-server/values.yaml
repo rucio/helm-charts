@@ -9,7 +9,7 @@ authReplicaCount: 1
 
 image:
   repository: rucio/rucio-server
-  tag: release-1.17.6.post2
+  tag: release-1.18.0
   pullPolicy: Always
 
 service:
@@ -23,6 +23,15 @@ strategy:
     maxUnavailable: 1
 
 minReadySeconds: 5
+
+httpd_config:
+  mpm_mode: "prefork"
+  start_servers: "1"
+  min_spare_servers: "1"
+  max_spare_servers: "1"
+  server_limit: "1"
+  max_clients: "10"
+  max_requests_per_child: "200"
 
 ingress:
   enabled: false
@@ -147,9 +156,9 @@ config:
     ## config.trace.password: password for the topic (if necessary)
     # password: ""
 
-  # permission:
+  # policy:
     ## config.permission.policy: (default "generic")
-    # policy: "generic"
+    # permission: "generic"
     ## config.permission.schema: (default "generic")
     # schema: "generic"
     ## config.permission.lfn2pfn_algorithm_default: (default "hash")
