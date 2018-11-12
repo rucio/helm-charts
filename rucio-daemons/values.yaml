@@ -15,6 +15,7 @@ judgeInjectorCount: 0
 judgeRepairerCount: 0
 undertakerCount: 0
 reaperCount: 0
+transmogrifierCount: 0
 
 image:
   repository: rucio/rucio-daemons
@@ -191,6 +192,9 @@ config:
     # username: ""
     # password: ""
     # dataset_wait: 60
+
+  # transmogrifier:
+    # maxdids: 100000
 
   # messaging-cache:
     # port: "61123"
