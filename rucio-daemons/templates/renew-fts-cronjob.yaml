@@ -1,0 +1,37 @@
+{{- if .Values.ftsRenewal.enabled -}}
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: renew-fts-proxy
+spec:
+  schedule: "12 */6 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: {{ .Release.Name }}-rucio-edit
+          volumes:
+          - name: usercert
+            secret:
+              secretName: fts-cert
+          - name: userkey
+            secret:
+              secretName: fts-key
+          containers:
+            - name: renew-fts-cron
+              image: "{{ .Values.ftsRenewal.image.repository }}:{{ .Values.ftsRenewal.image.tag }}"
+              imagePullPolicy: {{ .Values.ftsRenewal.image.pullPolicy }}
+              volumeMounts:
+                - name: usercert
+                  mountPath: /opt/rucio/certs/
+                - name: userkey
+                  mountPath: /opt/rucio/keys/
+              env:
+                - name: RUCIO_FTS_VOMS
+                  value: {{ .Values.ftsRenewal.voms | quote }}
+                - name: RUCIO_FTS_SERVERS
+                  value: {{ .Values.ftsRenewal.servers | default "https://fts3.cern.ch:8446" | quote }}
+                - name: RUCIO_FTS_SECRETS
+                  value: "{{ .Release.Name }}-rucio-x509up"
+          restartPolicy: OnFailure
+{{ end }}

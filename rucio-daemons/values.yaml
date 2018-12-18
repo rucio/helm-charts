@@ -79,6 +79,16 @@ reaper:
   threadsPerWorker: 4
   includeRses: ""
 
+ftsRenewal:
+  enabled: 0
+  image:
+    repository: ericvaandering/rucio-cron
+    tag: latest
+    pullPolicy: Always
+  voms: "cms:/cms/Role=production"
+  servers: "https://fts3-devel.cern.ch:8446,https://cmsfts3.fnal.gov:8446,https://fts3.cern.ch:8446,https://lcgfts3.gridpp.rl.ac.uk:8446,https://fts3-pilot.cern.ch:8446"
+
+
 ## common config values used to configure the Rucio daemons
 config:
   # accounts:
