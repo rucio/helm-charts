@@ -2,7 +2,7 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: renew-fts-proxy
+  name: {{ .Release.Name }}-renew-fts-proxy
 spec:
   schedule: "12 */6 * * *"
   jobTemplate:
