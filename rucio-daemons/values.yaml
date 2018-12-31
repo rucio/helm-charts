@@ -82,7 +82,7 @@ reaper:
 ftsRenewal:
   enabled: 0
   image:
-    repository: ericvaandering/rucio-cron
+    repository: rucio/fts-cron
     tag: latest
     pullPolicy: Always
   voms: "cms:/cms/Role=production"
