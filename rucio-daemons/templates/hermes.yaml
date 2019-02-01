@@ -29,10 +29,26 @@ spec:
         app: {{ template "rucio.name" . }}
         release: {{ .Release.Name }}
     spec:
+{{ if .Values.hermes.useSSL }}
+      volumes:
+        - name: usercert
+          secret:
+            secretName: hermes-cert
+        - name: userkey
+          secret:
+            secretName: hermes-key
+{{ end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+{{ if .Values.hermes.useSSL }}
+          volumeMounts:
+            - name: usercert
+              mountPath: /opt/rucio/certs/
+            - name: userkey
+              mountPath: /opt/rucio/keys/
+{{ end }}
           env:
             {{- range $key1, $val1 := .Values.config }}
             {{- range $key2, $val2 := $val1}}
