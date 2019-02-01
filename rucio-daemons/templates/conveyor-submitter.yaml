@@ -2,7 +2,7 @@
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-conveyor-transfer-submitter
+  name: {{ .Release.Name }}-conveyor-submitter
   labels:
     app: {{ template "rucio.name" . }}
     chart: {{ template "rucio.chart" . }}
@@ -56,7 +56,7 @@ spec:
             {{- end}}
             {{- end}}
             - name: RUCIO_DAEMON
-              value: "conveyor-transfer-submitter"
+              value: "conveyor-submitter"
             - name: RUCIO_DAEMON_ARGS
               value: "--total-threads {{ .Values.conveyorTransferSubmitter.threads }} --activities {{ .Values.conveyorTransferSubmitter.activities }} --sleep-time {{ .Values.conveyorTransferSubmitter.sleepTime }}"
 {{ end }}
