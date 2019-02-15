@@ -1,0 +1,28 @@
+image:
+  tag: 6.5.4
+
+persistence:
+  enabled: false
+service:
+  type: NodePort
+
+# Standard input from the helm chart works fine with beats
+
+filters:
+  main: |-
+    filter {
+      drop { }
+    }
+
+
+outputs:
+  main: |-
+    output {
+      # Send message in JSON form to CERN monit
+      http {
+        http_method => "post"
+        id => "monit_http_output"
+        url => "http://monit-HOST.cern.ch:10012/"
+        format => "json"
+      }
+    }
