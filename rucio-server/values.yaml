@@ -7,6 +7,14 @@ replicaCount: 2
 ## authReplicaCount gives the number of authentication server pods to run
 authReplicaCount: 1
 
+authServer:
+  # Run the authorization server on port 443 instead of 80 and accept X509 certificates and proxies
+  useSSL: false
+  # For SSL, change to 443, https, and https respectively
+  servicePort: 80
+  targetPort: http
+  portName: http
+
 image:
   repository: rucio/rucio-server
   tag: release-1.18.0

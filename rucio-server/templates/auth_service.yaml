@@ -8,12 +8,12 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  type: {{ .Values.service.type }}
+  type: {{ $.Values.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
-      targetPort: http
+    - port: {{ $.Values.authServer.servicePort }}
+      targetPort: {{ $.Values.authServer.targetPort }}
       protocol: TCP
-      name: http
+      name: {{ $.Values.authServer.portName }}
   selector:
     app: {{ template "rucio.name" . }}-auth
     release: {{ .Release.Name }}

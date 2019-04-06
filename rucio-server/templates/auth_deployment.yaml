@@ -32,6 +32,17 @@ spec:
       - name: aliases
         configMap:
           name: {{ template "rucio.fullname" . }}-auth-aliases
+{{- if .Values.authServer.useSSL }}
+      - name: hostcert
+        secret:
+          secretName: host-cert
+      - name: hostkey
+        secret:
+          secretName: host-key
+      - name: cafile
+        secret:
+          secretName: ca
+{{- end }}
       containers:
         - name: {{ .Chart.Name }}-auth
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -40,10 +51,24 @@ spec:
             - name: http
               containerPort: 80
               protocol: TCP
+            - name: https
+              containerPort: 443
+              protocol: TCP
           volumeMounts:
             - name: aliases
               mountPath: /opt/rucio/etc/aliases.conf
               subPath: aliases.conf
+{{- if .Values.authServer.useSSL }}
+            - name: hostcert
+              mountPath: /etc/grid-security/hostcert.pem
+              subPath: hostcert.pem
+            - name: hostkey
+              mountPath: /etc/grid-security/hostkey.pem
+              subPath: hostkey.pem
+            - name: cafile
+              mountPath: /etc/grid-security/ca.pem
+              subPath: ca.pem
+{{- end }}
           env:
             {{- range $key1, $val1 := .Values.config }}
             {{- range $key2, $val2 := $val1}}
@@ -54,8 +79,17 @@ spec:
                   key: {{ $key1 }}_{{ $key2 }}
             {{- end}}
             {{- end}}
+{{- if .Values.authServer.useSSL }}
+            - name: RUCIO_ENABLE_SSL
+              value: "True"
+            - name: OPENSSL_ALLOW_PROXY_CERTS
+              value: "1"
+            - name: RUCIO_CA_PATH
+              value: "/etc/grid-security/certificates"
+{{- else }}
             - name: RUCIO_ENABLE_SSL
               value: "False"
+{{- end }}
             - name: RUCIO_DEFINE_ALIASES
               value: "True"
             - name: RUCIO_LOG_FORMAT
