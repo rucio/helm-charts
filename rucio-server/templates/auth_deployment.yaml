@@ -32,6 +32,8 @@ spec:
       - name: aliases
         configMap:
           name: {{ template "rucio.fullname" . }}-auth-aliases
+      - name: httpdlog
+        emptyDir: {}
 {{- if .Values.authServer.useSSL }}
       - name: hostcert
         secret:
@@ -44,6 +46,14 @@ spec:
           secretName: ca
 {{- end }}
       containers:
+{{- if .Values.exposeErrorLogs.authServer }}
+        - name: httpd-error-log
+          image: busybox
+          args: [/bin/sh, -c, 'tail -n+1 -f /var/log/httpd/error_log']
+          volumeMounts:
+          - name: httpdlog
+            mountPath: /var/log/httpd
+{{- end }}
         - name: {{ .Chart.Name }}-auth
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -55,6 +65,8 @@ spec:
               containerPort: 443
               protocol: TCP
           volumeMounts:
+            - name: httpdlog
+              mountPath: /var/log/httpd
             - name: aliases
               mountPath: /opt/rucio/etc/aliases.conf
               subPath: aliases.conf
