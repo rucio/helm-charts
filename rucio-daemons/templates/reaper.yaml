@@ -58,7 +58,7 @@ spec:
             - name: RUCIO_DAEMON
               value: "reaper"
             - name: RUCIO_DAEMON_ARGS
-              value: '{{ if .Values.reaper.greedy }} --greedy {{ end }} --total-workers {{ .Values.reaper.workers }}  --threads-per-worker {{ .Values.reaper.threadsPerWorker }} {{ if .Values.reaper.scheme }}--scheme {{ .Values.reaper.scheme }}{{ end }}{{ if .Values.reaper.includeRses }} --include-rses="{{ .Values.reaper.includeRses }}"{{ end }}{{ if .Values.reaper.rses }} --rses "{{ .Values.reaper.rses }}"{{ end }}'
+              value: '{{ if .Values.reaper.greedy }} --greedy {{ end }} --total-workers {{ .Values.reaper.workers }}  --threads-per-worker {{ .Values.reaper.threadsPerWorker }} {{ if .Values.reaper.scheme }}--scheme {{ .Values.reaper.scheme }}{{ end }}{{ if .Values.reaper.includeRses }} --include-rses="{{ .Values.reaper.includeRses }}"{{ end }}{{ if .Values.reaper.rses }} --rses {{ .Values.reaper.rses }}{{ end }}'
             - name: GLOBUS_THREAD_MODEL
               value: "pthread"
             - name: RUCIO_HOME
