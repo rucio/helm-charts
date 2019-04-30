@@ -28,10 +28,24 @@ spec:
         app: {{ template "rucio.name" . }}
         release: {{ .Release.Name }}
     spec:
+      volumes:
+      - name: httpdlog
+        emptyDir: {}      
       containers:
+{{- if .Values.exposeErrorLogs.server }}
+        - name: httpd-error-log
+          image: busybox
+          args: [/bin/sh, -c, 'tail -n+1 -f /var/log/httpd/error_log']
+          volumeMounts:
+          - name: httpdlog
+            mountPath: /var/log/httpd
+{{- end }}
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+          - name: httpdlog
+            mountPath: /var/log/httpd
           ports:
             - name: http
               containerPort: 80
