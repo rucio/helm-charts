@@ -4,6 +4,7 @@
 
 ## judgeCleanerCount gives the number of judge-cleaner pods to run
 abacusAccountCount: 0
+abacusCollectionReplicaCount: 0
 abacusRseCount: 0
 conveyorTransferSubmitterCount: 0
 conveyorPollerCount: 0
@@ -31,6 +32,9 @@ strategy:
 minReadySeconds: 5
 
 abacusAccount:
+  threads: 1
+
+abacusCollectionReplica:
   threads: 1
 
 abacusRse:
