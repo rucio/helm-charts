@@ -1,0 +1,117 @@
+# Default values for rucio.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+## replicaCount gives the number of server pods to run
+replicaCount: 1
+
+# When set, run extra busybox containers in the relevant pods to also expose the error logs
+exposeErrorLogs: True
+
+service:
+  type: NodePort
+  # Run the webui server on port 443 instead of 80 and accept X509 certificates and proxies
+  useSSL: true
+  port: 443
+  targetPort: https
+  portName: https
+
+image:
+  repository: rucio/rucio-ui
+  tag: release-1.19.8
+  pullPolicy: Always
+
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxSurge: 1
+    maxUnavailable: 1
+
+minReadySeconds: 5
+
+proxy:
+  rucioProxy: ""
+  rucioAuthProxy: ""
+  
+webuiIngress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  path: /
+  hosts: []
+  #   - my.rucio.test
+
+## values used to configure apache
+httpd_config:
+  # mpm_mode: "worker"
+  # start_servers: "1"
+  # min_spare_threads: "1"
+  # max_spare_threads: "20"
+  # threads_per_child: "5"
+  # max_clients: "20"
+  # max_requests_per_child: "8192"
+
+## values used to configure Rucio
+config:
+  # common:
+    ## config.common.logdir: the default directoy to write logs to (default: "/var/log/rucio")
+    # logdir: "/var/log/rucio"
+    ## config.common.logdir: the max loglevel (default: "DEBUG")
+    # loglevel: "DEBUG"
+    ## config.common.mailtemplatedir: directory containing the mail templates (default: "/opt/rucio/etc/mail_templates")
+    # mailtemplatedir: "/opt/rucio/etc/mail_templates"
+
+  database:
+    ## config.database.default: the connection string for the database (default: "sqlite:////tmp/rucio.db")
+    # default: "sqlite:////tmp/rucio.db"
+    ## config.database.schema: the schema used in the DB. only necessary when using Oracle.
+    # schema: ""
+    ## config.database.pool_reset_on_return: set the “reset on return” behavior of the pool (default: "rollback")
+    # pool_reset_on_return: "rollback"
+    ## config.database.echo: flag to control the logging of all statements to stdout (default: "0")
+    # echo: "0"
+    ## config.database.po0l_recycle: this setting causes the pool to recycle connections after the given number of seconds has passed (default: "600")
+    # pool_recycle: "600"
+    ## config.database.pool_size: the number of connections to keep open inside the connection pool
+    # pool_size: ""
+    ## config.database.pool_timeout: number of seconds to wait before giving up on getting a connection from the pool
+    # pool_timeout: ""
+    ## config.database.maxoverflow: the number of connections to allow in connection pool "overflow"
+    # max_overflow: ""
+    ## config.database.powuseraccount: user used to check the DB
+    # powuseraccount: ""
+    ## config.database.powuseraccount: password for user used to check the DB
+    # powuserpassword: ""
+
+  # policy:
+    ## config.permission.policy: (default "generic")
+    # permission: "generic"
+    ## config.permission.schema: (default "generic")
+    # schema: "generic"
+    ## config.permission.lfn2pfn_algorithm_default: (default "hash")
+    # lfn2pfn_algorithm_default: "hash"
+    ## config.permission.support: (default "https://github.com/rucio/rucio/issues/")
+    # support: "https://github.com/rucio/rucio/issues/"
+    ## config.permission.support_rucio: (default "https://github.com/rucio/rucio/issues/")
+    # support_rucio: "https://github.com/rucio/rucio/issues/"
+
+  ## Only necessary for webui deployments
+  # webui:
+    ## config.webui.usercert:  (default "/opt/rucio/etc/usercert_with_key.pem")
+    # usercert: "/opt/rucio/etc/usercert_with_key.pem"
+
+resources: {}
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
