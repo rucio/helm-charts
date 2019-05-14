@@ -1,0 +1,111 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "rucio.fullname" . }}
+  labels:
+    app: {{ template "rucio.name" . }}
+    chart: {{ template "rucio.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "rucio.name" . }}
+      release: {{ .Release.Name }}
+  strategy:
+    type: {{ .Values.strategy.type }}
+{{- if eq .Values.strategy.type "RollingUpdate" }}
+    {{- with .Values.strategy.rollingUpdate }}
+    rollingUpdate:
+{{ toYaml . | trim | indent 6 }}
+    {{- end }}
+{{- end }}
+  minReadySeconds: {{ .Values.minReadySeconds }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "rucio.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      volumes:
+      - name: aliases
+        configMap:
+          name: {{ template "rucio.fullname" . }}-aliases
+      - name: httpdlog
+        emptyDir: {}
+      - name: hostcert
+        secret:
+          secretName: webui-host-cert
+      - name: hostkey
+        secret:
+          secretName: webui-host-key
+      - name: ca
+        secret:
+          secretName: webui-cafile
+      containers:
+{{- if .Values.exposeErrorLogs }}
+        - name: httpd-error-log
+          image: busybox
+          args: [/bin/sh, -c, 'tail -n+1 -f /var/log/httpd/error_log']
+          volumeMounts:
+          - name: httpdlog
+            mountPath: /var/log/httpd
+{{- end }}
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+            - name: https
+              containerPort: 443
+              protocol: TCP
+          volumeMounts:
+            - name: httpdlog
+              mountPath: /var/log/httpd
+            - name: aliases
+              mountPath: /opt/rucio/etc/aliases.conf
+              subPath: aliases.conf
+            - name: hostcert
+              mountPath: /etc/grid-security/hostcert.pem
+              subPath: hostcert.pem
+            - name: hostkey
+              mountPath: /etc/grid-security/hostkey.pem
+              subPath: hostkey.pem
+            - name: ca
+              mountPath: /etc/grid-security/ca.pem
+              subPath: ca.pem
+          env:
+            {{- range $key1, $val1 := .Values.config }}
+            {{- range $key2, $val2 := $val1}}
+            - name: RUCIO_CFG_{{ $key1 | upper }}_{{ $key2 | upper }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "rucio.fullname" $ }}.cfg
+                  key: {{ $key1 }}_{{ $key2 }}
+            {{- end}}
+            {{- end}}
+            - name: RUCIO_PROXY
+              value: {{ .Values.proxy.rucioProxy }}
+            - name: RUCIO_AUTH_PROXY
+              value: {{ .Values.proxy.rucioAuthProxy }}
+            - name: RUCIO_DEFINE_ALIASES
+              value: "True"
+            - name: RUCIO_LOG_FORMAT
+              value: '[%{%Y-%m-%d %H:%M:%S}t]\t%v\t%h\t%{X-Forwarded-For}i\t%{X-Rucio-RequestId}i\t%>s\t%I\t%B\t%D\t\"%r\"\t\"%{X-Rucio-Auth-Token}i\"\t\"%{User-Agent}i\"\t%{X-Rucio-Script}i'
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
