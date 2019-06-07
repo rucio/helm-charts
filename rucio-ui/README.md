@@ -30,7 +30,7 @@ The command deploys a Rucio webui server on the Kubernetes cluster in the defaul
 To install the chart so that is will connected to a MySQL DB running at `mysql.db` with the user `rucio` and password `rucio` and a rucio server running at `my.rucio.server` and a auth server at `my.auth.server`.
 
 ```bash
-$ helm install --name my-release --set config.database.default="mysql://rucio:rucio@mysql.db/rucio" --set proxy.rucioProxy="my.rucio.server" --set proxy.rucioAuthProxy="my.auth.server" rucio/rucio-server
+$ helm install --name my-release --set config.database.default="mysql://rucio:rucio@mysql.db/rucio" --set proxy.rucioProxy="my.rucio.server" --set proxy.rucioAuthProxy="my.auth.server" rucio/rucio-ui
 ```
 
 ## Configuration
@@ -38,7 +38,7 @@ $ helm install --name my-release --set config.database.default="mysql://rucio:ru
 The default configuration values for this chart are listed in `values.yaml` our you can get them with:
 
 ```bash
-$ helm inspect values rucio/rucio-server
+$ helm inspect values rucio/rucio-ui
 ```
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install` as shown before.
@@ -46,7 +46,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml rucio/rucio-server
+$ helm install --name my-release -f values.yaml rucio/rucio-ui
 ```
 
 ## Ingress & Certificates
