@@ -33,10 +33,10 @@ spec:
       volumes:
         - name: usercert
           secret:
-            secretName: hermes-cert
+            secretName: {{ .Release.Name }}-hermes-cert
         - name: userkey
           secret:
-            secretName: hermes-key
+            secretName: {{ .Release.Name }}-hermes-key
 {{ end }}
       containers:
         - name: {{ .Chart.Name }}

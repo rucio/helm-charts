@@ -37,13 +37,13 @@ spec:
 {{- if .Values.authServer.useSSL }}
       - name: hostcert
         secret:
-          secretName: host-cert
+          secretName: {{ .Release.Name }}-hostcert
       - name: hostkey
         secret:
-          secretName: host-key
+          secretName: {{ .Release.Name }}-hostkey
       - name: cafile
         secret:
-          secretName: ca
+          secretName: {{ .Release.Name }}-cafile
 {{- end }}
       containers:
 {{- if .Values.exposeErrorLogs.authServer }}
@@ -96,8 +96,6 @@ spec:
               value: "True"
             - name: OPENSSL_ALLOW_PROXY_CERTS
               value: "1"
-            - name: RUCIO_CA_PATH
-              value: "/etc/grid-security/certificates"
 {{- else }}
             - name: RUCIO_ENABLE_SSL
               value: "False"
