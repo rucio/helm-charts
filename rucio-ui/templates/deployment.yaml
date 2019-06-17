@@ -36,13 +36,13 @@ spec:
         emptyDir: {}
       - name: hostcert
         secret:
-          secretName: webui-host-cert
+          secretName: {{ .Release.Name }}-hostcert
       - name: hostkey
         secret:
-          secretName: webui-host-key
-      - name: ca
+          secretName: {{ .Release.Name }}-hostkey
+      - name: cafile
         secret:
-          secretName: webui-cafile
+          secretName: {{ .Release.Name }}-cafile
       containers:
 {{- if .Values.exposeErrorLogs }}
         - name: httpd-error-log
@@ -74,7 +74,7 @@ spec:
             - name: hostkey
               mountPath: /etc/grid-security/hostkey.pem
               subPath: hostkey.pem
-            - name: ca
+            - name: cafile
               mountPath: /etc/grid-security/ca.pem
               subPath: ca.pem
           env:
