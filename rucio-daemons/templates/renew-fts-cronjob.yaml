@@ -11,7 +11,7 @@ spec:
         spec:
           serviceAccountName: {{ .Release.Name }}-rucio-edit
           volumes:
-{{- if eq .Values.ftsRenewal.vo "atlas" }}
+{{- if or (eq .Values.ftsRenewal.vo "atlas") (eq .Values.ftsRenewal.vo "dteam") }}
           - name: longproxy
             secret:
               secretName: {{ .Release.Name }}-longproxy
@@ -28,7 +28,7 @@ spec:
               image: "{{ .Values.ftsRenewal.image.repository }}:{{ .Values.ftsRenewal.image.tag }}"
               imagePullPolicy: {{ .Values.ftsRenewal.image.pullPolicy }}
               volumeMounts:
-{{- if eq .Values.ftsRenewal.vo "atlas" }}
+{{- if or (eq .Values.ftsRenewal.vo "atlas") (eq .Values.ftsRenewal.vo "dteam") }}
                 - name: longproxy
                   mountPath: /opt/rucio/certs/
 {{- else }}
@@ -46,7 +46,7 @@ spec:
                   value: {{ .Values.ftsRenewal.servers | quote }}
                 - name: RUCIO_FTS_SECRETS
                   value: "{{ .Release.Name }}-rucio-x509up"
-{{- if eq .Values.ftsRenewal.vo "atlas" }}
+{{- if or (eq .Values.ftsRenewal.vo "atlas") (eq .Values.ftsRenewal.vo "dteam") }}
                 - name: RUCIO_LONG_PROXY
                   value: {{ .Values.ftsRenewal.longProxy | quote }}
 {{- end }}
