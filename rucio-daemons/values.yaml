@@ -16,6 +16,7 @@ judgeInjectorCount: 0
 judgeRepairerCount: 0
 undertakerCount: 0
 reaperCount: 0
+reaper2Count: 0
 transmogrifierCount: 0
 
 image:
@@ -81,6 +82,12 @@ reaper:
   scheme: ""
   workers: 1
   threadsPerWorker: 4
+  includeRses: ""
+
+reaper2:
+  greedy: 0
+  scheme: ""
+  threads: 4
   includeRses: ""
 
 ftsRenewal:
