@@ -28,6 +28,7 @@ spec:
       labels:
         app: {{ template "rucio.name" . }}
         release: {{ .Release.Name }}
+        rucio-daemon: transmogrifier
     spec:
       volumes:
       - name: proxy-volume

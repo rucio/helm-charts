@@ -28,6 +28,7 @@ spec:
       labels:
         app: {{ template "rucio.name" . }}
         release: {{ .Release.Name }}
+        rucio-daemon: hermes
     spec:
 {{ if .Values.hermes.useSSL }}
       volumes:
