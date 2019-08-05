@@ -28,6 +28,7 @@ spec:
       labels:
         app: {{ template "rucio.name" . }}
         release: {{ .Release.Name }}
+        rucio-daemon: reaper
     spec:
       volumes:
       - name: proxy-volume

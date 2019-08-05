@@ -28,6 +28,7 @@ spec:
       labels:
         app: {{ template "rucio.name" . }}
         release: {{ .Release.Name }}
+        rucio-daemon: abacus-account
     spec:
       volumes:
       - name: proxy-volume
