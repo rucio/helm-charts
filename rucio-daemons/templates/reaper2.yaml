@@ -1,0 +1,69 @@
+{{- if gt .Values.reaper2Count 0.0 -}}
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-reaper2
+  labels:
+    app: {{ template "rucio.name" . }}
+    chart: {{ template "rucio.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.reaper2Count }}
+  selector:
+    matchLabels:
+      app: {{ template "rucio.name" . }}
+      release: {{ .Release.Name }}
+  strategy:
+    type: {{ .Values.strategy.type }}
+{{- if eq .Values.strategy.type "RollingUpdate" }}
+    {{- with .Values.strategy.rollingUpdate }}
+    rollingUpdate:
+{{ toYaml . | trim | indent 6 }}
+    {{- end }}
+{{- end }}
+  minReadySeconds: {{ .Values.minReadySeconds }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "rucio.name" . }}
+        release: {{ .Release.Name }}
+        rucio-daemon: reaper2
+    spec:
+      volumes:
+      - name: proxy-volume
+        secret:
+          secretName: {{ .Release.Name }}-rucio-x509up
+      - name: ca-volume
+        secret:
+          secretName: {{ .Release.Name }}-rucio-ca-bundle-reaper
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - name: proxy-volume
+              mountPath: /opt/proxy
+            - name: ca-volume
+              mountPath: /etc/grid-security/certificates
+          env:
+            {{- range $key1, $val1 := .Values.config }}
+            {{- range $key2, $val2 := $val1}}
+            - name: RUCIO_CFG_{{ $key1 | upper }}_{{ $key2 | upper }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "rucio.fullname" $ }}.cfg
+                  key: {{ $key1 }}_{{ $key2 }}
+            {{- end}}
+            {{- end}}
+            - name: RUCIO_DAEMON
+              value: "reaper2"
+            - name: RUCIO_DAEMON_ARGS
+              value: '{{ if .Values.reaper2.greedy }} --greedy {{ end }} --threads {{ .Values.reaper2.threads }} {{ if .Values.reaper2.scheme }}--scheme {{ .Values.reaper2.scheme }}{{ end }}{{ if .Values.reaper2.includeRses }} --include-rses="{{ .Values.reaper2.includeRses }}"{{ end }}{{ if .Values.reaper2.rses }} --rses {{ .Values.reaper2.rses }}{{ end }}'
+            - name: GLOBUS_THREAD_MODEL
+              value: "pthread"
+            - name: RUCIO_HOME
+              value: "/opt/rucio/reaper"
+            - name: X509_USER_PROXY
+              value: "/opt/proxy/x509up"
+{{ end }}
