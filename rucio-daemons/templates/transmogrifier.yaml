@@ -60,4 +60,6 @@ spec:
               value: "transmogrifier"
             - name: RUCIO_DAEMON_ARGS
               value: ""
+          resources:
+{{ toYaml .Values.transmogrifierResources | indent 12 }}
 {{ end }}
