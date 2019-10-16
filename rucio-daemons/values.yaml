@@ -56,6 +56,7 @@ hermes:
   threads: 1
   bulk: 100
   delay: 10
+  brokerTimeout: 3
 
 judgeCleaner:
   threads: 1
@@ -68,11 +69,6 @@ judgeInjector:
 
 judgeRepairer:
   threads: 1
-
-hermes:
-  threads: 1
-  bulk: 1000
-  delay: 10
 
 undertaker:
   threads: 1
