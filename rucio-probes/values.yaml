@@ -1,0 +1,230 @@
+# Default values for rucio-probes.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: rucio/probes
+  tag: latest
+  pullPolicy: Always
+
+#  Values needed for some of the probes
+probeSettings:
+  # This is the secret for the X509 proxy for FTS. Needed for "check_fts_backlog"
+  ftsProxySecret: ruciod-release-rucio-x509up
+
+probes:
+  # By default all probes are turned off since they may have side effects. Set the interval to a positive number to run
+  # a probe every so many minutes. You may also set "onError" to change the jobber onError setting for a probe
+  check_WebDAV_ping:
+    interval: 0
+  check_activemq_queue:
+    interval: 0
+  check_always_ok:
+    interval: 0
+  check_ami:
+    interval: 0
+  check_clean_staging_areas:
+    interval: 0
+  check_cloud_srm_space:
+    interval: 0
+  check_davs:
+    interval: 0
+  check_deletable_replicas:
+    interval: 0
+  check_disabled_rses:
+    interval: 0
+  check_expired_dids:
+    interval: 0
+  check_expired_es_indices:
+    interval: 0
+  check_expired_locked_rules:
+    interval: 0
+  check_expired_rules:
+    interval: 0
+  check_free_space:
+    interval: 0
+  check_fts_backlog:
+    interval: 0
+  check_fts_proxy_lifetime.py:
+    interval: 0
+  check_geoip_distances:
+    interval: 0
+  check_gridftp_space:
+    interval: 0
+  check_injecting_rules:
+    interval: 0
+  check_log:
+    interval: 0
+  check_lost_files:
+    interval: 0
+  check_map_voms_roles:
+    interval: 0
+  check_messages_to_submit:
+    interval: 0
+  check_metrix_closeness_agis:
+    interval: 0
+  check_metrix_files_done_dashb:
+    interval: 0
+  check_metrix_files_queued_rucio_total:
+    interval: 0
+  check_metrix_fill_redis:
+    interval: 0
+  check_metrix_latency_perfsonar:
+    interval: 0
+  check_metrix_mapping_rse_site:
+    interval: 0
+  check_metrix_mapping_se_site:
+    interval: 0
+  check_metrix_mbps_dashb:
+    interval: 0
+  check_metrix_mbps_fts:
+    interval: 0
+  check_metrix_merge_metrix:
+    interval: 0
+  check_metrix_packetloss_perfsonar:
+    interval: 0
+  check_new_dids:
+    interval: 0
+  check_obsolete_replicas:
+    interval: 0
+  check_oracle:
+    interval: 0
+  check_oracle_partitions:
+    interval: 0
+  check_ping_rucio_servers:
+    interval: 0
+  check_quotas:
+    interval: 0
+  check_recoverable_suspicious:
+    interval: 0
+  check_redis:
+    interval: 0
+  check_requests_to_rses:
+    interval: 0
+  check_rse_attributes:
+    interval: 0
+  check_rses_distance:
+    interval: 0
+  check_ruciomover:
+    interval: 0
+  check_rule_health:
+    interval: 0
+  check_rules:
+    interval: 0
+  check_set_rse_space_limits:
+    interval: 0
+  check_site_status:
+    interval: 0
+  check_srm_space:
+    interval: 0
+  check_stalled_fts_connections:
+    interval: 0
+  check_storage_space:
+    interval: 0
+  check_stresstest_dids_requests_replicas_daily:
+    interval: 0
+  check_stresstest_dids_requests_replicas_hourly:
+    interval: 0
+  check_stresstest_replicas_replicating_time_hourly:
+    interval: 0
+  check_stresstest_replicas_replicating_time_statistics_2hours:
+    interval: 0
+  check_stresstest_replicas_replicating_time_statistics_daily:
+    interval: 0
+  check_stuck_rules:
+    interval: 0
+  check_suspicious_logs:
+    interval: 0
+  check_sync_rses_with_agis:
+    interval: 0
+  check_transfer_queues_status:
+    interval: 0
+  check_unevaluated_dids:
+    interval: 0
+  check_unlocked_replicas:
+    interval: 0
+  check_updated_account_counters:
+    interval: 0
+  check_updated_dids:
+    interval: 0
+  check_updated_rse_counters:
+    interval: 0
+  check_used_space:
+    interval: 0
+  check_voms:
+    interval: 0
+  check_voms_admin:
+    interval: 0
+  check_webDAV_service:
+    interval: 0
+  check_webdav_space:
+    interval: 0
+  check_xcache:
+    interval: 0
+
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxSurge: 1
+    maxUnavailable: 1
+
+minReadySeconds: 5
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+config:
+  # database:
+    ## config.database.default: the connection string for the database (default: "sqlite:////tmp/rucio.db")
+    # default: "sqlite:////tmp/rucio.db"
+    ## config.database.schema: the schema used in the DB. only necessary when using Oracle.
+    # schema: ""
+    ## config.database.pool_reset_on_return: set the “reset on return” behavior of the pool (default: "rollback")
+    # pool_reset_on_return: "rollback"
+    ## config.database.echo: flag to control the logging of all statements to stdout (default: "0")
+    # echo: "0"
+    ## config.database.po0l_recycle: this setting causes the pool to recycle connections after the given number of seconds has passed (default: "600")
+    # pool_recycle: "600"
+    ## config.database.pool_size: the number of connections to keep open inside the connection pool
+    # pool_size: ""
+    ## config.database.pool_timeout: number of seconds to wait before giving up on getting a connection from the pool
+    # pool_timeout: ""
+    ## config.database.maxoverflow: the number of connections to allow in connection pool "overflow"
+    # max_overflow: ""
+    ## config.database.powuseraccount: user used to check the DB
+    # powuseraccount: ""
+    ## config.database.powuseraccount: password for user used to check the DB
+    # powuserpassword: ""
+
+  # monitor:
+    ## config.monitor.carbon_server: address of carbon server used for graphite monitoring (default: "localhost")
+    # carbon_server: "localhost"
+    ## config.monitor.carbon_port: port of carbon server used for graphite monitoring (default: "8125")
+    # carbon_server: "8125"
+    ## config.monitor.user_scope: scope used on the graphite server (default: "default_docker")
+    # user_scope: "default_docker"
+
+  nagios:
+    ## Where FTS proxy gets mounted
+    proxy: "/opt/proxy/x509up"
+    ## Your VO for FTS
+    # fts_vo: "cms"
+    ## Update distances in the FTS probe
+    update_distances: "False"
