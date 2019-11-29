@@ -12,7 +12,7 @@ spec:
   type: NodePort
   ports:
     - port: {{ .Values.monitoring.exporterPort }}
-      targetPort: {{ .Values.monitoring.targetPort }}
+      targetPort: metrics
       protocol: TCP
       name: metrics
   selector:

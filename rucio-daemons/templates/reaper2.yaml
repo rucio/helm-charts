@@ -46,6 +46,10 @@ spec:
               mountPath: /opt/proxy
             - name: ca-volume
               mountPath: /etc/grid-security/certificates
+          ports:
+            - name: metrics
+              containerPort: 8080
+              protocol: TCP
           env:
             {{- range $key1, $val1 := .Values.config }}
             {{- range $key2, $val2 := $val1}}

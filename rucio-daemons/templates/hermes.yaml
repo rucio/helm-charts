@@ -50,6 +50,10 @@ spec:
             - name: userkey
               mountPath: /opt/rucio/keys/
 {{ end }}
+          ports:
+            - name: metrics
+              containerPort: 8080
+              protocol: TCP
           env:
             {{- range $key1, $val1 := .Values.config }}
             {{- range $key2, $val2 := $val1}}
