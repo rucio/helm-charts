@@ -32,6 +32,16 @@ strategy:
 
 minReadySeconds: 5
 
+monitoring:
+  enabled: false
+  exporterPort: 8080
+  targetPort: 8080
+  interval: 30s
+  telemetryPath: /metrics
+  namespace: monitoring
+  labels:
+    release: prometheus-operator
+
 abacusAccount:
   threads: 1
 
