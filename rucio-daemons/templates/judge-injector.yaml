@@ -60,4 +60,8 @@ spec:
               value: "judge-injector"
             - name: RUCIO_DAEMON_ARGS
               value: "--threads {{ .Values.judgeInjector.threads }}"
+{{- if .Values.judgeInjector.resources }}
+          resources:
+{{ toYaml .Values.judgeInjector.resources | trim | indent 12 }}
+{{ end }}
 {{ end }}

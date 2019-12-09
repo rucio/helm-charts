@@ -48,4 +48,8 @@ spec:
               value: "undertaker"
             - name: RUCIO_DAEMON_ARGS
               value: "--total-workers {{ .Values.undertaker.threads }}"
+{{- if .Values.undertaker.resources }}
+          resources:
+{{ toYaml .Values.undertaker.resources | trim | indent 12 }}
+{{ end }}
 {{ end }}

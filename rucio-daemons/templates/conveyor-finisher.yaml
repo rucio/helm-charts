@@ -60,4 +60,8 @@ spec:
               value: "conveyor-finisher"
             - name: RUCIO_DAEMON_ARGS
               value: "--total-threads {{ .Values.conveyorFinisher.threads }}"
+{{- if .Values.conveyorFinisher.resources }}
+          resources:
+{{ toYaml .Values.conveyorFinisher.resources | trim | indent 12 }}
+{{ end }}
 {{ end }}

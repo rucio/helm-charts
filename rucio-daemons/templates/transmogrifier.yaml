@@ -59,7 +59,9 @@ spec:
             - name: RUCIO_DAEMON
               value: "transmogrifier"
             - name: RUCIO_DAEMON_ARGS
-              value: ""
+              value: "--threads {{ .Values.transmogrifier.threads }}"
+{{- if .Values.transmogrifier.resources }}
           resources:
-{{ toYaml .Values.transmogrifierResources | indent 12 }}
+{{ toYaml .Values.transmogrifier.resources | trim | indent 12 }}
+{{ end }}
 {{ end }}

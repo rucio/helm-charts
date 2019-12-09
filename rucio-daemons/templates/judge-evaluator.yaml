@@ -60,4 +60,8 @@ spec:
               value: "judge-evaluator"
             - name: RUCIO_DAEMON_ARGS
               value: "--threads {{ .Values.judgeEvaluator.threads }}"
+{{- if .Values.judgeEvaluator.resources }}
+          resources:
+{{ toYaml .Values.judgeEvaluator.resources | trim | indent 12 }}
+{{ end }}
 {{ end }}

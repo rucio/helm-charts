@@ -66,4 +66,8 @@ spec:
               value: "/opt/rucio/reaper"
             - name: X509_USER_PROXY
               value: "/opt/proxy/x509up"
+{{- if .Values.reaper2.resources }}
+          resources:
+{{ toYaml .Values.reaper2.resources | trim | indent 12 }}
+{{ end }}
 {{ end }}

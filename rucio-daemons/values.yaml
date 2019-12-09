@@ -34,44 +34,128 @@ minReadySeconds: 5
 
 abacusAccount:
   threads: 1
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "200Mi"
+      cpu: "700m"
 
 abacusCollectionReplica:
   threads: 1
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "200Mi"
+      cpu: "700m"
 
 abacusRse:
   threads: 1
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "200Mi"
+      cpu: "700m"
 
 conveyorTransferSubmitter:
   threads: 1
   activities: "'test1' 'test2'"
   sleepTime: 10
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "200Mi"
+      cpu: "700m"
 
 conveyorPoller:
   threads: 1
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "200Mi"
+      cpu: "700m"
 
 conveyorFinisher:
   threads: 1
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "200Mi"
+      cpu: "700m"
 
 hermes:
   threads: 1
   bulk: 100
   delay: 10
   brokerTimeout: 3
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "200Mi"
+      cpu: "700m"
 
 judgeCleaner:
   threads: 1
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "200Mi"
+      cpu: "700m"
 
 judgeEvaluator:
   threads: 1
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "200Mi"
+      cpu: "700m"
 
 judgeInjector:
   threads: 1
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "200Mi"
+      cpu: "700m"
 
 judgeRepairer:
   threads: 1
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "200Mi"
+      cpu: "700m"
 
 undertaker:
   threads: 1
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "200Mi"
+      cpu: "700m"
 
 reaper:
   greedy: 0
@@ -79,12 +163,36 @@ reaper:
   workers: 1
   threadsPerWorker: 4
   includeRses: ""
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "200Mi"
+      cpu: "700m"
 
 reaper2:
   greedy: 0
   scheme: ""
   threads: 4
   includeRses: ""
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "200Mi"
+      cpu: "700m"
+
+transmogrifier:
+  threads: 1
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "200Mi"
+      cpu: "700m"
 
 ftsRenewal:
   enabled: 0

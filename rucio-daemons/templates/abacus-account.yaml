@@ -60,4 +60,8 @@ spec:
               value: "abacus-account"
             - name: RUCIO_DAEMON_ARGS
               value: "--threads {{ .Values.abacusAccount.threads }}"
+{{- if .Values.abacusAccount.resources }}
+          resources:
+{{ toYaml .Values.abacusAccount.resources | trim | indent 12 }}
+{{ end }}
 {{ end }}

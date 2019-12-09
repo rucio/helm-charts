@@ -60,4 +60,8 @@ spec:
               value: "conveyor-poller"
             - name: RUCIO_DAEMON_ARGS
               value: "--total-threads {{ .Values.conveyorPoller.threads }}"
+{{- if .Values.conveyorPoller.resources }}
+          resources:
+{{ toYaml .Values.conveyorPoller.resources | trim | indent 12 }}
+{{ end }}
 {{ end }}

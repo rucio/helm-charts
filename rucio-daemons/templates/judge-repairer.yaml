@@ -59,5 +59,9 @@ spec:
             - name: RUCIO_DAEMON
               value: "judge-repairer"
             - name: RUCIO_DAEMON_ARGS
-              value: "--threads {{ .Values.judgeInjector.threads }}"
+              value: "--threads {{ .Values.judgeRepairer.threads }}"
+{{- if .Values.judgeRepairer.resources }}
+          resources:
+{{ toYaml .Values.judgeRepairer.resources | trim | indent 12 }}
+{{ end }}
 {{ end }}
