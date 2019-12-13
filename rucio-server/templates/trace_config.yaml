@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "rucio.fullname" . }}-trace-aliases
+  labels:
+    app: {{ template "rucio.fullname" . }}-trace
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  aliases.conf: |+
+    WSGIScriptAlias /traces /usr/lib/python2.7/site-packages/rucio/web/rest/trace.py
+    WSGIScriptAlias /ping /usr/lib/python2.7/site-packages/rucio/web/rest/ping.py
