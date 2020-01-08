@@ -48,8 +48,20 @@ spec:
               value: "undertaker"
             - name: RUCIO_DAEMON_ARGS
               value: "--total-workers {{ .Values.undertaker.threads }}"
-{{- if .Values.undertaker.resources }}
+{{- with .Values.undertaker.resources }}
           resources:
-{{ toYaml .Values.undertaker.resources | trim | indent 12 }}
+{{ toYaml . | trim | indent 12 }}
 {{ end }}
+{{- with .Values.undertaker.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.undertaker.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.undertaker.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+{{- end }}
 {{ end }}

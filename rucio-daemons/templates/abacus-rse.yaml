@@ -60,8 +60,20 @@ spec:
               value: "abacus-rse"
             - name: RUCIO_DAEMON_ARGS
               value: "--threads {{ .Values.abacusRse.threads }}"
-{{- if .Values.abacusRse.resources }}
+{{- with .Values.abacusRse.resources }}
           resources:
-{{ toYaml .Values.abacusRse.resources | trim | indent 12 }}
+{{ toYaml . | trim | indent 12 }}
 {{ end }}
+{{- with .Values.abacusRse.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.abacusRse.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.abacusRse.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+{{- end }}
 {{ end }}

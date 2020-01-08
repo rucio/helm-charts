@@ -60,8 +60,20 @@ spec:
               value: "abacus-collection-replica"
             - name: RUCIO_DAEMON_ARGS
               value: "--threads {{ .Values.abacusCollectionReplica.threads }}"
-{{- if .Values.abacusCollectionReplica.resources }}
+{{- with .Values.abacusCollectionReplica.resources }}
           resources:
-{{ toYaml .Values.abacusCollectionReplica.resources | trim | indent 12 }}
+{{ toYaml . | trim | indent 12 }}
 {{ end }}
+{{- with .Values.abacusCollectionReplica.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.abacusCollectionReplica.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.abacusCollectionReplica.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+{{- end }}
 {{ end }}

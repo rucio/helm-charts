@@ -66,8 +66,20 @@ spec:
               value: "/opt/rucio/reaper"
             - name: X509_USER_PROXY
               value: "/opt/proxy/x509up"
-{{- if .Values.reaper.resources }}
+{{- with .Values.reaper.resources }}
           resources:
-{{ toYaml .Values.reaper.resources | trim | indent 12 }}
+{{ toYaml . | trim | indent 12 }}
 {{ end }}
+{{- with .Values.reaper.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.reaper.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.reaper.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+{{- end }}
 {{ end }}

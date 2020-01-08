@@ -60,8 +60,20 @@ spec:
               value: "conveyor-submitter"
             - name: RUCIO_DAEMON_ARGS
               value: "--total-threads {{ .Values.conveyorTransferSubmitter.threads }} --activities {{ .Values.conveyorTransferSubmitter.activities }} --sleep-time {{ .Values.conveyorTransferSubmitter.sleepTime }}"
-{{- if .Values.conveyorTransferSubmitter.resources }}
+{{- with .Values.conveyorTransferSubmitter.resources }}
           resources:
-{{ toYaml .Values.conveyorTransferSubmitter.resources | trim | indent 12 }}
+{{ toYaml . | trim | indent 12 }}
 {{ end }}
+{{- with .Values.conveyorTransferSubmitter.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.conveyorTransferSubmitter.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.conveyorTransferSubmitter.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+{{- end }}
 {{ end }}

@@ -60,8 +60,20 @@ spec:
               value: "judge-evaluator"
             - name: RUCIO_DAEMON_ARGS
               value: "--threads {{ .Values.judgeEvaluator.threads }}"
-{{- if .Values.judgeEvaluator.resources }}
+{{- with .Values.judgeEvaluator.resources }}
           resources:
-{{ toYaml .Values.judgeEvaluator.resources | trim | indent 12 }}
+{{ toYaml . | trim | indent 12 }}
 {{ end }}
+{{- with .Values.judgeEvaluator.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.judgeEvaluator.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.judgeEvaluator.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+{{- end }}
 {{ end }}

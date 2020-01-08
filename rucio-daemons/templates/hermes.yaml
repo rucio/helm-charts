@@ -64,8 +64,20 @@ spec:
               value: "hermes"
             - name: RUCIO_DAEMON_ARGS
               value: "--threads {{ .Values.hermes.threads }} --bulk {{ .Values.hermes.bulk }} --delay {{ .Values.hermes.delay }} --broker-timeout {{ .Values.hermes.brokerTimeout }}"
-{{- if .Values.hermes.resources }}
+{{- with .Values.hermes.resources }}
           resources:
-{{ toYaml .Values.hermes.resources | trim | indent 12 }}
+{{ toYaml . | trim | indent 12 }}
 {{ end }}
+{{- with .Values.hermes.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.hermes.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.hermes.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+{{- end }}
 {{ end }}

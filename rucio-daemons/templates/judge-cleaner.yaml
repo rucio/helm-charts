@@ -60,8 +60,20 @@ spec:
               value: "judge-cleaner"
             - name: RUCIO_DAEMON_ARGS
               value: "--threads {{ .Values.judgeCleaner.threads }}"
-{{- if .Values.judgeCleaner.resources }}
+{{- with .Values.judgeCleaner.resources }}
           resources:
-{{ toYaml .Values.judgeCleaner.resources | trim | indent 12 }}
+{{ toYaml . | trim | indent 12 }}
 {{ end }}
+{{- with .Values.judgeCleaner.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.judgeCleaner.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.judgeCleaner.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+{{- end }}
 {{ end }}
