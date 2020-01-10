@@ -6,13 +6,23 @@
 replicaCount: 2
 ## authReplicaCount gives the number of authentication server pods to run
 authReplicaCount: 1
+traceReplicaCount: 1
 
 # When set, run extra busybox containers in the relevant pods to also expose the error logs
 exposeErrorLogs:
   server: True
   authServer: True
+  traceServer: True
 
 authServer:
+  # Run the authorization server on port 443 instead of 80 and accept X509 certificates and proxies
+  useSSL: false
+  # For SSL, change to 443, https, and https respectively
+  servicePort: 80
+  targetPort: http
+  portName: http
+
+traceServer:
   # Run the authorization server on port 443 instead of 80 and accept X509 certificates and proxies
   useSSL: false
   # For SSL, change to 443, https, and https respectively
@@ -82,6 +92,35 @@ authIngress:
     # traefik.ingress.kubernetes.io/frontend-entry-points: http
     # traefik.ingress.kubernetes.io/redirect-entry-point: https
   path: /auth
+  hosts: []
+  #   - my.rucio.test
+  # tls:
+  #   - secretName: rucio-auth.tls-secret
+  secrets:
+  ## If you're providing your own certificates, please use this to add the certificates as secrets
+  ## key and certificate should start with -----BEGIN CERTIFICATE----- or
+  ## -----BEGIN RSA PRIVATE KEY-----
+  ##
+  ## name should line up with a tlsSecret set further up
+  ## If you're using kube-lego, this is unneeded, as it will create the secret for you if it is not set
+  ##
+  ## It is also possible to create and manage the certificates outside of this helm chart
+  ## Please see README.md for more information
+  # - name: rucio-auth.tls-secret
+  #   key: |+
+  #     -----BEGIN RSA PRIVATE KEY-----
+  #     -----END RSA PRIVATE KEY-----
+  #   certificate: |+
+  #     -----BEGIN CERTIFICATE-----
+  #     -----END CERTIFICATE-----
+
+traceIngress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: traefik
+    # traefik.ingress.kubernetes.io/frontend-entry-points: http
+    # traefik.ingress.kubernetes.io/redirect-entry-point: https
+  path: /traces
   hosts: []
   #   - my.rucio.test
   # tls:
