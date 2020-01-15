@@ -1,0 +1,83 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-probes
+  labels:
+    app: {{ template "rucio-probes.name" . }}
+    chart: {{ template "rucio-probes.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  progressDeadlineSeconds: 600
+  replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: {{ template "rucio-probes.name" . }}
+      release: {{ .Release.Name }}
+
+  strategy:
+    type: {{ .Values.strategy.type }}
+{{- if eq .Values.strategy.type "RollingUpdate" }}
+    {{- with .Values.strategy.rollingUpdate }}
+    rollingUpdate:
+{{ toYaml . | trim | indent 6 }}
+    {{- end }}
+{{- end }}
+  minReadySeconds: {{ .Values.minReadySeconds }}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: {{ template "rucio-probes.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      volumes:
+        - configMap:
+            defaultMode: 0644
+            name: jobber-config
+          name: config
+{{- if hasKey .Values.probeSettings "ftsProxySecret" }}
+        - name: proxy-volume
+          secret:
+            defaultMode: 420
+            secretName: "{{ .Values.probeSettings.ftsProxySecret }}"
+{{- end }}
+
+      containers:
+      - env:
+            {{- range $key1, $val1 := .Values.config }}
+            {{- range $key2, $val2 := $val1}}
+            - name: RUCIO_CFG_{{ $key1 | upper }}_{{ $key2 | upper }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "rucio-probes.fullname" $ }}.cfg
+                  key: {{ $key1 }}_{{ $key2 }}
+            {{- end}}
+            {{- end}}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        name: {{ .Chart.Name }}
+        volumeMounts:
+        - mountPath: /etc/jobber-config/
+          name: config
+{{- if hasKey .Values.probeSettings "ftsProxySecret" }}
+        - mountPath: /opt/proxy
+          name: proxy-volume
+{{- end }}
+{{- with .Values.resources }}
+        resources:
+{{ toYaml . | trim | indent 12 }}
+{{ end }}
+{{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+{{- end }}
