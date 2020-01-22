@@ -59,7 +59,7 @@ spec:
             - name: RUCIO_DAEMON
               value: "conveyor-submitter"
             - name: RUCIO_DAEMON_ARGS
-              value: "--total-threads {{ .Values.conveyorTransferSubmitter.threads }} --activities {{ .Values.conveyorTransferSubmitter.activities }} --sleep-time {{ .Values.conveyorTransferSubmitter.sleepTime }} --bulk {{ .Values.conveyorTransferSubmitter.bulk }} --group-bulk {{ .Values.conveyorTransferSubmitter.groupBulk }} --group-policy {{ .Values.conveyorTransferSubmitter.groupPolicy }} --mock {{ .Values.conveyorTransferSubmitter.mock }} --source-strategy {{ .Values.conveyorTransferSubmitter.sourceStrategy }} --exclude-rses {{ .Values.conveyorTransferSubmitter.excludeRses }} --includeRses {{ .Values.conveyorTransferSubmitter.includeRses }} --max-sources {{ .Values.conveyorTransferSubmitter.maxSources }} --retry-other-fts {{ .Values.conveyorTransferSubmitter.retryOtherFts }}"
+              value: "--total-threads {{ .Values.conveyorTransferSubmitter.threads }} --activities {{ .Values.conveyorTransferSubmitter.activities }} --sleep-time {{ .Values.conveyorTransferSubmitter.sleepTime }} --bulk {{ .Values.conveyorTransferSubmitter.bulk }} --group-bulk {{ .Values.conveyorTransferSubmitter.groupBulk }} --group-policy {{ .Values.conveyorTransferSubmitter.groupPolicy }} --source-strategy {{ .Values.conveyorTransferSubmitter.sourceStrategy }}"
 {{- with .Values.conveyorTransferSubmitter.resources }}
           resources:
 {{ toYaml . | trim | indent 12 }}
