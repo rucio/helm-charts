@@ -59,7 +59,7 @@ spec:
             - name: RUCIO_DAEMON
               value: "transmogrifier"
             - name: RUCIO_DAEMON_ARGS
-              value: "--threads {{ .Values.transmogrifier.threads }}"
+              value: "{{- if .Values.transmogrifier.threads }} --threads {{ .Values.transmogrifier.threads }}{{end}} {{- if .Values.transmogrifier.bulk }} --bulk {{ .Values.transmogrifier.bulk }}{{ end }}{{- if .Values.transmogrifier.sleepTime }} --sleep-time {{ .Values.transmogrifier.sleepTime }}{{ end }}"
 {{- with .Values.transmogrifier.resources }}
           resources:
 {{ toYaml . | trim | indent 12 }}

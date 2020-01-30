@@ -63,7 +63,7 @@ spec:
             - name: RUCIO_DAEMON
               value: "hermes"
             - name: RUCIO_DAEMON_ARGS
-              value: "--threads {{ .Values.hermes.threads }} --bulk {{ .Values.hermes.bulk }} --delay {{ .Values.hermes.delay }} --broker-timeout {{ .Values.hermes.brokerTimeout }}"
+              value: "{{- if .Values.hermes.threads }} --threads {{ .Values.hermes.threads }}{{ end }} {{- if .Values.hermes.bulk }} --bulk {{ .Values.hermes.bulk }}{{ end }} {{- if .Values.hermes.delay }} --delay {{ .Values.hermes.delay }}{{ end }} {{- if .Values.hermes.brokerTimeout }} --broker-timeout {{ .Values.hermes.brokerTimeout }}{{ end }} {{- if .Values.hermes.brokerRetry }} --broker-retry {{ .Values.hermes.brokerRetry }}{{ end }}"
 {{- with .Values.hermes.resources }}
           resources:
 {{ toYaml . | trim | indent 12 }}

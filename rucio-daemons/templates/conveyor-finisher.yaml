@@ -59,7 +59,7 @@ spec:
             - name: RUCIO_DAEMON
               value: "conveyor-finisher"
             - name: RUCIO_DAEMON_ARGS
-              value: "--total-threads {{ .Values.conveyorFinisher.threads }}"
+              value: "{{- if .Values.conveyorFinisher.threads }} --total-threads {{ .Values.conveyorFinisher.threads }}{{ end }} {{- if .Values.conveyorFinisher.dbBulk }} --db-bulk {{ .Values.conveyorFinisher.dbBulk }}{{ end }} {{- if .Values.conveyorFinisher.bulk }} --bulk {{ .Values.conveyorFinisher.bulk }}{{ end }} {{- if .Values.conveyorFinisher.sleepTime }} --sleep-time {{ .Values.conveyorFinisher.sleepTime }}{{ end }} {{- if .Values.conveyorFinisher.activities }} --activities {{ .Values.conveyorFinisher.activities }}{{ end }}"
 {{- with .Values.conveyorFinisher.resources }}
           resources:
 {{ toYaml . | trim | indent 12 }}

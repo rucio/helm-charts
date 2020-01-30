@@ -47,7 +47,7 @@ spec:
             - name: RUCIO_DAEMON
               value: "undertaker"
             - name: RUCIO_DAEMON_ARGS
-              value: "--total-workers {{ .Values.undertaker.threads }}"
+              value: "{{- if .Values.undertaker.threads }} --total-workers {{ .Values.undertaker.threads }}{{end}} {{- if .Values.undertaker.chunkSize }} --chunk-size {{ .Values.undertaker.chunkSize }}{{ end }}"
 {{- with .Values.undertaker.resources }}
           resources:
 {{ toYaml . | trim | indent 12 }}
