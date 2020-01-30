@@ -59,7 +59,7 @@ spec:
             - name: RUCIO_DAEMON
               value: "reaper2"
             - name: RUCIO_DAEMON_ARGS
-              value: '{{ if .Values.reaper2.greedy }} --greedy {{ end }} --threads {{ .Values.reaper2.threads }} {{ if .Values.reaper2.scheme }}--scheme {{ .Values.reaper2.scheme }}{{ end }}{{ if .Values.reaper2.includeRses }} --include-rses="{{ .Values.reaper2.includeRses }}"{{ end }}{{ if .Values.reaper2.rses }} --rses {{ .Values.reaper2.rses }}{{ end }}'
+              value: '{{- if .Values.reaper2.greedy }}--greedy {{ end }}{{- if .Values.reaper2.threads }} --threads {{ .Values.reaper2.threads }}{{end}} {{- if .Values.reaper2.scheme }} --scheme {{ .Values.reaper2.scheme }}{{ end }}{{- if .Values.reaper2.includeRses }}  --include-rses="{{ .Values.reaper2.includeRses }}"{{ end }} {{- if .Values.reaper2.rses }}  --rses {{ .Values.reaper2.rses }}{{ end }} {{- if .Values.reaper2.chunkSize }}  --chunk-size {{ .Values.reaper2.chunkSize }}{{ end }} {{- if .Values.reaper2.excludeRses }}  --exclude-rses {{ .Values.reaper2.excludeRses }}{{ end }} {{- if .Values.reaper2.delaySeconds }}  --delay-seconds {{ .Values.reaper2.delaySeconds }}{{end}} {{- if .Values.reaper2.sleepTime }}  --sleep-time {{ .Values.reaper2.sleepTime }}{{end}}'
             - name: GLOBUS_THREAD_MODEL
               value: "pthread"
             - name: RUCIO_HOME

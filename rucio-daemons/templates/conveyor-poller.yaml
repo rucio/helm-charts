@@ -59,7 +59,7 @@ spec:
             - name: RUCIO_DAEMON
               value: "conveyor-poller"
             - name: RUCIO_DAEMON_ARGS
-              value: "--total-threads {{ .Values.conveyorPoller.threads }}"
+              value: "{{- if .Values.conveyorPoller.threads }} --total-threads {{ .Values.conveyorPoller.threads }}{{ end }} {{ if .Values.conveyorPoller.dbBulk }} --db-bulk {{ .Values.conveyorPoller.dbBulk }}{{ end }} {{- if .Values.conveyorPoller.ftsBulk }} --fts-bulk {{ .Values.conveyorPoller.ftsBulk }}{{ end }} {{- if .Values.conveyorPoller.sleepTime }} --sleep-time {{ .Values.conveyorPoller.sleepTime }}{{ end }} {{- if .Values.conveyorPoller.activities }} --activities {{ .Values.conveyorPoller.activities }}{{ end }} {{- if .Values.conveyorPoller.olderThan }} --older-than {{ .Values.conveyorPoller.olderThan }}{{ end }} {{- if .Values.conveyorPoller.activitiesShare }} --activities-share {{ .Values.conveyorPoller.activitiesShare }}{{ end }} {{- if .Values.conveyorPoller.activities }} --activities {{ .Values.conveyorPoller.activities }}{{ end }}"
 {{- with .Values.conveyorPoller.resources }}
           resources:
 {{ toYaml . | trim | indent 12 }}

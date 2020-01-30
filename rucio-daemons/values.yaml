@@ -67,17 +67,6 @@ conveyorTransferSubmitter:
   threads: 1
   activities: "'test1' 'test2'"
   sleepTime: 10
-  bulk: 100
-  groupBulk: 1
-  groupPolicy: rule
-  mock: 'False'
-  sourceStrategy: None
-  excludeRses: None
-  includeRses: None
-  rses: None
-  excludeActivities: None
-  maxSources: 4
-  retryOtherFts: False
   resources:
     limits:
       memory: "200Mi"
