@@ -1,5 +1,5 @@
 {{- if gt .Values.reaperCount 0.0 -}}
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Release.Name }}-reaper
