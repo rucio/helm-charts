@@ -32,7 +32,7 @@ traceServer:
 
 image:
   repository: rucio/rucio-server
-  tag: release-1.18.0
+  tag: release-1.21.12
   pullPolicy: Always
 
 service:
@@ -51,13 +51,18 @@ oidc:
   enable: False
 
 httpd_config:
-  mpm_mode: "prefork"
-  start_servers: "1"
-  min_spare_servers: "1"
-  max_spare_servers: "1"
-  server_limit: "1"
-  max_clients: "10"
-  max_requests_per_child: "200"
+  mpm_mode: "event"
+  keep_alive: "On"
+  keep_alive_timeout: "5"
+  max_keep_alive_requests: "128"
+  server_limit: "10"
+  start_servers: "4"
+  thread_limit: "128"
+  threads_per_child: "128"
+  min_spare_threads: "256"
+  max_spare_threads: "512"
+  max_request_workers: "1280"
+  max_connections_per_child: "2048"
 
 ingress:
   enabled: false
