@@ -47,6 +47,9 @@ strategy:
 
 minReadySeconds: 5
 
+oidc:
+  enable: False
+
 httpd_config:
   mpm_mode: "prefork"
   start_servers: "1"
