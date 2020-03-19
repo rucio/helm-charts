@@ -34,6 +34,11 @@ spec:
           name: {{ template "rucio.fullname" . }}-auth-aliases
       - name: httpdlog
         emptyDir: {}
+{{- if .Values.oidc.enable }}
+      - name: idpsecrets
+        secret:
+          secretName: {{ .Release.Name }}-idpsecrets
+{{- end}}
 {{- if .Values.authServer.useSSL }}
       - name: hostcert
         secret:
@@ -70,6 +75,11 @@ spec:
             - name: aliases
               mountPath: /opt/rucio/etc/aliases.conf
               subPath: aliases.conf
+{{- if .Values.oidc.enable }}
+            - name: idpsecrets
+              mountPath: /opt/rucio/etc/idpsecrets.json
+              subPath: idpsecrets.json
+{{- end}}
 {{- if .Values.authServer.useSSL }}
             - name: hostcert
               mountPath: /etc/grid-security/hostcert.pem
