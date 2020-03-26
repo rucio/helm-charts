@@ -91,11 +91,11 @@ spec:
               value: {{ .Values.proxy.rucioProxy }}
             - name: RUCIO_AUTH_PROXY
               value: {{ .Values.proxy.rucioAuthProxy }}
-{{- if .Values.rucioProxyScheme }}
+{{- if .Values.proxy.rucioProxyScheme }}
             - name: RUCIO_PROXY_SCHEME
               value: {{ .Values.proxy.rucioProxyScheme }}
 {{- end }}
-{{- if .Values.rucioAuthProxyScheme }}
+{{- if .Values.proxy.rucioAuthProxyScheme }}
             - name: RUCIO_AUTH_PROXY_SCHEME
               value: {{ .Values.proxy.rucioAuthProxyScheme }}
 {{- end }}
