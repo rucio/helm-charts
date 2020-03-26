@@ -18,7 +18,7 @@ service:
 
 image:
   repository: rucio/rucio-ui
-  tag: release-1.19.8
+  tag: release-1.21.12
   pullPolicy: Always
 
 strategy:
@@ -31,7 +31,9 @@ minReadySeconds: 5
 
 proxy:
   rucioProxy: ""
+  #rucioProxyScheme: "https"
   rucioAuthProxy: ""
+  #rucioAuthProxyScheme: "https"
   
 ingress:
   enabled: true
@@ -45,7 +47,7 @@ ingress:
 
 ## values used to configure apache
 httpd_config:
-  # mpm_mode: "worker"
+  # mpm_mode: "event"
   # start_servers: "1"
   # min_spare_threads: "1"
   # max_spare_threads: "20"

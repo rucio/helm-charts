@@ -91,6 +91,14 @@ spec:
               value: {{ .Values.proxy.rucioProxy }}
             - name: RUCIO_AUTH_PROXY
               value: {{ .Values.proxy.rucioAuthProxy }}
+{{- if .Values.rucioProxyScheme }}
+            - name: RUCIO_PROXY_SCHEME
+              value: {{ .Values.proxy.rucioProxyScheme }}
+{{- end }}
+{{- if .Values.rucioAuthProxyScheme }}
+            - name: RUCIO_AUTH_PROXY_SCHEME
+              value: {{ .Values.proxy.rucioAuthProxyScheme }}
+{{- end }}
             - name: RUCIO_DEFINE_ALIASES
               value: "True"
             - name: RUCIO_LOG_FORMAT
