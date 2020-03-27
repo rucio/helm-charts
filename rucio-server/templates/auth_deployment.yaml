@@ -59,6 +59,19 @@ spec:
           - name: httpdlog
             mountPath: /var/log/httpd
 {{- end }}
+{{- if .Values.monitoring.enabled }}
+        - name: apache-exporter
+          image: rucio/apache_exporter
+{{- if .Values.authServer.useSSL }}
+          args: ['--telemetry.address=:{{ .Values.monitoring.exporterPort }}', '--scrape_uri=https://localhost/server-status/?auto', '--insecure']
+{{ else }}
+          args: ['--telemetry.address=:{{ .Values.monitoring.exporterPort }}']
+{{ end }}
+          ports:
+            - name: metrics
+              containerPort: {{ .Values.monitoring.exporterPort }}
+              protocol: TCP
+{{- end }}
         - name: {{ .Chart.Name }}-auth
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -92,6 +105,13 @@ spec:
               subPath: ca.pem
 {{- end }}
           env:
+            {{- range $key, $val := .Values.httpd_config }}
+            - name: RUCIO_HTTPD_{{ $key | upper }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "rucio.fullname" $ }}.cfg
+                  key: {{ $key }}
+            {{- end}}
             {{- range $key1, $val1 := .Values.config }}
             {{- range $key2, $val2 := $val1}}
             - name: RUCIO_CFG_{{ $key1 | upper }}_{{ $key2 | upper }}

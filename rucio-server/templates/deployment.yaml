@@ -45,6 +45,15 @@ spec:
           - name: httpdlog
             mountPath: /var/log/httpd
 {{- end }}
+{{- if .Values.monitoring.enabled }}
+        - name: apache-exporter
+          image: rucio/apache_exporter
+          args: ['--telemetry.address=:{{ .Values.monitoring.exporterPort }}']
+          ports:
+            - name: metrics
+              containerPort: {{ .Values.monitoring.exporterPort }}
+              protocol: TCP
+{{- end }}
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
