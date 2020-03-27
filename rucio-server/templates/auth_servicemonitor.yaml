@@ -1,0 +1,30 @@
+{{- if .Values.monitoring.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+{{- if .Values.monitoring.labels }}
+  labels:
+{{ toYaml .Values.monitoring.labels | indent 4}}
+{{- end }}
+  name: {{ template "rucio.fullname" . }}-auth
+{{- if .Values.monitoring.namespace }}
+  namespace: {{ .Values.monitoring.namespace }}
+{{- end }}
+spec:
+  endpoints:
+  - targetPort: {{ .Values.monitoring.exporterPort }}
+ {{- if .Values.monitoring.interval }}
+    interval: {{ .Values.monitoring.interval }}
+ {{- end }}
+ {{- if .Values.monitoring.telemetryPath }}
+    path: {{ .Values.monitoring.telemetryPath }}
+ {{- end }}
+  jobLabel: {{ template "rucio.fullname" . }}-prometheus-exporter-auth
+  namespaceSelector:
+    matchNames:
+    - {{ .Release.Namespace }}
+  selector:
+    matchLabels:
+      app: {{ template "rucio.name" . }}-auth
+      release: {{ .Release.Name }}
+{{ end }}
