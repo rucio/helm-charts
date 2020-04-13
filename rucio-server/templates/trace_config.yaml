@@ -9,5 +9,5 @@ metadata:
     heritage: "{{ .Release.Service }}"
 data:
   aliases.conf: |+
-    WSGIScriptAlias /traces /usr/lib/python2.7/site-packages/rucio/web/rest/trace.py
-    WSGIScriptAlias /ping /usr/lib/python2.7/site-packages/rucio/web/rest/ping.py
+    WSGIScriptAlias /traces /usr/lib/python2.7/site-packages/rucio/web/rest/trace.py process-group=rucio application-group=rucio
+    WSGIScriptAlias /ping /usr/lib/python2.7/site-packages/rucio/web/rest/ping.py process-group=rucio application-group=rucio
