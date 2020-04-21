@@ -93,11 +93,6 @@ spec:
               mountPath: {{ $val.mountPath }}
               subPath: {{ $val.subPath }}
             {{- end}}
-{{- if .Values.oidc.enable }}
-            - name: idpsecrets
-              mountPath: /opt/rucio/etc/idpsecrets.json
-              subPath: idpsecrets.json
-{{- end}}
 {{- if .Values.authServer.useSSL }}
             - name: hostcert
               mountPath: /etc/grid-security/hostcert.pem
