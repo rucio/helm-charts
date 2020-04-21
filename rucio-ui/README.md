@@ -53,7 +53,7 @@ $ helm install --name my-release -f values.yaml rucio/rucio-ui
 
 The webui server currently only work with an nginx ingress controller as it supported TLS passthrough to the backend pods. For the ingress itself only the hosts have to be configured in `values.yaml`.
 
-For the pods to work the host certificate/key together with the CA file have to be stored as secrets in the cluster. The chart expects three secrets: `webui-host-key`, `webui-host-key` and `webui-cafile`.
+For the pods to work the host certificate/key together with the CA file have to be stored as secrets in the cluster. The chart expects three secrets: `{my-release}-hostcert`,  `{my-release}-hostkey` and `{my-release}-cafile`.
 
 ## Uninstalling the Chart
 
