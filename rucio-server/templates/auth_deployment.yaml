@@ -34,11 +34,11 @@ spec:
           name: {{ template "rucio.fullname" . }}-auth-aliases
       - name: httpdlog
         emptyDir: {}
-{{- if .Values.oidc.enable }}
-      - name: idpsecrets
+      {{- range $key, $val := .Values.additionalSecrets }}
+      - name: {{ $key }}
         secret:
-          secretName: {{ .Release.Name }}-idpsecrets
-{{- end}}
+          secretName: {{ $.Release.Name }}-{{ $val.secretName }}
+      {{- end}}
 {{- if .Values.authServer.useSSL }}
       - name: hostcert
         secret:
@@ -88,6 +88,11 @@ spec:
             - name: aliases
               mountPath: /opt/rucio/etc/aliases.conf
               subPath: aliases.conf
+            {{- range $key, $val := .Values.additionalSecrets }}
+            - name: {{ $key }}
+              mountPath: {{ $val.mountPath }}
+              subPath: {{ $val.subPath }}
+            {{- end}}
 {{- if .Values.oidc.enable }}
             - name: idpsecrets
               mountPath: /opt/rucio/etc/idpsecrets.json

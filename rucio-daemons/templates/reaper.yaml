@@ -37,6 +37,11 @@ spec:
       - name: ca-volume
         secret:
           secretName: {{ .Release.Name }}-rucio-ca-bundle-reaper
+      {{- range $key, $val := .Values.additionalSecrets }}
+      - name: {{ $key }}
+        secret:
+          secretName: {{ $.Release.Name }}-{{ $val.secretName }}
+      {{- end}}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -46,6 +51,11 @@ spec:
               mountPath: /opt/proxy
             - name: ca-volume
               mountPath: /etc/grid-security/certificates
+            {{- range $key, $val := .Values.additionalSecrets }}
+            - name: {{ $key }}
+              mountPath: {{ $val.mountPath }}
+              subPath: {{ $val.subPath }}
+            {{- end}}
           env:
             {{- range $key1, $val1 := .Values.config }}
             {{- range $key2, $val2 := $val1}}

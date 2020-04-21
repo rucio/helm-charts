@@ -31,11 +31,11 @@ spec:
       volumes:
       - name: httpdlog
         emptyDir: {}
-{{- if .Values.oidc.enable }}
-      - name: idpsecrets
+      {{- range $key, $val := .Values.additionalSecrets }}
+      - name: {{ $key }}
         secret:
-          secretName: {{ .Release.Name }}-idpsecrets
-{{- end}}
+          secretName: {{ $.Release.Name }}-{{ $val.secretName }}
+      {{- end}}
       containers:
 {{- if .Values.exposeErrorLogs.server }}
         - name: httpd-error-log
@@ -60,11 +60,11 @@ spec:
           volumeMounts:
           - name: httpdlog
             mountPath: /var/log/httpd
-{{- if .Values.oidc.enable }}
-          - name: idpsecrets
-            mountPath: /opt/rucio/etc/idpsecrets.json
-            subPath: idpsecrets.json
-{{- end}}
+          {{- range $key, $val := .Values.additionalSecrets }}
+          - name: {{ $key }}
+            mountPath: {{ $val.mountPath }}
+            subPath: {{ $val.subPath }}
+          {{- end}}
           ports:
             - name: http
               containerPort: 80

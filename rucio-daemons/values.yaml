@@ -225,6 +225,11 @@ ftsRenewal:
   voms: "cms:/cms/Role=production"
   servers: "https://fts3-devel.cern.ch:8446,https://cmsfts3.fnal.gov:8446,https://fts3.cern.ch:8446,https://lcgfts3.gridpp.rl.ac.uk:8446,https://fts3-pilot.cern.ch:8446"
 
+additionalSecrets: {}
+  # gcssecret:
+  #   secretName: gcssecret
+  #   mountPath: /opt/rucio/etc/gcs_rucio.json
+  #   subPath: gcs_rucio.json
 
 ## common config values used to configure the Rucio daemons
 config:
