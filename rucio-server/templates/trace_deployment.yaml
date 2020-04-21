@@ -34,6 +34,11 @@ spec:
           name: {{ template "rucio.fullname" . }}-trace-aliases
       - name: httpdlog
         emptyDir: {}
+      {{- range $key, $val := .Values.additionalSecrets }}
+      - name: {{ $key }}
+        secret:
+          secretName: {{ $.Release.Name }}-{{ $val.secretName }}
+      {{- end}}
 {{- if .Values.traceServer.useSSL }}
       - name: hostcert
         secret:
@@ -93,6 +98,11 @@ spec:
             - name: cafile
               mountPath: /etc/grid-security/ca.pem
               subPath: ca.pem
+            {{- range $key, $val := .Values.additionalSecrets }}
+            - name: {{ $key }}
+              mountPath: {{ $val.mountPath }}
+              subPath: {{ $val.subPath }}
+            {{- end}}
 {{- end }}
           env:
             {{- range $key, $val := .Values.httpd_config }}
