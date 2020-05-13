@@ -73,7 +73,7 @@ spec:
             - name: RUCIO_DAEMON
               value: "conveyor-fts-throttler"
             - name: RUCIO_DAEMON_ARGS
-              value: "{{- if .Values.conveyorthrottler.threads }} --total-threads {{ .Values.conveyorthrottler.threads }}{{ end }} {{- if .Values.conveyorthrottler.fullMode }} --full-mode{{ end }}"
+              value: "{{- if .Values.conveyorThrottler.threads }} --total-threads {{ .Values.conveyorThrottler.threads }}{{ end }} {{- if .Values.conveyorThrottler.fullMode }} --full-mode{{ end }}"
 {{- with .Values.conveyorThrottler.resources }}
           resources:
 {{ toYaml . | trim | indent 12 }}
