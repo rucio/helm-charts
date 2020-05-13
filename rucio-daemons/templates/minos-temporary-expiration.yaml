@@ -1,4 +1,4 @@
-{{- if gt .Values.minosTemporaryExpiration-temporary-expirationCount 0.0 -}}
+{{- if gt .Values.minosTemporaryExpirationCount 0.0 -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
