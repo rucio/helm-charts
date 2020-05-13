@@ -1,4 +1,4 @@
-{{- if gt .Values.conveyorTransferReceiverCount 0.0 -}}
+{{- if gt .Values.conveyorReceiverCount 0.0 -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -9,7 +9,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  replicas: {{ .Values.conveyorTransferReceiverCount }}
+  replicas: {{ .Values.conveyorReceiverCount }}
   selector:
     matchLabels:
       app: {{ template "rucio.name" . }}
@@ -73,20 +73,20 @@ spec:
             - name: RUCIO_DAEMON
               value: "conveyor-receiver"
             - name: RUCIO_DAEMON_ARGS
-              value: "{{- if .Values.conveyorTransferReceiver.threads }} --total-threads {{ .Values.conveyorTransferReceiver.threads }}{{ end }} {{- if .Values.conveyorTransferReceiver.fullMode }} --full-mode{{ end }}"
-{{- with .Values.conveyorTransferReceiver.resources }}
+              value: "{{- if .Values.conveyorReceiver.threads }} --total-threads {{ .Values.conveyorReceiver.threads }}{{ end }} {{- if .Values.conveyorReceiver.fullMode }} --full-mode{{ end }}"
+{{- with .Values.conveyorReceiver.resources }}
           resources:
 {{ toYaml . | trim | indent 12 }}
 {{ end }}
-{{- with .Values.conveyorTransferReceiver.nodeSelector }}
+{{- with .Values.conveyorReceiver.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
 {{- end }}
-{{- with .Values.conveyorTransferReceiver.affinity }}
+{{- with .Values.conveyorReceiver.affinity }}
       affinity:
 {{ toYaml . | indent 8 }}
 {{- end }}
-{{- with .Values.conveyorTransferReceiver.tolerations }}
+{{- with .Values.conveyorReceiver.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
 {{- end }}
