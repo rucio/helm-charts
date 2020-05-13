@@ -2,7 +2,24 @@ apiVersion: v1
 entries:
   rucio-daemons:
   - apiVersion: v1
-    created: "2020-04-22T08:22:07.75150652+02:00"
+    created: "2020-05-13T16:12:38.211593312+02:00"
+    description: A Helm chart to deploy daemons for Rucio
+    digest: 4435b280903edb4f4d16db0ce1c73254adcf79cf17a63fd4c276fd04dbbcd69d
+    home: https://rucio.cern.ch/
+    keywords:
+    - data-management
+    - science
+    maintainers:
+    - email: thomas.beermann@cern.ch
+      name: Thomas Beermann
+    name: rucio-daemons
+    sources:
+    - https://github.com/rucio/rucio
+    urls:
+    - rucio-daemons-1.1.0.tgz
+    version: 1.1.0
+  - apiVersion: v1
+    created: "2020-05-13T16:12:38.209631442+02:00"
     description: A Helm chart to deploy daemons for Rucio
     digest: 35dc73a4f1f05a2d9f1a7838c7e555728d228c37664a75c7f3c5a1997fbf4c9d
     home: https://rucio.cern.ch/
@@ -19,7 +36,7 @@ entries:
     - rucio-daemons-1.0.8.tgz
     version: 1.0.8
   - apiVersion: v1
-    created: "2020-04-22T08:22:07.749567406+02:00"
+    created: "2020-05-13T16:12:38.208682006+02:00"
     description: A Helm chart to deploy daemons for Rucio
     digest: 88cd172668743ac6ae8ece39fba178d160c48c66e35da1beb2de86e9e3a9fd6a
     home: https://rucio.cern.ch/
@@ -36,7 +53,7 @@ entries:
     - rucio-daemons-1.0.7.tgz
     version: 1.0.7
   - apiVersion: v1
-    created: "2020-04-22T08:22:07.747733779+02:00"
+    created: "2020-05-13T16:12:38.207750223+02:00"
     description: A Helm chart to deploy daemons for Rucio
     digest: 165098865d462cf26e844d8fd8c454bb4a9d66abdc37661234c92e8ef741c2a1
     home: https://rucio.cern.ch/
@@ -53,7 +70,7 @@ entries:
     - rucio-daemons-1.0.6.tgz
     version: 1.0.6
   - apiVersion: v1
-    created: "2020-04-22T08:22:07.745957103+02:00"
+    created: "2020-05-13T16:12:38.207054629+02:00"
     description: A Helm chart to deploy daemons for Rucio
     digest: 94561a45a4206d784f28b06d194b501303cff0f4acb6ee6c1e9bc830f5fe0cde
     home: https://rucio.cern.ch/
@@ -70,7 +87,7 @@ entries:
     - rucio-daemons-1.0.5.tgz
     version: 1.0.5
   - apiVersion: v1
-    created: "2020-04-22T08:22:07.744103958+02:00"
+    created: "2020-05-13T16:12:38.206381062+02:00"
     description: A Helm chart to deploy daemons for Rucio
     digest: 2c3d276cc06657be0542bbd9ac2ca86fe7ff9de86b86448fa8825367e1014f46
     home: https://rucio.cern.ch/
@@ -87,7 +104,7 @@ entries:
     - rucio-daemons-1.0.4.tgz
     version: 1.0.4
   - apiVersion: v1
-    created: "2020-04-22T08:22:07.742281813+02:00"
+    created: "2020-05-13T16:12:38.2056443+02:00"
     description: A Helm chart to deploy daemons for Rucio
     digest: 176f5f419a4581b06c16f8f953789baf300a521d931d59f312a9f77423a1a840
     home: https://rucio.cern.ch/
@@ -104,7 +121,7 @@ entries:
     - rucio-daemons-1.0.2.tgz
     version: 1.0.2
   - apiVersion: v1
-    created: "2020-04-22T08:22:07.740483525+02:00"
+    created: "2020-05-13T16:12:38.205004937+02:00"
     description: A Helm chart to deploy daemons for Rucio
     digest: 54151974839cfcf8c47ffbdedcb2a706b57f4d30450de48aacbe0ae2d905e5cf
     home: https://rucio.cern.ch/
@@ -121,7 +138,7 @@ entries:
     - rucio-daemons-1.0.1.tgz
     version: 1.0.1
   - apiVersion: v1
-    created: "2020-04-22T08:22:07.737842303+02:00"
+    created: "2020-05-13T16:12:38.204360706+02:00"
     description: A Helm chart to deploy daemons for Rucio
     digest: e4a5d4f4c36c20a85707b2918f197a389b20aec917bfaf088329c2f5bd6aa287
     home: https://rucio.cern.ch/
@@ -138,7 +155,7 @@ entries:
     - rucio-daemons-1.0.0.tgz
     version: 1.0.0
   - apiVersion: v1
-    created: "2020-04-22T08:22:07.735373083+02:00"
+    created: "2020-05-13T16:12:38.20369206+02:00"
     description: A Helm chart to deploy daemons for Rucio
     digest: 5ed0ce230af4fa01f4943147a219ecde06f2fa574562aa3bc5926429be83932f
     home: https://rucio.cern.ch/
@@ -155,7 +172,7 @@ entries:
     - rucio-daemons-0.9.0.tgz
     version: 0.9.0
   - apiVersion: v1
-    created: "2020-04-22T08:22:07.733990824+02:00"
+    created: "2020-05-13T16:12:38.203028437+02:00"
     description: A Helm chart to deploy daemons for Rucio
     digest: a33b9e91d7b5f64638070b0d5a8a1b2c20bc90d1ccf39a80503cd51fda7c1f81
     home: https://rucio.cern.ch/
@@ -172,7 +189,7 @@ entries:
     - rucio-daemons-0.8.0.tgz
     version: 0.8.0
   - apiVersion: v1
-    created: "2020-04-22T08:22:07.732476993+02:00"
+    created: "2020-05-13T16:12:38.200668966+02:00"
     description: A Helm chart to deploy daemons for Rucio
     digest: a50a1f6af9aa448b72a48ebe7bd7f0dc0c520c8abda43c0eb2f9cf339d5b8081
     home: https://rucio.cern.ch/
@@ -189,7 +206,7 @@ entries:
     - rucio-daemons-0.7.0.tgz
     version: 0.7.0
   - apiVersion: v1
-    created: "2020-04-22T08:22:07.731090275+02:00"
+    created: "2020-05-13T16:12:38.19991581+02:00"
     description: A Helm chart to deploy daemons for Rucio
     digest: 7739c1f78ac635d34645def8a20b2d6195a9c5a404550a6ca5ec66d2d80a42b9
     home: https://rucio.cern.ch/
@@ -206,7 +223,7 @@ entries:
     - rucio-daemons-0.6.0.tgz
     version: 0.6.0
   - apiVersion: v1
-    created: "2020-04-22T08:22:07.729800523+02:00"
+    created: "2020-05-13T16:12:38.199169585+02:00"
     description: A Helm chart to deploy daemons for Rucio
     digest: 4ed98662589f483fd903f271d54232e99359ffebcdb4a3bae93eebcce812c29b
     home: https://rucio.cern.ch/
@@ -223,7 +240,7 @@ entries:
     - rucio-daemons-0.5.0.tgz
     version: 0.5.0
   - apiVersion: v1
-    created: "2020-04-22T08:22:07.728694211+02:00"
+    created: "2020-05-13T16:12:38.198528069+02:00"
     description: A Helm chart to deploy daemons for Rucio
     digest: be9288fd19c3b91284e3324221e0dc0db423500b2c286647f2018cacaa51f3a0
     home: https://rucio.cern.ch/
@@ -240,7 +257,7 @@ entries:
     - rucio-daemons-0.4.0.tgz
     version: 0.4.0
   - apiVersion: v1
-    created: "2020-04-22T08:22:07.727478219+02:00"
+    created: "2020-05-13T16:12:38.197953301+02:00"
     description: A Helm chart to deploy daemons for Rucio
     digest: 54fb8c13767885f5c50f01b0e007ba09d7c0178aa6bc0c80d5dc4c9e673a372f
     home: https://rucio.cern.ch/
@@ -257,7 +274,7 @@ entries:
     - rucio-daemons-0.3.0.tgz
     version: 0.3.0
   - apiVersion: v1
-    created: "2020-04-22T08:22:07.726453123+02:00"
+    created: "2020-05-13T16:12:38.197310658+02:00"
     description: A Helm chart to deploy daemons for Rucio
     digest: 3e8282c672517a731148666cc0eef04beedeb5792e08628ed7f6d770e36e6954
     home: https://rucio.cern.ch/
@@ -274,7 +291,7 @@ entries:
     - rucio-daemons-0.2.0.tgz
     version: 0.2.0
   - apiVersion: v1
-    created: "2020-04-22T08:22:07.725099834+02:00"
+    created: "2020-05-13T16:12:38.196692836+02:00"
     description: A Helm chart to deploy daemons for Rucio
     digest: 985288846abe9ec9970d8cd61dce24917dcb3dbf6d80b4534d240044a1e3325c
     home: https://rucio.cern.ch/
@@ -293,7 +310,7 @@ entries:
   rucio-probes:
   - apiVersion: v1
     appVersion: "1.0"
-    created: "2020-04-22T08:22:07.754396357+02:00"
+    created: "2020-05-13T16:12:38.212043117+02:00"
     description: Helm chart for probe cron jobs needed in Rucio
     digest: e501e110863141bb076b07901c217b2058f8b851f00a134153b2a9081768ac29
     name: rucio-probes
@@ -302,7 +319,7 @@ entries:
     version: 0.1.0
   rucio-server:
   - apiVersion: v1
-    created: "2020-04-22T08:22:07.764613295+02:00"
+    created: "2020-05-13T16:12:38.218201355+02:00"
     description: A Helm chart to deploy servers for Rucio
     digest: e3f31fe3e7c1ee514b3edd44843cce15596053396337e197cdc46245bb28a6b5
     home: https://rucio.cern.ch/
@@ -319,7 +336,7 @@ entries:
     - rucio-server-0.8.2.tgz
     version: 0.8.2
   - apiVersion: v1
-    created: "2020-04-22T08:22:07.763471299+02:00"
+    created: "2020-05-13T16:12:38.217559329+02:00"
     description: A Helm chart to deploy servers for Rucio
     digest: 787c9e742417e8afa803b9f4ad41f77303d30a93c22919e0d146e756307d3e3c
     home: https://rucio.cern.ch/
@@ -336,7 +353,7 @@ entries:
     - rucio-server-0.8.0.tgz
     version: 0.8.0
   - apiVersion: v1
-    created: "2020-04-22T08:22:07.762384158+02:00"
+    created: "2020-05-13T16:12:38.216917276+02:00"
     description: A Helm chart to deploy servers for Rucio
     digest: cc9361c0874e5fd098db985208e9c55f5c89870c80d6ed730dbeb50321f24af7
     home: https://rucio.cern.ch/
@@ -353,7 +370,7 @@ entries:
     - rucio-server-0.7.2.tgz
     version: 0.7.2
   - apiVersion: v1
-    created: "2020-04-22T08:22:07.761309902+02:00"
+    created: "2020-05-13T16:12:38.216292724+02:00"
     description: A Helm chart to deploy servers for Rucio
     digest: 15935ea5c4007f312e6629c02d4e6c47a035500fd6f324b1ac0f1b5bd673a2c5
     home: https://rucio.cern.ch/
@@ -370,7 +387,7 @@ entries:
     - rucio-server-0.7.1.tgz
     version: 0.7.1
   - apiVersion: v1
-    created: "2020-04-22T08:22:07.760186678+02:00"
+    created: "2020-05-13T16:12:38.215722119+02:00"
     description: A Helm chart to deploy servers for Rucio
     digest: 71f4aeadab9d0ace0ca0c1a3eda329369b97e550c251daa4d03398d8eed00a8f
     home: https://rucio.cern.ch/
@@ -387,7 +404,7 @@ entries:
     - rucio-server-0.7.0.tgz
     version: 0.7.0
   - apiVersion: v1
-    created: "2020-04-22T08:22:07.759019432+02:00"
+    created: "2020-05-13T16:12:38.215062392+02:00"
     description: A Helm chart to deploy servers for Rucio
     digest: 0c2e8ca282393685dcdfcd67ff647eff131bcdff26d998c614b1bfb49c2897ef
     home: https://rucio.cern.ch/
@@ -404,7 +421,7 @@ entries:
     - rucio-server-0.6.0.tgz
     version: 0.6.0
   - apiVersion: v1
-    created: "2020-04-22T08:22:07.758028511+02:00"
+    created: "2020-05-13T16:12:38.214503807+02:00"
     description: A Helm chart to deploy servers for Rucio
     digest: 09b60b8793ac81c456c3b43d1aa39e07d52fe94adec37b99c99eaa522ba03d1c
     home: https://rucio.cern.ch/
@@ -421,7 +438,7 @@ entries:
     - rucio-server-0.5.0.tgz
     version: 0.5.0
   - apiVersion: v1
-    created: "2020-04-22T08:22:07.757054789+02:00"
+    created: "2020-05-13T16:12:38.213944398+02:00"
     description: A Helm chart to deploy servers for Rucio
     digest: 5ca6ef4e12d0c159f52148c5a119afd71904244e1e93ce29718bd7b26dbecda4
     home: https://rucio.cern.ch/
@@ -438,7 +455,7 @@ entries:
     - rucio-server-0.4.0.tgz
     version: 0.4.0
   - apiVersion: v1
-    created: "2020-04-22T08:22:07.756188294+02:00"
+    created: "2020-05-13T16:12:38.213365395+02:00"
     description: A Helm chart to deploy servers for Rucio
     digest: 268aa745ee08da3c82715b9969abc1ccf7945be15b6efe8c3db0d4389c3ffe1a
     home: https://rucio.cern.ch/
@@ -455,7 +472,7 @@ entries:
     - rucio-server-0.3.0.tgz
     version: 0.3.0
   - apiVersion: v1
-    created: "2020-04-22T08:22:07.755258142+02:00"
+    created: "2020-05-13T16:12:38.212555646+02:00"
     description: A Helm chart to deploy servers for Rucio
     digest: 6ec924ad207d29ae89909e3b4678f3f885e6bb4ddbc5f311a1cdf9353220b379
     home: https://rucio.cern.ch/
@@ -473,7 +490,7 @@ entries:
     version: 0.2.0
   rucio-ui:
   - apiVersion: v1
-    created: "2020-04-22T08:22:07.768507676+02:00"
+    created: "2020-05-13T16:12:38.219668919+02:00"
     description: A Helm chart to deploy webui servers for Rucio
     digest: 7963078af1c8b9ebb2914e73fbd9fbc1b0fd1d5f6fb67e2d72be8d3755d152ed
     home: https://rucio.cern.ch/
@@ -490,7 +507,7 @@ entries:
     - rucio-ui-0.2.2.tgz
     version: 0.2.2
   - apiVersion: v1
-    created: "2020-04-22T08:22:07.76764453+02:00"
+    created: "2020-05-13T16:12:38.219182432+02:00"
     description: A Helm chart to deploy webui servers for Rucio
     digest: 0135d22c794eb37739d2a4ad4a4fa64eff52551822239aecad4515f642c57d86
     home: https://rucio.cern.ch/
@@ -507,7 +524,7 @@ entries:
     - rucio-ui-0.2.1.tgz
     version: 0.2.1
   - apiVersion: v1
-    created: "2020-04-22T08:22:07.766948049+02:00"
+    created: "2020-05-13T16:12:38.21866677+02:00"
     description: A Helm chart to deploy webui servers for Rucio
     digest: ae764ad024eb1048ae88e9f167623c28dd57a294afd1e84e052b9eabfda2d980
     home: https://rucio.cern.ch/
@@ -523,4 +540,4 @@ entries:
     urls:
     - rucio-ui-0.1.0.tgz
     version: 0.1.0
-generated: "2020-04-22T08:22:07.722719548+02:00"
+generated: "2020-05-13T16:12:38.195849516+02:00"
