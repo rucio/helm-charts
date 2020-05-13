@@ -1,0 +1,88 @@
+{{- if gt .Values.oauthManagerCount 0.0 -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-oauth-manager
+  labels:
+    app: {{ template "rucio.name" . }}
+    chart: {{ template "rucio.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.oauthManagerCount }}
+  selector:
+    matchLabels:
+      app: {{ template "rucio.name" . }}
+      release: {{ .Release.Name }}
+  strategy:
+    type: {{ .Values.strategy.type }}
+{{- if eq .Values.strategy.type "RollingUpdate" }}
+    {{- with .Values.strategy.rollingUpdate }}
+    rollingUpdate:
+{{ toYaml . | trim | indent 6 }}
+    {{- end }}
+{{- end }}
+  minReadySeconds: {{ .Values.minReadySeconds }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "rucio.name" . }}
+        release: {{ .Release.Name }}
+        rucio-daemon: oauth-manager
+    spec:
+      volumes:
+      - name: ca-volume
+        secret:
+          secretName: {{ .Release.Name }}-rucio-ca-bundle
+      {{- range $key, $val := .Values.additionalSecrets }}
+      - name: {{ $key }}
+        secret:
+          secretName: {{ $.Release.Name }}-{{ $val.secretName }}
+      {{- end}}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - name: ca-volume
+              mountPath: /opt/certs
+          {{- range $key, $val := .Values.additionalSecrets }}
+            - name: {{ $key }}
+              mountPath: {{ $val.mountPath }}
+              subPath: {{ $val.subPath }}
+          {{- end}}
+          ports:
+            - name: metrics
+              containerPort: 8080
+              protocol: TCP
+          env:
+            {{- range $key1, $val1 := .Values.config }}
+            {{- range $key2, $val2 := $val1}}
+            - name: RUCIO_CFG_{{ $key1 | upper }}_{{ $key2 | upper }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "rucio.fullname" $ }}.cfg
+                  key: {{ $key1 }}_{{ $key2 }}
+            {{- end}}
+            {{- end}}
+            - name: RUCIO_DAEMON
+              value: "oauth-manager"
+            - name: RUCIO_DAEMON_ARGS
+              value: "{{- if .Values.oauthManager.threads }} --threads {{ .Values.oauthManager.threads }}{{ end }} {{- if .Values.oauthManager.loopRate }} --loop-rate {{ .Values.oauthManager.loopRate }}{{ end }} {{- if .Values.oauthManager.maxRows }} --max-rows {{ .Values.oauthManager.maxRows }}{{ end }}"
+{{- with .Values.oauthManager.resources }}
+          resources:
+{{ toYaml . | trim | indent 12 }}
+{{ end }}
+{{- with .Values.oauthManager.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.oauthManager.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.oauthManager.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{ end }}
