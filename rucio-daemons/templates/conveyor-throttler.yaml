@@ -1,4 +1,4 @@
-{{- if gt .Values.conveyorTransferThrottlerCount 0.0 -}}
+{{- if gt .Values.conveyorThrottlerCount 0.0 -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -9,7 +9,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  replicas: {{ .Values.conveyorTransferThrottlerCount }}
+  replicas: {{ .Values.conveyorThrottlerCount }}
   selector:
     matchLabels:
       app: {{ template "rucio.name" . }}
@@ -73,20 +73,20 @@ spec:
             - name: RUCIO_DAEMON
               value: "conveyor-fts-throttler"
             - name: RUCIO_DAEMON_ARGS
-              value: "{{- if .Values.conveyorTransferthrottler.threads }} --total-threads {{ .Values.conveyorTransferthrottler.threads }}{{ end }} {{- if .Values.conveyorTransferthrottler.fullMode }} --full-mode{{ end }}"
-{{- with .Values.conveyorTransferThrottler.resources }}
+              value: "{{- if .Values.conveyorthrottler.threads }} --total-threads {{ .Values.conveyorthrottler.threads }}{{ end }} {{- if .Values.conveyorthrottler.fullMode }} --full-mode{{ end }}"
+{{- with .Values.conveyorThrottler.resources }}
           resources:
 {{ toYaml . | trim | indent 12 }}
 {{ end }}
-{{- with .Values.conveyorTransferThrottler.nodeSelector }}
+{{- with .Values.conveyorThrottler.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
 {{- end }}
-{{- with .Values.conveyorTransferThrottler.affinity }}
+{{- with .Values.conveyorThrottler.affinity }}
       affinity:
 {{ toYaml . | indent 8 }}
 {{- end }}
-{{- with .Values.conveyorTransferThrottler.tolerations }}
+{{- with .Values.conveyorThrottler.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
 {{- end }}
