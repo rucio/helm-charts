@@ -14,6 +14,7 @@ judgeCleanerCount: 0
 judgeEvaluatorCount: 0
 judgeInjectorCount: 0
 judgeRepairerCount: 0
+oauthManagerCount: 0
 undertakerCount: 0
 reaperCount: 0
 reaper2Count: 0
@@ -149,6 +150,16 @@ judgeInjector:
       cpu: "700m"
 
 judgeRepairer:
+  threads: 1
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "200Mi"
+      cpu: "700m"
+
+oauthManager:
   threads: 1
   resources:
     limits:
