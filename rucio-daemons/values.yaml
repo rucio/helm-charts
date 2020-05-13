@@ -6,9 +6,12 @@
 abacusAccountCount: 0
 abacusCollectionReplicaCount: 0
 abacusRseCount: 0
+automatixCount: 0
 conveyorTransferSubmitterCount: 0
 conveyorPollerCount: 0
 conveyorFinisherCount: 0
+conveyorReceiverCount: 0
+conveyorThrottlerCount: 0
 hermesCount: 0
 judgeCleanerCount: 0
 judgeEvaluatorCount: 0
@@ -21,6 +24,7 @@ reaper2Count: 0
 transmogrifierCount: 0
 tracerKronosCount: 0
 minosCount: 0
+minosTemporaryExpirationCount: 0
 necromancerCount: 0
 
 image:
@@ -76,6 +80,16 @@ abacusRse:
       memory: "200Mi"
       cpu: "700m"
 
+automatix:
+  threads: 1
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "100Mi"
+      cpu: "100m"
+
 conveyorTransferSubmitter:
   threads: 1
   activities: "'test1' 'test2'"
@@ -99,6 +113,26 @@ conveyorPoller:
       cpu: "700m"
 
 conveyorFinisher:
+  threads: 1
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "200Mi"
+      cpu: "700m"
+
+conveyorReceiver:
+  threads: 1
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "200Mi"
+      cpu: "700m"
+
+conveyorThrottler:
   threads: 1
   resources:
     limits:
@@ -229,6 +263,16 @@ tracerKronos:
       cpu: "700m"
 
 minos:
+  threads: 1
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "100Mi"
+      cpu: "100m"
+
+minosTemporaryExpiration:
   threads: 1
   resources:
     limits:
