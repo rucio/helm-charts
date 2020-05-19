@@ -283,7 +283,6 @@ minosTemporaryExpiration:
       cpu: "100m"
 
 necromancer:
-  threads: 1
   resources:
     limits:
       memory: "200Mi"
