@@ -1,3 +1,4 @@
+{{- if gt .Values.traceReplicaCount 0.0 -}}
 apiVersion: v1
 kind: Service
 metadata:
@@ -7,13 +8,18 @@ metadata:
     chart: {{ template "rucio.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+{{- with .Values.traceService.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
 spec:
-  type: {{ $.Values.service.type }}
+  type: {{ .Values.traceService.type }}
   ports:
-    - port: {{ $.Values.traceServer.servicePort }}
-      targetPort: {{ $.Values.traceServer.targetPort }}
-      protocol: TCP
-      name: {{ $.Values.traceServer.portName }}
+    - port: {{ .Values.traceService.port }}
+      targetPort: {{ .Values.traceService.targetPort }}
+      protocol: {{ .Values.traceService.protocol }}
+      name: {{ .Values.traceService.name }}
   selector:
     app: {{ template "rucio.name" . }}-trace
     release: {{ .Release.Name }}
+{{- end }}

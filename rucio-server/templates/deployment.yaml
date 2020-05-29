@@ -1,3 +1,4 @@
+{{- if gt .Values.replicaCount 0.0 -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -36,6 +37,17 @@ spec:
         secret:
           secretName: {{ $.Release.Name }}-{{ $val.secretName }}
       {{- end}}
+{{- if .Values.useSSL.server }}
+      - name: hostcert
+        secret:
+          secretName: {{ .Release.Name }}-server-hostcert
+      - name: hostkey
+        secret:
+          secretName: {{ .Release.Name }}-server-hostkey
+      - name: cafile
+        secret:
+          secretName: {{ .Release.Name }}-server-cafile
+{{- end }}
       containers:
 {{- if .Values.exposeErrorLogs.server }}
         - name: httpd-error-log
@@ -48,7 +60,11 @@ spec:
 {{- if .Values.monitoring.enabled }}
         - name: apache-exporter
           image: rucio/apache_exporter
+{{- if .Values.useSSL.server }}
+          args: ['--telemetry.address=:{{ .Values.monitoring.exporterPort }}', '--scrape_uri=https://localhost/server-status/?auto', '--insecure']
+{{ else }}
           args: ['--telemetry.address=:{{ .Values.monitoring.exporterPort }}']
+{{ end }}
           ports:
             - name: metrics
               containerPort: {{ .Values.monitoring.exporterPort }}
@@ -65,9 +81,23 @@ spec:
             mountPath: {{ $val.mountPath }}
             subPath: {{ $val.subPath }}
           {{- end}}
+{{- if .Values.useSSL.server }}
+          - name: hostcert
+            mountPath: /etc/grid-security/hostcert.pem
+            subPath: hostcert.pem
+          - name: hostkey
+            mountPath: /etc/grid-security/hostkey.pem
+            subPath: hostkey.pem
+          - name: cafile
+            mountPath: /etc/grid-security/ca.pem
+            subPath: ca.pem
+{{- end }}
           ports:
             - name: http
               containerPort: 80
+              protocol: TCP
+            - name: https
+              containerPort: 443
               protocol: TCP
           livenessProbe:
             httpGet:
@@ -93,8 +123,17 @@ spec:
                   key: {{ $key1 }}_{{ $key2 }}
             {{- end}}
             {{- end}}
+{{- if .Values.useSSL.server }}
+            - name: RUCIO_ENABLE_SSL
+              value: "True"
+            - name: OPENSSL_ALLOW_PROXY_CERTS
+              value: "1"
+{{- else }}
             - name: RUCIO_ENABLE_SSL
               value: "False"
+{{- end }}
+            - name: RUCIO_SERVER_TYPE
+              value: "api"
             - name: RUCIO_LOG_FORMAT
               value: '[%{%Y-%m-%d %H:%M:%S}t]\t%v\t%h\t%{X-Forwarded-For}i\t%{X-Rucio-RequestId}i\t%>s\t%I\t%B\t%D\t\"%r\"\t\"%{X-Rucio-Auth-Token}i\"\t\"%{User-Agent}i\"\t%{X-Rucio-Script}i'
           resources:
@@ -111,3 +150,4 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
+{{- end }}
