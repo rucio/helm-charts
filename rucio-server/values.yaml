@@ -3,10 +3,10 @@
 # Declare variables to be passed into your templates.
 
 ## replicaCount gives the number of server pods to run
-replicaCount: 2
+replicaCount: 0
 ## authReplicaCount gives the number of authentication server pods to run
-authReplicaCount: 1
-traceReplicaCount: 1
+authReplicaCount: 0
+traceReplicaCount: 0
 
 # When set, run extra busybox containers in the relevant pods to also expose the error logs
 exposeErrorLogs:
@@ -14,30 +14,43 @@ exposeErrorLogs:
   authServer: True
   traceServer: True
 
-authServer:
-  # Run the authorization server on port 443 instead of 80 and accept X509 certificates and proxies
-  useSSL: false
-  # For SSL, change to 443, https, and https respectively
-  servicePort: 80
-  targetPort: http
-  portName: http
-
-traceServer:
-  # Run the authorization server on port 443 instead of 80 and accept X509 certificates and proxies
-  useSSL: false
-  # For SSL, change to 443, https, and https respectively
-  servicePort: 80
-  targetPort: http
-  portName: http
+# Set to true to enable SSL support for the different servers to be able accept X509 certificates and proxies.
+useSSL:
+  server: false
+  authServer: false
+  traceServer: false
 
 image:
   repository: rucio/rucio-server
-  tag: release-1.21.12
+  tag: release-1.22.6.post1
   pullPolicy: Always
 
 service:
-  type: NodePort
+  type: ClusterIP
   port: 80
+  targetPort: 80
+  protocol: TCP
+  name: http
+  annotations: {}
+    # loadbalancer.openstack.org/network-id: "<id>"
+    # service.beta.kubernetes.io/openstack-internal-load-balancer: "true"
+    # loadbalancer.openstack.org/cascade-delete: "false"
+
+authService:
+  type: ClusterIP
+  port: 80
+  targetPort: 80
+  protocol: TCP
+  name: http
+  annotations: {}
+
+traceService:
+  type: ClusterIP
+  port: 80
+  targetPort: 80
+  protocol: TCP
+  name: http
+  annotations: {}
 
 strategy:
   type: RollingUpdate

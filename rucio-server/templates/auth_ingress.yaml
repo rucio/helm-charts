@@ -1,3 +1,4 @@
+{{- if gt .Values.authReplicaCount 0.0 -}}
 {{- if .Values.authIngress.enabled -}}
 {{- $fullName := include "rucio.fullname" . -}}
 {{- $ingressPath := .Values.authIngress.path -}}
@@ -33,6 +34,7 @@ spec:
           - path: {{ $ingressPath }}
             backend:
               serviceName: {{ $fullName }}-auth
-              servicePort: {{ $.Values.authServer.servicePort }}
+              servicePort: {{ $.Values.authService.port }}
   {{- end }}
+{{- end }}
 {{- end }}

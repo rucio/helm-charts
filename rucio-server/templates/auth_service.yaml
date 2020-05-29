@@ -1,3 +1,4 @@
+{{- if gt .Values.authReplicaCount 0.0 -}}
 apiVersion: v1
 kind: Service
 metadata:
@@ -7,13 +8,18 @@ metadata:
     chart: {{ template "rucio.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+{{- with .Values.authService.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
 spec:
-  type: {{ $.Values.service.type }}
+  type: {{ .Values.authService.type }}
   ports:
-    - port: {{ $.Values.authServer.servicePort }}
-      targetPort: {{ $.Values.authServer.targetPort }}
-      protocol: TCP
-      name: {{ $.Values.authServer.portName }}
+    - port: {{ .Values.authService.port }}
+      targetPort: {{ .Values.authService.targetPort }}
+      protocol: {{ .Values.authService.protocol }}
+      name: {{ .Values.authService.name }}
   selector:
     app: {{ template "rucio.name" . }}-auth
     release: {{ .Release.Name }}
+{{- end }}
