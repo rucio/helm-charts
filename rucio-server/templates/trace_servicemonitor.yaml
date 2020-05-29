@@ -1,3 +1,4 @@
+{{- if gt .Values.traceReplicaCount 0.0 -}}
 {{- if .Values.monitoring.enabled }}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
@@ -27,4 +28,5 @@ spec:
     matchLabels:
       app: {{ template "rucio.name" . }}-trace
       release: {{ .Release.Name }}
+{{ end }}
 {{ end }}

@@ -1,3 +1,4 @@
+{{- if gt .Values.authReplicaCount 0.0 -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -29,9 +30,6 @@ spec:
         release: {{ .Release.Name }}
     spec:
       volumes:
-      - name: aliases
-        configMap:
-          name: {{ template "rucio.fullname" . }}-auth-aliases
       - name: httpdlog
         emptyDir: {}
       {{- range $key, $val := .Values.additionalSecrets }}
@@ -39,16 +37,16 @@ spec:
         secret:
           secretName: {{ $.Release.Name }}-{{ $val.secretName }}
       {{- end}}
-{{- if .Values.authServer.useSSL }}
+{{- if .Values.useSSL.authServer }}
       - name: hostcert
         secret:
-          secretName: {{ .Release.Name }}-hostcert
+          secretName: {{ .Release.Name }}-auth-hostcert
       - name: hostkey
         secret:
-          secretName: {{ .Release.Name }}-hostkey
+          secretName: {{ .Release.Name }}-auth-hostkey
       - name: cafile
         secret:
-          secretName: {{ .Release.Name }}-cafile
+          secretName: {{ .Release.Name }}-auth-cafile
 {{- end }}
       containers:
 {{- if .Values.exposeErrorLogs.authServer }}
@@ -62,7 +60,7 @@ spec:
 {{- if .Values.monitoring.enabled }}
         - name: apache-exporter
           image: rucio/apache_exporter
-{{- if .Values.authServer.useSSL }}
+{{- if .Values.useSSL.authServer }}
           args: ['--telemetry.address=:{{ .Values.monitoring.exporterPort }}', '--scrape_uri=https://localhost/server-status/?auto', '--insecure']
 {{ else }}
           args: ['--telemetry.address=:{{ .Values.monitoring.exporterPort }}']
@@ -85,15 +83,12 @@ spec:
           volumeMounts:
             - name: httpdlog
               mountPath: /var/log/httpd
-            - name: aliases
-              mountPath: /opt/rucio/etc/aliases.conf
-              subPath: aliases.conf
             {{- range $key, $val := .Values.additionalSecrets }}
             - name: {{ $key }}
               mountPath: {{ $val.mountPath }}
               subPath: {{ $val.subPath }}
             {{- end}}
-{{- if .Values.authServer.useSSL }}
+{{- if .Values.useSSL.authServer }}
             - name: hostcert
               mountPath: /etc/grid-security/hostcert.pem
               subPath: hostcert.pem
@@ -121,7 +116,7 @@ spec:
                   key: {{ $key1 }}_{{ $key2 }}
             {{- end}}
             {{- end}}
-{{- if .Values.authServer.useSSL }}
+{{- if .Values.useSSL.authServer }}
             - name: RUCIO_ENABLE_SSL
               value: "True"
             - name: OPENSSL_ALLOW_PROXY_CERTS
@@ -130,8 +125,8 @@ spec:
             - name: RUCIO_ENABLE_SSL
               value: "False"
 {{- end }}
-            - name: RUCIO_DEFINE_ALIASES
-              value: "True"
+            - name: RUCIO_SERVER_TYPE
+              value: "auth"
             - name: RUCIO_LOG_FORMAT
               value: '[%{%Y-%m-%d %H:%M:%S}t]\t%v\t%h\t%{X-Forwarded-For}i\t%{X-Rucio-RequestId}i\t%>s\t%I\t%B\t%D\t\"%r\"\t\"%{X-Rucio-Auth-Token}i\"\t\"%{User-Agent}i\"\t%{X-Rucio-Script}i'
           resources:
@@ -148,3 +143,4 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
+{{- end }}
