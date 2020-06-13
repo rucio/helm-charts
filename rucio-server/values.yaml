@@ -14,6 +14,14 @@ exposeErrorLogs:
   authServer: True
   traceServer: True
 
+errorLogsExporterResources:
+  limits:
+   cpu: 30m
+   memory: 50Mi
+  requests:
+   cpu: 20m
+   memory: 20Mi
+
 # Set to true to enable SSL support for the different servers to be able accept X509 certificates and proxies.
 useSSL:
   server: false
@@ -69,6 +77,15 @@ monitoring:
   namespace: monitoring
   labels:
     release: prometheus-operator
+
+metricsExporterResources:
+  limits:
+   cpu: 30m
+   memory: 50Mi
+  requests:
+   cpu: 20m
+   memory: 20Mi
+
 
 additionalSecrets: {}
   # gcssecret:
