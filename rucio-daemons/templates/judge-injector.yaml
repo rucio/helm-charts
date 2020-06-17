@@ -30,6 +30,9 @@ spec:
         release: {{ .Release.Name }}
         rucio-daemon: judge-injector
     spec:
+    {{- if .Values.serviceAccountName }}
+      serviceAccountName: {{ .Values.serviceAccountName }}
+    {{- end }}
       volumes:
       - name: proxy-volume
         secret:
@@ -70,6 +73,14 @@ spec:
                   key: {{ $key1 }}_{{ $key2 }}
             {{- end}}
             {{- end}}
+
+
+            {{- range $key1, $val1 := .Values.optional_config }}
+            - name: {{ $key1 | upper }}
+              value: "{{ $val1  }}"
+            {{- end}}
+
+
             - name: RUCIO_DAEMON
               value: "judge-injector"
             - name: RUCIO_DAEMON_ARGS

@@ -29,6 +29,9 @@ spec:
         app: {{ template "rucio.name" . }}-auth
         release: {{ .Release.Name }}
     spec:
+    {{- if .Values.serviceAccountName }}
+      serviceAccountName: {{ .Values.serviceAccountName }}
+    {{- end }}
       volumes:
       - name: httpdlog
         emptyDir: {}
@@ -80,6 +83,15 @@ spec:
             - name: https
               containerPort: 443
               protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /ping
+{{- if .Values.useSSL.server }}
+              scheme: HTTPS
+              port: 443
+{{- else }}
+              port: 80
+{{- end }}
           volumeMounts:
             - name: httpdlog
               mountPath: /var/log/httpd
@@ -116,6 +128,13 @@ spec:
                   key: {{ $key1 }}_{{ $key2 }}
             {{- end}}
             {{- end}}
+
+            {{- range $key1, $val1 := .Values.optional_config }}
+            - name: {{ $key1 | upper }}
+              value: "{{ $val1  }}"
+            {{- end}}
+
+
 {{- if .Values.useSSL.authServer }}
             - name: RUCIO_ENABLE_SSL
               value: "True"

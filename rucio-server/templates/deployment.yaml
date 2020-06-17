@@ -29,6 +29,9 @@ spec:
         app: {{ template "rucio.name" . }}
         release: {{ .Release.Name }}
     spec:
+    {{- if .Values.serviceAccountName }}
+      serviceAccountName: {{ .Values.serviceAccountName }}
+    {{- end }}
       volumes:
       - name: httpdlog
         emptyDir: {}
@@ -106,7 +109,12 @@ spec:
           livenessProbe:
             httpGet:
               path: /ping
+{{- if .Values.useSSL.server }}
+              scheme: HTTPS
+              port: 443
+{{- else }}
               port: 80
+{{- end }}
             initialDelaySeconds: 10
             periodSeconds: 20
             timeoutSeconds: 5
@@ -127,6 +135,12 @@ spec:
                   key: {{ $key1 }}_{{ $key2 }}
             {{- end}}
             {{- end}}
+
+            {{- range $key1, $val1 := .Values.optional_config }}
+            - name: {{ $key1 | upper }}
+              value: "{{ $val1  }}"
+            {{- end}}
+
 {{- if .Values.useSSL.server }}
             - name: RUCIO_ENABLE_SSL
               value: "True"
