@@ -73,14 +73,10 @@ spec:
                   key: {{ $key1 }}_{{ $key2 }}
             {{- end}}
             {{- end}}
-
-
             {{- range $key1, $val1 := .Values.optional_config }}
             - name: {{ $key1 | upper }}
               value: "{{ $val1  }}"
             {{- end}}
-
-
             - name: RUCIO_DAEMON
               value: "conveyor-finisher"
             - name: RUCIO_DAEMON_ARGS

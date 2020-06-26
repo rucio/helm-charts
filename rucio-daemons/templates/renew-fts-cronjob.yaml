@@ -42,7 +42,6 @@ spec:
                 - name: {{ $key1 | upper }}
                   value: "{{ $val1  }}"
                 {{- end}}
-
                 - name: RUCIO_VO
                   value: {{ .Values.ftsRenewal.vo | quote }}
                 - name: RUCIO_FTS_VOMS

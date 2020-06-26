@@ -135,12 +135,10 @@ spec:
                   key: {{ $key1 }}_{{ $key2 }}
             {{- end}}
             {{- end}}
-
             {{- range $key1, $val1 := .Values.optional_config }}
             - name: {{ $key1 | upper }}
               value: "{{ $val1  }}"
             {{- end}}
-
 {{- if .Values.useSSL.server }}
             - name: RUCIO_ENABLE_SSL
               value: "True"
