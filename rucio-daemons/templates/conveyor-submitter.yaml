@@ -30,6 +30,9 @@ spec:
         release: {{ .Release.Name }}
         rucio-daemon: conveyor-submitter
     spec:
+    {{- if .Values.serviceAccountName }}
+      serviceAccountName: {{ .Values.serviceAccountName }}
+    {{- end }}
       volumes:
       - name: proxy-volume
         secret:
@@ -69,6 +72,10 @@ spec:
                   name: {{ template "rucio.fullname" $ }}.cfg
                   key: {{ $key1 }}_{{ $key2 }}
             {{- end}}
+            {{- end}}
+            {{- range $key1, $val1 := .Values.optional_config }}
+            - name: {{ $key1 | upper }}
+              value: "{{ $val1  }}"
             {{- end}}
             - name: RUCIO_DAEMON
               value: "conveyor-submitter"

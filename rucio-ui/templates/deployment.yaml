@@ -28,6 +28,9 @@ spec:
         app: {{ template "rucio.name" . }}
         release: {{ .Release.Name }}
     spec:
+    {{- if .Values.serviceAccountName }}
+      serviceAccountName: {{ .Values.serviceAccountName }}
+    {{- end }}
       volumes:
       - name: aliases
         configMap:
@@ -97,6 +100,12 @@ spec:
                   key: {{ $key1 }}_{{ $key2 }}
             {{- end}}
             {{- end}}
+
+            {{- range $key1, $val1 := .Values.optional_config }}
+            - name: {{ $key1 | upper }}
+              value: "{{ $val1  }}"
+            {{- end}}
+
             - name: RUCIO_PROXY
               value: {{ .Values.proxy.rucioProxy }}
             - name: RUCIO_AUTH_PROXY

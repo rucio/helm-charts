@@ -38,6 +38,10 @@ spec:
                   mountPath: /opt/rucio/keys/
 {{- end }}
               env:
+                {{- range $key1, $val1 := .Values.optional_config }}
+                - name: {{ $key1 | upper }}
+                  value: "{{ $val1  }}"
+                {{- end}}
                 - name: RUCIO_VO
                   value: {{ .Values.ftsRenewal.vo | quote }}
                 - name: RUCIO_FTS_VOMS
