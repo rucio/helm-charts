@@ -74,9 +74,9 @@ spec:
             - name: metrics
               containerPort: {{ .Values.monitoring.exporterPort }}
               protocol: TCP
-{{- end }}
           resources:
 {{ toYaml .Values.metricsExporterResources | indent 12 }}
+{{- end }}
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
