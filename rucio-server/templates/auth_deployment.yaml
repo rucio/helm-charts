@@ -86,7 +86,7 @@ spec:
           livenessProbe:
             httpGet:
               path: /ping
-{{- if .Values.useSSL.server }}
+{{- if .Values.useSSL.authServer }}
               scheme: HTTPS
               port: 443
 {{- else }}
