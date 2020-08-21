@@ -45,6 +45,11 @@ spec:
         secret:
           secretName: {{ $.Release.Name }}-{{ $val.secretName }}
       {{- end}}
+      {{- range $key, $val := .Values.persistentVolumes }}
+      - name: {{ $key }}
+        persistentVolumeClaim:
+          claimName: {{ $val.name }}
+      {{- end}}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -58,6 +63,10 @@ spec:
             - name: {{ $key }}
               mountPath: {{ $val.mountPath }}
               subPath: {{ $val.subPath }}
+            {{- end}}
+            {{- range $key, $val := .Values.persistentVolumes }}
+            - name: {{ $key }}
+              mountPath: {{ $val.mountPath }}
             {{- end}}
           ports:
             - name: metrics

@@ -42,6 +42,11 @@ spec:
           secret:
             secretName: {{ .Release.Name }}-hermes-key
 {{ end }}
+        {{- range $key, $val := .Values.persistentVolumes }}
+        - name: {{ $key }}
+          persistentVolumeClaim:
+            claimName: {{ $val.name }}
+        {{- end}}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -53,6 +58,10 @@ spec:
             - name: userkey
               mountPath: /opt/rucio/keys/
 {{ end }}
+            {{- range $key, $val := .Values.persistentVolumes }}
+            - name: {{ $key }}
+              mountPath: {{ $val.mountPath }}
+            {{- end}}
           ports:
             - name: metrics
               containerPort: 8080

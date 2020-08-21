@@ -51,6 +51,11 @@ spec:
         secret:
           secretName: {{ $.Release.Name }}-{{ $val.secretName }}
       {{- end}}
+      {{- range $key, $val := .Values.persistentVolumes }}
+      - name: {{ $key }}
+        persistentVolumeClaim:
+          claimName: {{ $val.name }}
+      {{- end}}
       containers:
 {{- if .Values.exposeErrorLogs }}
         - name: httpd-error-log
@@ -89,6 +94,10 @@ spec:
             - name: {{ $key }}
               mountPath: {{ $val.mountPath }}
               subPath: {{ $val.subPath }}
+            {{- end}}
+            {{- range $key, $val := .Values.persistentVolumes }}
+            - name: {{ $key }}
+              mountPath: {{ $val.mountPath }}
             {{- end}}
           env:
             {{- range $key1, $val1 := .Values.config }}
