@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: jobber-config
+  name: {{ include "rucio-probes.fullname" . }}-jobber-config
 data:
   dot-jobber.yaml: |+
     ## This is your jobfile: use it to tell Jobber what jobs you want it to
