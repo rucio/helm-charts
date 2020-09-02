@@ -35,7 +35,7 @@ spec:
       volumes:
         - configMap:
             defaultMode: 0644
-            name: jobber-config
+            name: {{ include "rucio-probes.fullname" . }}-jobber-config
           name: config
 {{- if hasKey .Values.probeSettings "ftsProxySecret" }}
         - name: proxy-volume
