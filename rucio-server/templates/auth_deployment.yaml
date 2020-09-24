@@ -40,6 +40,11 @@ spec:
         secret:
           secretName: {{ $.Release.Name }}-{{ $val.secretName }}
       {{- end}}
+      {{- range $key, $val := .Values.persistentVolumes }}
+      - name: {{ $key }}
+        persistentVolumeClaim:
+          claimName: {{ $val.name }}
+      {{- end}}
 {{- if .Values.useSSL.authServer }}
       - name: hostcert
         secret:
@@ -99,6 +104,10 @@ spec:
             - name: {{ $key }}
               mountPath: {{ $val.mountPath }}
               subPath: {{ $val.subPath }}
+            {{- end}}
+            {{- range $key, $val := .Values.persistentVolumes }}
+            - name: {{ $key }}
+              mountPath: {{ $val.mountPath }}
             {{- end}}
 {{- if .Values.useSSL.authServer }}
             - name: hostcert

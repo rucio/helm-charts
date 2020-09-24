@@ -23,6 +23,11 @@ spec:
             secret:
               secretName: {{ .Release.Name }}-fts-key
 {{- end }}
+{{- range $key, $val := .Values.persistentVolumes }}
+          - name: {{ $key }}
+            persistentVolumeClaim:
+              claimName: {{ $val.name }}
+{{- end}}
           containers:
             - name: renew-fts-cron
               image: "{{ .Values.ftsRenewal.image.repository }}:{{ .Values.ftsRenewal.image.tag }}"
@@ -37,6 +42,10 @@ spec:
                 - name: userkey
                   mountPath: /opt/rucio/keys/
 {{- end }}
+{{- range $key, $val := .Values.persistentVolumes }}
+                - name: {{ $key }}
+                  mountPath: {{ $val.mountPath }}
+{{- end}}
               env:
                 {{- range $key1, $val1 := .Values.optional_config }}
                 - name: {{ $key1 | upper }}
