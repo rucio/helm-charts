@@ -89,7 +89,7 @@ spec:
             - name: RUCIO_DAEMON
               value: "automatix"
             - name: RUCIO_DAEMON_ARGS
-              value: "{{- if .Values.automatix.threads }} --threads-per-process {{ .Values.automatix.threads }}{{ end }} {{- if .Values.automatix.inputFile }} --input-files {{ .Values.automatix.inputFile }}{{ end }}"
+              value: "{{- if .Values.automatix.threads }} --threads-per-process {{ .Values.automatix.threads }}{{ end }} {{- if .Values.automatix.inputFile }} --input-file {{ .Values.automatix.inputFile }}{{ end }}"
 {{- with .Values.automatix.resources }}
           resources:
 {{ toYaml . | trim | indent 12 }}
