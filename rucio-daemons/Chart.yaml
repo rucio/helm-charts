@@ -1,5 +1,5 @@
 name: rucio-daemons
-version: 1.2.2
+version: 1.2.3
 apiVersion: v1
 description: A Helm chart to deploy daemons for Rucio
 keywords:
