@@ -40,6 +40,9 @@ spec:
       - name: ca-volume
         secret:
           secretName: {{ .Release.Name }}-rucio-ca-bundle
+      - name: ca-volume-reaper
+        secret:
+          secretName: {{ .Release.Name }}-rucio-ca-bundle-reaper
       {{- range $key, $val := .Values.additionalSecrets }}
       - name: {{ $key }}
         secret:
@@ -59,6 +62,8 @@ spec:
               mountPath: /opt/proxy
             - name: ca-volume
               mountPath: /opt/certs
+            - name: ca-volume-reaper
+              mountPath: /etc/grid-security/certificates
             {{- range $key, $val := .Values.additionalSecrets }}
             - name: {{ $key }}
               mountPath: {{ $val.mountPath }}
