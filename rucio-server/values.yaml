@@ -86,6 +86,13 @@ metricsExporterResources:
    cpu: 20m
    memory: 20Mi
 
+automaticRestart:
+  enabled: 0
+  image:
+    repository: bitnami/kubectl
+    tag: latest
+    pullPolicy: IfNotPresent
+  schedule: "0 0 * * *"
 
 additionalSecrets: {}
   # gcssecret:
