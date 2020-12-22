@@ -29,6 +29,18 @@ spec:
         app: {{ template "rucio.name" . }}
         release: {{ .Release.Name }}
         rucio-daemon: transmogrifier
+    {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{-if or .Values.podAnnotations .Values.transmogrifier.podAnnotations}}
+      annotations:
+    {{- end }}
+    {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.transmogrifier.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
     spec:
     {{- if .Values.serviceAccountName }}
       serviceAccountName: {{ .Values.serviceAccountName }}
@@ -68,6 +80,10 @@ spec:
             - name: {{ $key }}
               mountPath: {{ $val.mountPath }}
             {{- end}}
+          ports:
+            - name: metrics
+              containerPort: 8080
+              protocol: TCP
           env:
             {{- range $key1, $val1 := .Values.config }}
             {{- range $key2, $val2 := $val1}}
