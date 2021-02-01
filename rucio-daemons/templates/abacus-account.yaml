@@ -29,6 +29,18 @@ spec:
         app: {{ template "rucio.name" . }}
         release: {{ .Release.Name }}
         rucio-daemon: abacus-account
+    {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{-if or .Values.podAnnotations .Values.abacusAccount.podAnnotations}}
+      annotations:
+    {{- end }}
+    {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.abacusAccount.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
     spec:
     {{- if .Values.serviceAccountName }}
       serviceAccountName: {{ .Values.serviceAccountName }}
