@@ -12,6 +12,7 @@ conveyorPollerCount: 0
 conveyorFinisherCount: 0
 conveyorReceiverCount: 0
 conveyorThrottlerCount: 0
+darkReaperCount: 0
 hermesCount: 0
 judgeCleanerCount: 0
 judgeEvaluatorCount: 0
@@ -146,6 +147,22 @@ conveyorReceiver:
 
 conveyorThrottler:
   threads: 1
+  podAnnotations: {}
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "200Mi"
+      cpu: "700m"
+
+darkReaper:
+  workers: 1
+  chunkSize: "10"
+  scheme: ""
+  rses: ""
+  includeRses: ""
+  excludeRses: ""
   podAnnotations: {}
   resources:
     limits:
