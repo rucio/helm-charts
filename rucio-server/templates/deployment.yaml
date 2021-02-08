@@ -125,8 +125,8 @@ spec:
               port: 80
 {{- end }}
             initialDelaySeconds: 10
-            periodSeconds: 20
-            timeoutSeconds: 5
+            periodSeconds: 60 
+            timeoutSeconds: 30 
           env:
             {{- range $key, $val := .Values.httpd_config }}
             - name: RUCIO_HTTPD_{{ $key | upper }}
