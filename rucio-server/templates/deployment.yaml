@@ -22,7 +22,7 @@ spec:
 {{ toYaml . | trim | indent 6 }}
     {{- end }}
 {{- end }}
-  minReadySeconds: {{ .Values.minReadySeconds }}
+  minReadySeconds: {{ .Values.minReadySeconds.server }}
   template:
     metadata:
       labels:
@@ -124,9 +124,9 @@ spec:
 {{- else }}
               port: 80
 {{- end }}
-            initialDelaySeconds: 10
-            periodSeconds: 20
-            timeoutSeconds: 5
+            initialDelaySeconds: {{ .Values.livenessProbe.server.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.server.periodSeconds }}
+            timeoutSeconds: {{ .Values.livenessProbe.server.timeoutSeconds }}
           env:
             {{- range $key, $val := .Values.httpd_config }}
             - name: RUCIO_HTTPD_{{ $key | upper }}
@@ -158,9 +158,9 @@ spec:
               value: "False"
 {{- end }}
             - name: RUCIO_SERVER_TYPE
-              value: "api"
+              value: "{{ .Values.serverType.server }}"
             - name: RUCIO_LOG_FORMAT
-              value: '[%{%Y-%m-%d %H:%M:%S}t]\t%v\t%h\t%{X-Forwarded-For}i\t%{X-Rucio-RequestId}i\t%>s\t%I\t%B\t%D\t\"%r\"\t\"%{X-Rucio-Auth-Token}i\"\t\"%{User-Agent}i\"\t%{X-Rucio-Script}i'
+              value: '{{ .Values.logFormat.server }}'
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}

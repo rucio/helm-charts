@@ -22,7 +22,7 @@ spec:
 {{ toYaml . | trim | indent 6 }}
     {{- end }}
 {{- end }}
-  minReadySeconds: {{ .Values.minReadySeconds }}
+  minReadySeconds: {{ .Values.minReadySeconds.authServer }}
   template:
     metadata:
       labels:
@@ -97,6 +97,9 @@ spec:
 {{- else }}
               port: 80
 {{- end }}
+            initialDelaySeconds: {{ .Values.livenessProbe.authServer.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.authServer.periodSeconds }}
+            timeoutSeconds: {{ .Values.livenessProbe.authServer.timeoutSeconds }}
           volumeMounts:
             - name: httpdlog
               mountPath: /var/log/httpd
@@ -151,9 +154,9 @@ spec:
               value: "False"
 {{- end }}
             - name: RUCIO_SERVER_TYPE
-              value: "auth"
+              value: "{{ .Values.serverType.authServer }}"
             - name: RUCIO_LOG_FORMAT
-              value: '[%{%Y-%m-%d %H:%M:%S}t]\t%v\t%h\t%{X-Forwarded-For}i\t%{X-Rucio-RequestId}i\t%>s\t%I\t%B\t%D\t\"%r\"\t\"%{X-Rucio-Auth-Token}i\"\t\"%{User-Agent}i\"\t%{X-Rucio-Script}i'
+              value: '{{ .Values.logFormat.authServer }}'
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}
