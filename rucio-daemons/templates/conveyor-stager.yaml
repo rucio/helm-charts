@@ -1,15 +1,15 @@
-{{- if gt .Values.judgeInjectorCount 0.0 -}}
+{{- if gt .Values.conveyorStagerCount 0.0 -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-judge-injector
+  name: {{ .Release.Name }}-conveyor-stager
   labels:
     app: {{ template "rucio.name" . }}
     chart: {{ template "rucio.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  replicas: {{ .Values.judgeInjectorCount }}
+  replicas: {{ .Values.conveyorStagerCount }}
   selector:
     matchLabels:
       app: {{ template "rucio.name" . }}
@@ -28,19 +28,7 @@ spec:
       labels:
         app: {{ template "rucio.name" . }}
         release: {{ .Release.Name }}
-        rucio-daemon: judge-injector
-    {{- with .Values.podLabels }}
-        {{- toYaml . | nindent 8 }}
-    {{- end }}
-    {{- if or .Values.podAnnotations .Values.judgeInjector.podAnnotations}}
-      annotations:
-    {{- end }}
-    {{- with .Values.podAnnotations }}
-        {{- toYaml . | nindent 8 }}
-    {{- end }}
-    {{- with .Values.judgeInjector.podAnnotations }}
-        {{- toYaml . | nindent 8 }}
-    {{- end }}
+        rucio-daemon: conveyor-stager
     spec:
     {{- if .Values.serviceAccountName }}
       serviceAccountName: {{ .Values.serviceAccountName }}
@@ -71,15 +59,15 @@ spec:
               mountPath: /opt/proxy
             - name: ca-volume
               mountPath: /opt/certs
-            {{- range $key, $val := .Values.additionalSecrets }}
+          {{- range $key, $val := .Values.additionalSecrets }}
             - name: {{ $key }}
               mountPath: {{ $val.mountPath }}
               subPath: {{ $val.subPath }}
-            {{- end}}
-            {{- range $key, $val := .Values.persistentVolumes }}
+          {{- end}}
+          {{- range $key, $val := .Values.persistentVolumes }}
             - name: {{ $key }}
               mountPath: {{ $val.mountPath }}
-            {{- end}}
+          {{- end}}
           ports:
             - name: metrics
               containerPort: 8080
@@ -99,22 +87,22 @@ spec:
               value: "{{ $val1  }}"
             {{- end}}
             - name: RUCIO_DAEMON
-              value: "judge-injector"
+              value: "conveyor-stager"
             - name: RUCIO_DAEMON_ARGS
-              value: "--threads {{ .Values.judgeInjector.threads }}"
-{{- with .Values.judgeInjector.resources }}
+              value: "{{- if .Values.conveyorStager.threads }} --total-threads {{ .Values.conveyorStager.threads }}{{ end }} {{- if .Values.conveyorStager.bulk }} --bulk {{ .Values.conveyorStager.bulk }}{{ end }} {{- if .Values.conveyorStager.bulk }} --bulk {{ .Values.conveyorStager.bulk }}{{ end }} {{- if .Values.conveyorStager.sleepTime }} --sleep-time {{ .Values.conveyorStager.sleepTime }}{{ end }} {{- if .Values.conveyorStager.activities }} --activities {{ .Values.conveyorStager.activities }}{{ end }}"
+{{- with .Values.conveyorStager.resources }}
           resources:
 {{ toYaml . | trim | indent 12 }}
 {{ end }}
-{{- with .Values.judgeInjector.nodeSelector }}
+{{- with .Values.conveyorStager.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
 {{- end }}
-{{- with .Values.judgeInjector.affinity }}
+{{- with .Values.conveyorStager.affinity }}
       affinity:
 {{ toYaml . | indent 8 }}
 {{- end }}
-{{- with .Values.judgeInjector.tolerations }}
+{{- with .Values.conveyorStager.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
 {{- end }}

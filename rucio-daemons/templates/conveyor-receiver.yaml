@@ -29,6 +29,18 @@ spec:
         app: {{ template "rucio.name" . }}
         release: {{ .Release.Name }}
         rucio-daemon: conveyor-receiver
+    {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- if or .Values.podAnnotations .Values.conveyorReceiver.podAnnotations}}
+      annotations:
+    {{- end }}
+    {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.conveyorReceiver.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
     spec:
     {{- if .Values.serviceAccountName }}
       serviceAccountName: {{ .Values.serviceAccountName }}

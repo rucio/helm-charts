@@ -30,7 +30,7 @@ useSSL:
 
 image:
   repository: rucio/rucio-server
-  tag: release-1.22.6.post1
+  tag: release-1.24.3
   pullPolicy: Always
 
 service:
@@ -66,7 +66,34 @@ strategy:
     maxSurge: 1
     maxUnavailable: 1
 
-minReadySeconds: 5
+minReadySeconds:
+  server: 5
+  authServer: 5
+  traceServer: 5
+
+livenessProbe:
+  server:
+    initialDelaySeconds: 10
+    periodSeconds: 20
+    timeoutSeconds: 5
+  authServer:
+    initialDelaySeconds: 10
+    periodSeconds: 20
+    timeoutSeconds: 5
+  traceServer:
+    initialDelaySeconds: 10
+    periodSeconds: 20
+    timeoutSeconds: 5
+
+serverType:
+  server: api
+  authServer: auth
+  traceServer: trace
+
+logFormat:
+  server: '[%{%Y-%m-%d %H:%M:%S}t]\t%v\t%h\t%{X-Forwarded-For}i\t%{X-Rucio-RequestId}i\t%>s\t%I\t%B\t%D\t\"%r\"\t\"%{X-Rucio-Auth-Token}i\"\t\"%{User-Agent}i\"\t%{X-Rucio-Script}i'
+  authServer: '[%{%Y-%m-%d %H:%M:%S}t]\t%v\t%h\t%{X-Forwarded-For}i\t%{X-Rucio-RequestId}i\t%>s\t%I\t%B\t%D\t\"%r\"\t\"%{X-Rucio-Auth-Token}i\"\t\"%{User-Agent}i\"\t%{X-Rucio-Script}i'
+  traceServer: '[%{%Y-%m-%d %H:%M:%S}t]\t%v\t%h\t%{X-Forwarded-For}i\t%{X-Rucio-RequestId}i\t%>s\t%I\t%B\t%D\t\"%r\"\t\"%{X-Rucio-Auth-Token}i\"\t\"%{User-Agent}i\"\t%{X-Rucio-Script}i'
 
 monitoring:
   enabled: false
@@ -86,6 +113,13 @@ metricsExporterResources:
    cpu: 20m
    memory: 20Mi
 
+automaticRestart:
+  enabled: 0
+  image:
+    repository: bitnami/kubectl
+    tag: latest
+    pullPolicy: IfNotPresent
+  schedule: "0 0 * * *"
 
 additionalSecrets: {}
   # gcssecret:

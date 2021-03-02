@@ -1,0 +1,19 @@
+{{- if .Values.automaticRestart.enabled -}}
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{ .Release.Name }}-automatic-restart
+spec:
+  schedule: "{{ .Values.automaticRestart.schedule }}"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: {{ .Release.Name }}-rucio-restart
+          containers:
+            - name: restart-pods
+              image: "{{ .Values.automaticRestart.image.repository }}:{{ .Values.automaticRestart.image.tag }}"
+              imagePullPolicy: {{ .Values.automaticRestart.image.pullPolicy }}
+              command: ["/bin/sh", "-c", "kubectl get deployment -l app=rucio-daemons -o jsonpath='{.items[*].metadata.name}' | tr ' ' '\n' | xargs -n 1 kubectl rollout restart deployment"]
+          restartPolicy: OnFailure
+{{ end }}

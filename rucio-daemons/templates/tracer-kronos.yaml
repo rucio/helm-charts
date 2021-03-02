@@ -29,6 +29,18 @@ spec:
         app: {{ template "rucio.name" . }}
         release: {{ .Release.Name }}
         rucio-daemon: tracer-kronos
+    {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- if or .Values.podAnnotations .Values.tracerKronos.podAnnotations}}
+      annotations:
+    {{- end }}
+    {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tracerKronos.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
     spec:
     {{- if .Values.serviceAccountName }}
       serviceAccountName: {{ .Values.serviceAccountName }}
@@ -37,6 +49,10 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: metrics
+              containerPort: 8080
+              protocol: TCP
           env:
             {{- range $key1, $val1 := .Values.config }}
             {{- range $key2, $val2 := $val1}}

@@ -1,15 +1,15 @@
-{{- if gt .Values.judgeInjectorCount 0.0 -}}
+{{- if gt .Values.darkReaperCount 0.0 -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-judge-injector
+  name: {{ .Release.Name }}-dark-reaper
   labels:
     app: {{ template "rucio.name" . }}
     chart: {{ template "rucio.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  replicas: {{ .Values.judgeInjectorCount }}
+  replicas: {{ .Values.darkReaperCount }}
   selector:
     matchLabels:
       app: {{ template "rucio.name" . }}
@@ -28,17 +28,17 @@ spec:
       labels:
         app: {{ template "rucio.name" . }}
         release: {{ .Release.Name }}
-        rucio-daemon: judge-injector
+        rucio-daemon: dark-reaper
     {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
     {{- end }}
-    {{- if or .Values.podAnnotations .Values.judgeInjector.podAnnotations}}
+    {{- if or .Values.podAnnotations .Values.darkReaper.podAnnotations }}
       annotations:
     {{- end }}
     {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
     {{- end }}
-    {{- with .Values.judgeInjector.podAnnotations }}
+    {{- with .Values.darkReaper.podAnnotations }}
         {{- toYaml . | nindent 8 }}
     {{- end }}
     spec:
@@ -51,7 +51,7 @@ spec:
           secretName: {{ .Release.Name }}-rucio-x509up
       - name: ca-volume
         secret:
-          secretName: {{ .Release.Name }}-rucio-ca-bundle
+          secretName: {{ .Release.Name }}-rucio-ca-bundle-reaper
       {{- range $key, $val := .Values.additionalSecrets }}
       - name: {{ $key }}
         secret:
@@ -70,7 +70,7 @@ spec:
             - name: proxy-volume
               mountPath: /opt/proxy
             - name: ca-volume
-              mountPath: /opt/certs
+              mountPath: /etc/grid-security/certificates
             {{- range $key, $val := .Values.additionalSecrets }}
             - name: {{ $key }}
               mountPath: {{ $val.mountPath }}
@@ -99,22 +99,28 @@ spec:
               value: "{{ $val1  }}"
             {{- end}}
             - name: RUCIO_DAEMON
-              value: "judge-injector"
+              value: "dark-reaper"
             - name: RUCIO_DAEMON_ARGS
-              value: "--threads {{ .Values.judgeInjector.threads }}"
-{{- with .Values.judgeInjector.resources }}
+              value: '{{- if .Values.darkReaper.workers }} --total-workers {{ .Values.darkReaper.workers }}{{end}} {{- if .Values.darkReaper.scheme }} --scheme {{ .Values.darkReaper.scheme }}{{ end }} {{- if .Values.darkReaper.includeRses }} --include-rses="{{ .Values.darkReaper.includeRses }}"{{ end }} {{- if .Values.darkReaper.rses }} --rses {{ .Values.darkReaper.rses }}{{ end }} {{- if .Values.darkReaper.chunkSize }}  --chunk-size {{ .Values.darkReaper.chunkSize }}{{ end }} {{- if .Values.darkReaper.excludeRses }} --exclude-rses {{ .Values.darkReaper.excludeRses }}{{ end }}'
+            - name: GLOBUS_THREAD_MODEL
+              value: "pthread"
+            - name: RUCIO_HOME
+              value: "/opt/rucio/reaper"
+            - name: X509_USER_PROXY
+              value: "/opt/proxy/x509up"
+{{- with .Values.darkReaper.resources }}
           resources:
 {{ toYaml . | trim | indent 12 }}
 {{ end }}
-{{- with .Values.judgeInjector.nodeSelector }}
+{{- with .Values.darkReaper.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
 {{- end }}
-{{- with .Values.judgeInjector.affinity }}
+{{- with .Values.darkReaper.affinity }}
       affinity:
 {{ toYaml . | indent 8 }}
 {{- end }}
-{{- with .Values.judgeInjector.tolerations }}
+{{- with .Values.darkReaper.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
 {{- end }}

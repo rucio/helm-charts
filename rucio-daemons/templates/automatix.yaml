@@ -29,6 +29,18 @@ spec:
         app: {{ template "rucio.name" . }}
         release: {{ .Release.Name }}
         rucio-daemon: automatix
+    {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- if or .Values.podAnnotations .Values.automatix.podAnnotations}}
+      annotations:
+    {{- end }}
+    {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.automatix.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
     spec:
     {{- if .Values.serviceAccountName }}
       serviceAccountName: {{ .Values.serviceAccountName }}
@@ -40,6 +52,9 @@ spec:
       - name: ca-volume
         secret:
           secretName: {{ .Release.Name }}-rucio-ca-bundle
+      - name: ca-volume-reaper
+        secret:
+          secretName: {{ .Release.Name }}-rucio-ca-bundle-reaper
       {{- range $key, $val := .Values.additionalSecrets }}
       - name: {{ $key }}
         secret:
@@ -59,6 +74,8 @@ spec:
               mountPath: /opt/proxy
             - name: ca-volume
               mountPath: /opt/certs
+            - name: ca-volume-reaper
+              mountPath: /etc/grid-security/certificates
             {{- range $key, $val := .Values.additionalSecrets }}
             - name: {{ $key }}
               mountPath: {{ $val.mountPath }}
@@ -89,7 +106,9 @@ spec:
             - name: RUCIO_DAEMON
               value: "automatix"
             - name: RUCIO_DAEMON_ARGS
-              value: "{{- if .Values.automatix.threads }} --threads-per-process {{ .Values.automatix.threads }}{{ end }} {{- if .Values.automatix.inputFile }} --input-files {{ .Values.automatix.inputFile }}{{ end }}"
+              value: "{{- if .Values.automatix.threads }} --threads-per-process {{ .Values.automatix.threads }}{{ end }} {{- if .Values.automatix.inputFile }} --input-file {{ .Values.automatix.inputFile }}{{ end }}"
+            - name: X509_USER_PROXY
+              value: "/opt/proxy/x509up"
 {{- with .Values.automatix.resources }}
           resources:
 {{ toYaml . | trim | indent 12 }}

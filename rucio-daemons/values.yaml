@@ -12,6 +12,7 @@ conveyorPollerCount: 0
 conveyorFinisherCount: 0
 conveyorReceiverCount: 0
 conveyorThrottlerCount: 0
+darkReaperCount: 0
 hermesCount: 0
 judgeCleanerCount: 0
 judgeEvaluatorCount: 0
@@ -38,10 +39,14 @@ strategy:
     maxSurge: 1
     maxUnavailable: 1
 
+podLabels: {}
+podAnnotations: {}
+
 minReadySeconds: 5
 
 monitoring:
   enabled: false
+  serviceMonitorEnabled: true
   exporterPort: 8080
   targetPort: 8080
   interval: 30s
@@ -52,6 +57,7 @@ monitoring:
 
 abacusAccount:
   threads: 1
+  podAnnotations: {}
   resources:
     limits:
       memory: "200Mi"
@@ -62,6 +68,7 @@ abacusAccount:
 
 abacusCollectionReplica:
   threads: 1
+  podAnnotations: {}
   resources:
     limits:
       memory: "200Mi"
@@ -72,6 +79,7 @@ abacusCollectionReplica:
 
 abacusRse:
   threads: 1
+  podAnnotations: {}
   resources:
     limits:
       memory: "200Mi"
@@ -82,6 +90,7 @@ abacusRse:
 
 automatix:
   threads: 1
+  podAnnotations: {}
   resources:
     limits:
       memory: "200Mi"
@@ -92,6 +101,7 @@ automatix:
 
 conveyorTransferSubmitter:
   threads: 1
+  podAnnotations: {}
   activities: "'test1' 'test2'"
   sleepTime: 10
   resources:
@@ -104,6 +114,7 @@ conveyorTransferSubmitter:
 
 conveyorPoller:
   threads: 1
+  podAnnotations: {}
   resources:
     limits:
       memory: "200Mi"
@@ -114,6 +125,7 @@ conveyorPoller:
 
 conveyorFinisher:
   threads: 1
+  podAnnotations: {}
   resources:
     limits:
       memory: "200Mi"
@@ -124,6 +136,7 @@ conveyorFinisher:
 
 conveyorReceiver:
   threads: 1
+  podAnnotations: {}
   resources:
     limits:
       memory: "200Mi"
@@ -134,6 +147,23 @@ conveyorReceiver:
 
 conveyorThrottler:
   threads: 1
+  podAnnotations: {}
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "200Mi"
+      cpu: "700m"
+
+darkReaper:
+  workers: 1
+  chunkSize: "10"
+  scheme: ""
+  rses: ""
+  includeRses: ""
+  excludeRses: ""
+  podAnnotations: {}
   resources:
     limits:
       memory: "200Mi"
@@ -144,6 +174,7 @@ conveyorThrottler:
 
 hermes:
   threads: 1
+  podAnnotations: {}
   bulk: 100
   delay: 10
   brokerTimeout: 3
@@ -157,6 +188,7 @@ hermes:
 
 judgeCleaner:
   threads: 1
+  podAnnotations: {}
   resources:
     limits:
       memory: "200Mi"
@@ -167,6 +199,7 @@ judgeCleaner:
 
 judgeEvaluator:
   threads: 1
+  podAnnotations: {}
   resources:
     limits:
       memory: "200Mi"
@@ -177,6 +210,7 @@ judgeEvaluator:
 
 judgeInjector:
   threads: 1
+  podAnnotations: {}
   resources:
     limits:
       memory: "200Mi"
@@ -187,6 +221,7 @@ judgeInjector:
 
 judgeRepairer:
   threads: 1
+  podAnnotations: {}
   resources:
     limits:
       memory: "200Mi"
@@ -197,6 +232,7 @@ judgeRepairer:
 
 oauthManager:
   threads: 1
+  podAnnotations: {}
   resources:
     limits:
       memory: "200Mi"
@@ -207,6 +243,7 @@ oauthManager:
 
 undertaker:
   threads: 1
+  podAnnotations: {}
   resources:
     limits:
       memory: "200Mi"
@@ -221,6 +258,7 @@ reaper:
   workers: 1
   threadsPerWorker: 4
   includeRses: ""
+  podAnnotations: {}
   resources:
     limits:
       memory: "200Mi"
@@ -234,6 +272,7 @@ reaper2:
   scheme: ""
   threads: 4
   includeRses: ""
+  podAnnotations: {}
   resources:
     limits:
       memory: "200Mi"
@@ -244,6 +283,7 @@ reaper2:
 
 transmogrifier:
   threads: 1
+  podAnnotations: {}
   resources:
     limits:
       memory: "200Mi"
@@ -254,6 +294,7 @@ transmogrifier:
 
 tracerKronos:
   threads: 1
+  podAnnotations: {}
   resources:
     limits:
       memory: "200Mi"
@@ -264,6 +305,7 @@ tracerKronos:
 
 minos:
   threads: 1
+  podAnnotations: {}
   resources:
     limits:
       memory: "200Mi"
@@ -274,6 +316,7 @@ minos:
 
 minosTemporaryExpiration:
   threads: 1
+  podAnnotations: {}
   resources:
     limits:
       memory: "200Mi"
@@ -283,6 +326,7 @@ minosTemporaryExpiration:
       cpu: "100m"
 
 necromancer:
+  podAnnotations: {}
   resources:
     limits:
       memory: "200Mi"
@@ -290,7 +334,6 @@ necromancer:
     requests:
       memory: "100Mi"
       cpu: "100m"
-
 
 ftsRenewal:
   enabled: 0
@@ -301,6 +344,14 @@ ftsRenewal:
   vo: "cms"
   voms: "cms:/cms/Role=production"
   servers: "https://fts3-devel.cern.ch:8446,https://cmsfts3.fnal.gov:8446,https://fts3.cern.ch:8446,https://lcgfts3.gridpp.rl.ac.uk:8446,https://fts3-pilot.cern.ch:8446"
+
+automaticRestart:
+  enabled: 0
+  image:
+    repository: bitnami/kubectl
+    tag: latest
+    pullPolicy: IfNotPresent
+  schedule: "0 0 * * *"
 
 additionalSecrets: {}
   # gcssecret:
@@ -437,3 +488,4 @@ config:
   # credentials:
     # gcs: "/opt/rucio/etc/google-cloud-storage-test.json"
     # signature_lifetime: "3600"
+
