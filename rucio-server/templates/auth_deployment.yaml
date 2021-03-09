@@ -81,6 +81,8 @@ spec:
         - name: {{ .Chart.Name }}-auth
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+{{ toYaml .Values.authServerResources | indent 12 }}
           ports:
             - name: http
               containerPort: 80
@@ -157,8 +159,6 @@ spec:
               value: "{{ .Values.serverType.authServer }}"
             - name: RUCIO_LOG_FORMAT
               value: '{{ .Values.logFormat.authServer }}'
-          resources:
-{{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
