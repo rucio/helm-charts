@@ -311,7 +311,9 @@ config:
     ## config.webui.usercert:  (default "/opt/rucio/etc/usercert_with_key.pem")
     # usercert: "/opt/rucio/etc/usercert_with_key.pem"
 
-resources: {}
+serverResources: {}
+authServerResources: {}
+traceServerResources: {}
   # limits:
   #  cpu: 100m
   #  memory: 128Mi
