@@ -71,3 +71,11 @@ data:
         onError: {{ $config.onError | default "Continue" }}
 {{- end }}
 {{- end }}
+{{- range $probe, $config := .Values.voProbes }}
+{{ if gt $config.interval 0.0 }}
+      {{ $probe }}:
+        cmd: /probes/{{ $config.voName }}/{{ $probe }}
+        time: 'R */{{ $config.interval }} * * * *'
+        onError: {{ $config.onError | default "Continue" }}
+{{- end }}
+{{- end }}

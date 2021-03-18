@@ -127,6 +127,10 @@ additionalSecrets: {}
   #   mountPath: /opt/rucio/etc/gcs_rucio.json
   #   subPath: gcs_rucio.json
 
+wsgi:
+  daemonProcesses: "4"
+  daemonThreads: "4"
+
 httpd_config:
   mpm_mode: "event"
   enable_status: "True"
@@ -311,7 +315,9 @@ config:
     ## config.webui.usercert:  (default "/opt/rucio/etc/usercert_with_key.pem")
     # usercert: "/opt/rucio/etc/usercert_with_key.pem"
 
-resources: {}
+serverResources: {}
+authServerResources: {}
+traceServerResources: {}
   # limits:
   #  cpu: 100m
   #  memory: 128Mi

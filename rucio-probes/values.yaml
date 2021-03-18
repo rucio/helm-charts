@@ -164,6 +164,14 @@ probes:
   check_xcache:
     interval: 0
 
+voProbes: {}
+  # Here list other probes following the scheme above for the common probes. 
+  # In addition to "interval" define which VO
+  # These probes will be run from the /probes/someVO/ directory instead of probes/common
+  # check_something:
+  #   interval: 1
+  #   voName: someVO
+
 strategy:
   type: RollingUpdate
   rollingUpdate:

@@ -85,6 +85,8 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
+{{ toYaml .Values.serverResources | indent 12 }}
           volumeMounts:
           - name: httpdlog
             mountPath: /var/log/httpd
@@ -161,8 +163,10 @@ spec:
               value: "{{ .Values.serverType.server }}"
             - name: RUCIO_LOG_FORMAT
               value: '{{ .Values.logFormat.server }}'
-          resources:
-{{ toYaml .Values.resources | indent 12 }}
+            - name: RUCIO_WSGI_DAEMON_PROCESSES
+              value: "{{ .Values.wsgi.daemonProcesses }}"
+            - name: RUCIO_WSGI_DAEMON_THREADS
+              value: "{{ .Values.wsgi.daemonThreads }}"
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
