@@ -163,6 +163,10 @@ spec:
               value: "{{ .Values.serverType.server }}"
             - name: RUCIO_LOG_FORMAT
               value: '{{ .Values.logFormat.server }}'
+            - name: RUCIO_WSGI_DAEMON_PROCESSES
+              value: "{{ .Values.wsgi.daemonProcesses }}"
+            - name: RUCIO_WSGI_DAEMON_THREADS
+              value: "{{ .Values.wsgi.daemonThreads }}"
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
