@@ -111,9 +111,11 @@ spec:
               mountPath: /etc/grid-security/ca.pem
               subPath: ca.pem
             {{- range $key, $val := .Values.additionalSecrets }}
+            {{- range $val.subPaths }}
             - name: {{ $key }}
-              mountPath: {{ $val.mountPath }}
-              subPath: {{ $val.subPath }}
+              mountPath: {{ $val.mountPath }}{{ . }}
+              subPath: {{ . }}
+            {{- end}}
             {{- end}}
 {{- end }}
           env:
