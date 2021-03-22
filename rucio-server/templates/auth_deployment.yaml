@@ -106,9 +106,11 @@ spec:
             - name: httpdlog
               mountPath: /var/log/httpd
             {{- range $key, $val := .Values.additionalSecrets }}
+            {{- range $val.subPaths }}
             - name: {{ $key }}
-              mountPath: {{ $val.mountPath }}
-              subPath: {{ $val.subPath }}
+              mountPath: {{ $val.mountPath }}{{ . }}
+              subPath: {{ . }}
+            {{- end}}
             {{- end}}
             {{- range $key, $val := .Values.persistentVolumes }}
             - name: {{ $key }}
