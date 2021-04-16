@@ -45,8 +45,8 @@ spec:
     {{- if .Values.serviceAccountName }}
       serviceAccountName: {{ .Values.serviceAccountName }}
     {{- end }}
-{{ if .Values.hermes.useSSL }}
       volumes:
+{{ if .Values.hermes.useSSL }}
         - name: usercert
           secret:
             secretName: {{ .Release.Name }}-hermes-cert
@@ -54,6 +54,11 @@ spec:
           secret:
             secretName: {{ .Release.Name }}-hermes-key
 {{ end }}
+        {{- range $key, $val := .Values.additionalSecrets }}
+        - name: {{ $key }}
+          secret:
+            secretName: {{ $.Release.Name }}-{{ $val.secretName }}
+        {{- end}}
         {{- range $key, $val := .Values.persistentVolumes }}
         - name: {{ $key }}
           persistentVolumeClaim:
@@ -63,13 +68,18 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-{{ if .Values.hermes.useSSL }}
           volumeMounts:
+{{ if .Values.hermes.useSSL }}
             - name: usercert
               mountPath: /opt/rucio/certs/
             - name: userkey
               mountPath: /opt/rucio/keys/
 {{ end }}
+            {{- range $key, $val := .Values.additionalSecrets }}
+            - name: {{ $key }}
+              mountPath: {{ $val.mountPath }}
+              subPath: {{ $val.subPath }}
+            {{- end}}
             {{- range $key, $val := .Values.persistentVolumes }}
             - name: {{ $key }}
               mountPath: {{ $val.mountPath }}
