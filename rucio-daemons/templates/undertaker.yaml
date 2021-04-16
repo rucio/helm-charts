@@ -46,6 +46,11 @@ spec:
       serviceAccountName: {{ .Values.serviceAccountName }}
     {{- end }}
       volumes:
+      {{- range $key, $val := .Values.additionalSecrets }}
+      - name: {{ $key }}
+        secret:
+          secretName: {{ $.Release.Name }}-{{ $val.secretName }}
+      {{- end}}
       {{- range $key, $val := .Values.persistentVolumes }}
       - name: {{ $key }}
         persistentVolumeClaim:
@@ -56,10 +61,15 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           volumeMounts:
-          {{- range $key, $val := .Values.persistentVolumes }}
-          - name: {{ $key }}
-            mountPath: {{ $val.mountPath }}
-          {{- end}}
+            {{- range $key, $val := .Values.additionalSecrets }}
+            - name: {{ $key }}
+              mountPath: {{ $val.mountPath }}
+              subPath: {{ $val.subPath }}
+            {{- end}}
+            {{- range $key, $val := .Values.persistentVolumes }}
+            - name: {{ $key }}
+              mountPath: {{ $val.mountPath }}
+            {{- end}}
           ports:
             - name: metrics
               containerPort: 8080
