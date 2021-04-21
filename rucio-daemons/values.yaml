@@ -14,6 +14,7 @@ conveyorReceiverCount: 0
 conveyorThrottlerCount: 0
 darkReaperCount: 0
 hermesCount: 0
+hermes2Count: 0
 judgeCleanerCount: 0
 judgeEvaluatorCount: 0
 judgeInjectorCount: 0
@@ -178,6 +179,18 @@ hermes:
   bulk: 100
   delay: 10
   brokerTimeout: 3
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "200Mi"
+      cpu: "700m"
+
+hermes2:
+  threads: 1
+  podAnnotations: {}
+  bulk: 1000
   resources:
     limits:
       memory: "200Mi"
@@ -456,6 +469,10 @@ config:
     # voname: "atlas"
     # email_from: "Rucio <atlas-adc-ddm-support@cern.ch"
     # email_test: ""
+
+  # messaging-hermes2:
+    # elastic_endpoint:  # _bulk endpoint
+    # influxdb_endpoint: # write endpoint
 
   # tracer-kronos:
     # brokers: "atlas-test-mb.cern.ch"
