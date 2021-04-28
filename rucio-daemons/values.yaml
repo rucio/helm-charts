@@ -13,6 +13,7 @@ conveyorFinisherCount: 0
 conveyorReceiverCount: 0
 conveyorStagerCount: 0
 conveyorThrottlerCount: 0
+conveyorPreparerCount: 0
 darkReaperCount: 0
 hermesCount: 0
 hermes2Count: 0
@@ -148,6 +149,17 @@ conveyorReceiver:
       cpu: "700m"
 
 conveyorThrottler:
+  threads: 1
+  podAnnotations: {}
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "200Mi"
+      cpu: "700m"
+
+conveyorPreparer:
   threads: 1
   podAnnotations: {}
   resources:
