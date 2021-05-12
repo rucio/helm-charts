@@ -11,6 +11,7 @@ conveyorTransferSubmitterCount: 0
 conveyorPollerCount: 0
 conveyorFinisherCount: 0
 conveyorReceiverCount: 0
+conveyorStagerCount: 0
 conveyorThrottlerCount: 0
 darkReaperCount: 0
 hermesCount: 0
