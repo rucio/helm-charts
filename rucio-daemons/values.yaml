@@ -11,9 +11,11 @@ conveyorTransferSubmitterCount: 0
 conveyorPollerCount: 0
 conveyorFinisherCount: 0
 conveyorReceiverCount: 0
+conveyorStagerCount: 0
 conveyorThrottlerCount: 0
 darkReaperCount: 0
 hermesCount: 0
+hermes2Count: 0
 judgeCleanerCount: 0
 judgeEvaluatorCount: 0
 judgeInjectorCount: 0
@@ -186,6 +188,18 @@ hermes:
       memory: "200Mi"
       cpu: "700m"
 
+hermes2:
+  threads: 1
+  podAnnotations: {}
+  bulk: 1000
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "200Mi"
+      cpu: "700m"
+
 judgeCleaner:
   threads: 1
   podAnnotations: {}
@@ -337,6 +351,7 @@ necromancer:
 
 ftsRenewal:
   enabled: 0
+  schedule: "12 */6 * * *"
   image:
     repository: rucio/fts-cron
     tag: latest
@@ -456,6 +471,10 @@ config:
     # voname: "atlas"
     # email_from: "Rucio <atlas-adc-ddm-support@cern.ch"
     # email_test: ""
+
+  # messaging-hermes2:
+    # elastic_endpoint:  # _bulk endpoint
+    # influxdb_endpoint: # write endpoint
 
   # tracer-kronos:
     # brokers: "atlas-test-mb.cern.ch"

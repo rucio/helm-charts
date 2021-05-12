@@ -4,7 +4,7 @@ kind: CronJob
 metadata:
   name: {{ .Release.Name }}-renew-fts-proxy
 spec:
-  schedule: "12 */6 * * *"
+  schedule: "{{ .Values.ftsRenewal.schedule }}"
   jobTemplate:
     spec:
       template:
