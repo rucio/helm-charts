@@ -105,7 +105,7 @@ spec:
             - name: RUCIO_DAEMON
               value: "hermes2"
             - name: RUCIO_DAEMON_ARGS
-              value: "{{- if .Values.hermes2.threads }} -threads {{ .Values.hermes2.threads }}{{ end }} {{ if .Values.hermes2.bulk }} --bulk {{ .Values.hermes2.bulk }}{{ end }}"
+              value: "{{- if .Values.hermes2.threads }} --threads {{ .Values.hermes2.threads }}{{ end }} {{ if .Values.hermes2.bulk }} --bulk {{ .Values.hermes2.bulk }}{{ end }}"
 {{- with .Values.hermes2.resources }}
           resources:
 {{ toYaml . | trim | indent 12 }}
