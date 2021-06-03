@@ -115,7 +115,7 @@ metricsExporterResources:
 
 ftsRenewal:
   enabled: 0
-  schedule: "12 */6 * * *"
+  schedule: "42 */6 * * *"
   image:
     repository: rucio/fts-cron
     tag: latest
