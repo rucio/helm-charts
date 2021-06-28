@@ -33,6 +33,12 @@ spec:
       serviceAccountName: {{ .Values.serviceAccountName }}
     {{- end }}
       volumes:
+      - name: proxy-volume
+        secret:
+          secretName: {{ .Release.Name }}-rucio-x509up
+      - name: ca-volume
+        secret:
+          secretName: {{ .Release.Name }}-rucio-ca-bundle
       - name: httpdlog
         emptyDir: {}
       {{- range $key, $val := .Values.additionalSecrets }}
@@ -88,6 +94,10 @@ spec:
           resources:
 {{ toYaml .Values.serverResources | indent 12 }}
           volumeMounts:
+          - name: proxy-volume
+            mountPath: /opt/proxy
+          - name: ca-volume
+            mountPath: /opt/certs
           - name: httpdlog
             mountPath: /var/log/httpd
           {{- range $key, $val := .Values.additionalSecrets }}

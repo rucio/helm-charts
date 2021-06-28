@@ -1,15 +1,15 @@
-{{- if gt .Values.hermes2Count 0.0 -}}
+{{- if gt .Values.conveyorPreparerCount 0.0 -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-hermes2
+  name: {{ .Release.Name }}-conveyor-preparer
   labels:
     app: {{ template "rucio.name" . }}
     chart: {{ template "rucio.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  replicas: {{ .Values.hermes2Count }}
+  replicas: {{ .Values.conveyorPreparerCount }}
   selector:
     matchLabels:
       app: {{ template "rucio.name" . }}
@@ -28,17 +28,17 @@ spec:
       labels:
         app: {{ template "rucio.name" . }}
         release: {{ .Release.Name }}
-        rucio-daemon: hermes2
+        rucio-daemon: conveyor-preparer
     {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
     {{- end }}
-    {{- if or .Values.podAnnotations .Values.hermes2.podAnnotations}}
+    {{- if or .Values.podAnnotations .Values.conveyorPreparer.podAnnotations}}
       annotations:
     {{- end }}
     {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
     {{- end }}
-    {{- with .Values.hermes2.podAnnotations }}
+    {{- with .Values.conveyorPreparer.podAnnotations }}
         {{- toYaml . | nindent 8 }}
     {{- end }}
     spec:
@@ -46,44 +46,40 @@ spec:
       serviceAccountName: {{ .Values.serviceAccountName }}
     {{- end }}
       volumes:
-{{ if .Values.hermes2.useSSL }}
-        - name: usercert
-          secret:
-            secretName: {{ .Release.Name }}-hermes2-cert
-        - name: userkey
-          secret:
-            secretName: {{ .Release.Name }}-hermes2-key
-{{ end }}
-        {{- range $key, $val := .Values.additionalSecrets }}
-        - name: {{ $key }}
-          secret:
-            secretName: {{ $.Release.Name }}-{{ $val.secretName }}
-        {{- end}}
-        {{- range $key, $val := .Values.persistentVolumes }}
-        - name: {{ $key }}
-          persistentVolumeClaim:
-            claimName: {{ $val.name }}
-        {{- end}}
+      - name: proxy-volume
+        secret:
+          secretName: {{ .Release.Name }}-rucio-x509up
+      - name: ca-volume
+        secret:
+          secretName: {{ .Release.Name }}-rucio-ca-bundle
+      {{- range $key, $val := .Values.additionalSecrets }}
+      - name: {{ $key }}
+        secret:
+          secretName: {{ $.Release.Name }}-{{ $val.secretName }}
+      {{- end}}
+      {{- range $key, $val := .Values.persistentVolumes }}
+      - name: {{ $key }}
+        persistentVolumeClaim:
+          claimName: {{ $val.name }}
+      {{- end}}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           volumeMounts:
-{{ if .Values.hermes2.useSSL }}
-            - name: usercert
-              mountPath: /opt/rucio/certs/
-            - name: userkey
-              mountPath: /opt/rucio/keys/
-{{ end }}
-            {{- range $key, $val := .Values.additionalSecrets }}
+            - name: proxy-volume
+              mountPath: /opt/proxy
+            - name: ca-volume
+              mountPath: /opt/certs
+          {{- range $key, $val := .Values.additionalSecrets }}
             - name: {{ $key }}
               mountPath: {{ $val.mountPath }}
               subPath: {{ $val.subPath }}
-            {{- end}}
-            {{- range $key, $val := .Values.persistentVolumes }}
+          {{- end}}
+          {{- range $key, $val := .Values.persistentVolumes }}
             - name: {{ $key }}
               mountPath: {{ $val.mountPath }}
-            {{- end}}
+          {{- end}}
           ports:
             - name: metrics
               containerPort: 8080
@@ -103,22 +99,22 @@ spec:
               value: "{{ $val1  }}"
             {{- end}}
             - name: RUCIO_DAEMON
-              value: "hermes2"
+              value: "conveyor-preparer"
             - name: RUCIO_DAEMON_ARGS
-              value: "{{- if .Values.hermes2.threads }} --threads {{ .Values.hermes2.threads }}{{ end }} {{ if .Values.hermes2.bulk }} --bulk {{ .Values.hermes2.bulk }}{{ end }}"
-{{- with .Values.hermes2.resources }}
+              value: "{{- if .Values.conveyorPreparer.threads }} --threads {{ .Values.conveyorPreparer.threads }}{{ end }} {{ if .Values.conveyorPreparer.bulk }} --bulk {{ .Values.conveyorPreparer.bulk }}{{ end }} {{- if .Values.conveyorPreparer.sleepTime }} --sleep-time {{ .Values.conveyorPreparer.sleepTime }}{{ end }}"
+{{- with .Values.conveyorPreparer.resources }}
           resources:
 {{ toYaml . | trim | indent 12 }}
 {{ end }}
-{{- with .Values.hermes2.nodeSelector }}
+{{- with .Values.conveyorPreparer.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
 {{- end }}
-{{- with .Values.hermes2.affinity }}
+{{- with .Values.conveyorPreparer.affinity }}
       affinity:
 {{ toYaml . | indent 8 }}
 {{- end }}
-{{- with .Values.hermes2.tolerations }}
+{{- with .Values.conveyorPreparer.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
 {{- end }}
