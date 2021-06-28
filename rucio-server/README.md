@@ -48,6 +48,15 @@ Alternatively, a YAML file that specifies the values for the parameters can be p
       -f values.yaml \
       rucio/rucio-server
 
+
+## Certificates
+
+Some functions require certificates and CAs to work. They expect specific secrets that need to be created before the pod can start.
+
+### API calls to FTS
+
+To update rule priority in FTS, the API call must be authenticated. The configuration is identical to the one of the [conveyor](https://github.com/rucio/helm-charts/tree/master/rucio-daemons#conveyor) daemon. 
+
 ## Service
 
 By default the servers pods are listening on port 80 using plain HTTP and the default services are of type `ClusterIP` on port 80. You can adapt this separately for the api, authentication and trace servers. To run the pods with HTTPS you will first have to install the necessary key, cert and CA files for the corresponding servers:
