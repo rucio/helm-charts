@@ -23,7 +23,6 @@ judgeInjectorCount: 0
 judgeRepairerCount: 0
 oauthManagerCount: 0
 undertakerCount: 0
-reaperCount: 0
 reaper2Count: 0
 transmogrifierCount: 0
 tracerKronosCount: 0
@@ -269,21 +268,6 @@ oauthManager:
 
 undertaker:
   threads: 1
-  podAnnotations: {}
-  resources:
-    limits:
-      memory: "200Mi"
-      cpu: "700m"
-    requests:
-      memory: "200Mi"
-      cpu: "700m"
-
-reaper:
-  greedy: 0
-  scheme: ""
-  workers: 1
-  threadsPerWorker: 4
-  includeRses: ""
   podAnnotations: {}
   resources:
     limits:
