@@ -23,7 +23,7 @@ judgeInjectorCount: 0
 judgeRepairerCount: 0
 oauthManagerCount: 0
 undertakerCount: 0
-reaper2Count: 0
+reaperCount: 0
 transmogrifierCount: 0
 tracerKronosCount: 0
 minosCount: 0
@@ -277,7 +277,7 @@ undertaker:
       memory: "200Mi"
       cpu: "700m"
 
-reaper2:
+reaper:
   greedy: 0
   scheme: ""
   threads: 4

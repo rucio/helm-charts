@@ -1,15 +1,15 @@
-{{- if gt .Values.reaper2Count 0.0 -}}
+{{- if gt .Values.reaperCount 0.0 -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-reaper2
+  name: {{ .Release.Name }}-reaper
   labels:
     app: {{ template "rucio.name" . }}
     chart: {{ template "rucio.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  replicas: {{ .Values.reaper2Count }}
+  replicas: {{ .Values.reaperCount }}
   selector:
     matchLabels:
       app: {{ template "rucio.name" . }}
@@ -28,17 +28,17 @@ spec:
       labels:
         app: {{ template "rucio.name" . }}
         release: {{ .Release.Name }}
-        rucio-daemon: reaper2
+        rucio-daemon: reaper
     {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
     {{- end }}
-    {{- if or .Values.podAnnotations .Values.reaper2.podAnnotations}}
+    {{- if or .Values.podAnnotations .Values.reaper.podAnnotations}}
       annotations:
     {{- end }}
     {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
     {{- end }}
-    {{- with .Values.reaper2.podAnnotations }}
+    {{- with .Values.reaper.podAnnotations }}
         {{- toYaml . | nindent 8 }}
     {{- end }}
     spec:
@@ -99,28 +99,28 @@ spec:
               value: "{{ $val1  }}"
             {{- end}}
             - name: RUCIO_DAEMON
-              value: "reaper2"
+              value: "reaper"
             - name: RUCIO_DAEMON_ARGS
-              value: '{{- if .Values.reaper2.greedy }}--greedy {{ end }}{{- if .Values.reaper2.threads }} --threads {{ .Values.reaper2.threads }}{{end}} {{- if .Values.reaper2.scheme }} --scheme {{ .Values.reaper2.scheme }}{{ end }}{{- if .Values.reaper2.includeDids }} --include-dids="{{ .Values.reaper2.includeDids }}"{{ end }}{{- if .Values.reaper2.excludeDids }} --exclude-dids="{{ .Values.reaper2.excludeDids }}"{{ end }} {{- if .Values.reaper2.includeRses }} --include-rses="{{ .Values.reaper2.includeRses }}"{{ end }} {{- if .Values.reaper2.rses }} --rses {{ .Values.reaper2.rses }}{{ end }} {{- if .Values.reaper2.chunkSize }}  --chunk-size {{ .Values.reaper2.chunkSize }}{{ end }} {{- if .Values.reaper2.excludeRses }} --exclude-rses="{{ .Values.reaper2.excludeRses }}"{{ end }} {{- if .Values.reaper2.delaySeconds }} --delay-seconds {{ .Values.reaper2.delaySeconds }}{{end}} {{- if .Values.reaper2.sleepTime }} --sleep-time {{ .Values.reaper2.sleepTime }}{{end}}'
+              value: '{{- if .Values.reaper.greedy }}--greedy {{ end }}{{- if .Values.reaper.threads }} --threads {{ .Values.reaper.threads }}{{end}} {{- if .Values.reaper.scheme }} --scheme {{ .Values.reaper.scheme }}{{ end }}{{- if .Values.reaper.includeDids }} --include-dids="{{ .Values.reaper.includeDids }}"{{ end }}{{- if .Values.reaper.excludeDids }} --exclude-dids="{{ .Values.reaper.excludeDids }}"{{ end }} {{- if .Values.reaper.includeRses }} --include-rses="{{ .Values.reaper.includeRses }}"{{ end }} {{- if .Values.reaper.rses }} --rses {{ .Values.reaper.rses }}{{ end }} {{- if .Values.reaper.chunkSize }}  --chunk-size {{ .Values.reaper.chunkSize }}{{ end }} {{- if .Values.reaper.excludeRses }} --exclude-rses="{{ .Values.reaper.excludeRses }}"{{ end }} {{- if .Values.reaper.delaySeconds }} --delay-seconds {{ .Values.reaper.delaySeconds }}{{end}} {{- if .Values.reaper.sleepTime }} --sleep-time {{ .Values.reaper.sleepTime }}{{end}}'
             - name: GLOBUS_THREAD_MODEL
               value: "pthread"
             - name: RUCIO_HOME
               value: "/opt/rucio/reaper"
             - name: X509_USER_PROXY
               value: "/opt/proxy/x509up"
-{{- with .Values.reaper2.resources }}
+{{- with .Values.reaper.resources }}
           resources:
 {{ toYaml . | trim | indent 12 }}
 {{ end }}
-{{- with .Values.reaper2.nodeSelector }}
+{{- with .Values.reaper.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
 {{- end }}
-{{- with .Values.reaper2.affinity }}
+{{- with .Values.reaper.affinity }}
       affinity:
 {{ toYaml . | indent 8 }}
 {{- end }}
-{{- with .Values.reaper2.tolerations }}
+{{- with .Values.reaper.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
 {{- end }}
