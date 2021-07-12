@@ -101,7 +101,7 @@ spec:
             - name: RUCIO_DAEMON
               value: "judge-evaluator"
             - name: RUCIO_DAEMON_ARGS
-              value: "--threads {{ .Values.judgeEvaluator.threads }}"
+              value: "--threads {{ .Values.judgeEvaluator.threads }} {{- if .Values.judgeEvaluator.sleepTime }} --sleep-time {{ .Values.judgeEvaluator.sleepTime }}{{ end }} {{- if .Values.judgeEvaluator.didLimit }} --did-limit {{ .Values.judgeEvaluator.didLimit }}{{ end }}"
 {{- with .Values.judgeEvaluator.resources }}
           resources:
 {{ toYaml . | trim | indent 12 }}
