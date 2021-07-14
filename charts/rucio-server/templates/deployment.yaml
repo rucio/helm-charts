@@ -96,10 +96,12 @@ spec:
           resources:
 {{ toYaml .Values.serverResources | indent 12 }}
           volumeMounts:
+          {{- if .Values.ftsRenewal.enabled }}
           - name: proxy-volume
             mountPath: /opt/proxy
           - name: ca-volume
             mountPath: /opt/certs
+          {{- end }}
           - name: httpdlog
             mountPath: /var/log/httpd
           {{- range $key, $val := .Values.additionalSecrets }}
