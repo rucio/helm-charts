@@ -33,7 +33,7 @@ spec:
       serviceAccountName: {{ .Values.serviceAccountName }}
     {{- end }}
       volumes:
-      {{- if .Values.ftsRenewal.enabled -}}
+      {{- if .Values.ftsRenewal.enabled }}
       - name: proxy-volume
         secret:
           secretName: {{ .Release.Name }}-rucio-x509up
