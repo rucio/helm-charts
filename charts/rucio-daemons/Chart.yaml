@@ -9,6 +9,6 @@ home: https://rucio.cern.ch/
 sources:
   - https://github.com/rucio/rucio
 maintainers:
-  - name: Thomas Beermann
-    email: thomas.beermann@cern.ch
+  - name: Rucio development team
+    email: rucio-dev@cern.ch
 
