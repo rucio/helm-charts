@@ -159,6 +159,8 @@ spec:
 {{- end }}
             - name: RUCIO_SERVER_TYPE
               value: "{{ .Values.serverType.authServer }}"
+            - name: RUCIO_CFG_API_ENDPOINTS
+              value: "auth,ping"
             - name: RUCIO_LOG_FORMAT
               value: '{{ .Values.logFormat.authServer }}'
             - name: RUCIO_WSGI_DAEMON_PROCESSES
