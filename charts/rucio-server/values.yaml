@@ -33,8 +33,6 @@ image:
   tag: release-1.24.3
   pullPolicy: Always
 
-exportConfigToEnv: false
-
 service:
   type: ClusterIP
   port: 80

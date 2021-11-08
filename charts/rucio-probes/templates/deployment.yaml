@@ -65,19 +65,8 @@ spec:
 
       containers:
       - env:
-            {{- if .Values.exportConfigToEnv }}
-            {{- range $key1, $val1 := .Values.config }}
-            {{- range $key2, $val2 := $val1}}
-            - name: RUCIO_CFG_{{ $key1 | upper }}_{{ $key2 | upper }}
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "rucio-probes.fullname" $ }}.cfg
-                  key: {{ $key1 }}_{{ $key2 }}
-            {{- end}}
-            {{- end}}
-            {{- end}}
-            - name: RUCIO_OVERRIDE_CONFIGS
-              value: "/opt/rucio/etc/rucio.config.common.json"
+        - name: RUCIO_OVERRIDE_CONFIGS
+          value: "/opt/rucio/etc/rucio.config.common.json"
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         name: {{ .Chart.Name }}

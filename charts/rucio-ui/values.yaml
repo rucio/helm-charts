@@ -27,8 +27,6 @@ strategy:
     maxSurge: 1
     maxUnavailable: 1
 
-exportConfigToEnv: false
-
 minReadySeconds: 5
 
 proxy:
