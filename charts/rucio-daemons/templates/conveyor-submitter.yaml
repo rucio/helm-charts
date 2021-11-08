@@ -84,16 +84,16 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           volumeMounts:
+            - name: proxy-volume
+              mountPath: /opt/proxy
+            - name: ca-volume
+              mountPath: /opt/certs
             - name: config
               mountPath: /opt/rucio/etc/rucio.config.common.json
               subPath: rucio.config.common.json
             - name: config
               mountPath: /opt/rucio/etc/rucio.config.component.json
               subPath: rucio.config.component.json
-            - name: proxy-volume
-              mountPath: /opt/proxy
-            - name: ca-volume
-              mountPath: /opt/certs
             {{- range $key, $val := .Values.additionalSecrets }}
             - name: {{ $key }}
               mountPath: {{ $val.mountPath }}
