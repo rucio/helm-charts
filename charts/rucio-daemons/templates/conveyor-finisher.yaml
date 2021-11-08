@@ -123,7 +123,7 @@ spec:
             - name: {{ $key1 | upper }}
               value: "{{ $val1  }}"
             {{- end}}
-            - name: RUCIO_CONFIG_OVERRIDES
+            - name: RUCIO_OVERRIDE_CONFIGS
               value: "/opt/rucio/etc/rucio.config.common.json /opt/rucio/etc/rucio.config.component.json"
             - name: RUCIO_DAEMON
               value: "conveyor-finisher"
