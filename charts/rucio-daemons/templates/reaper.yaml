@@ -1,4 +1,18 @@
 {{- if gt .Values.reaperCount 0.0 -}}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ template "rucio.fullname" . }}.config.reaper.yaml
+  labels:
+    app: {{ template "rucio.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+type: Opaque
+data:
+  rucio.config.common.json: {{ .Values.config | default dict | mustToPrettyJson | b64enc | quote }}
+  rucio.config.component.json: {{ .Values.reaper.config | default dict | mustToPrettyJson | b64enc | quote }}
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -46,6 +60,9 @@ spec:
       serviceAccountName: {{ .Values.serviceAccountName }}
     {{- end }}
       volumes:
+      - name: config
+        secret:
+          secretName: {{ template "rucio.fullname" . }}.config.reaper.yaml
       - name: proxy-volume
         secret:
           secretName: {{ .Release.Name }}-rucio-x509up
@@ -71,6 +88,12 @@ spec:
               mountPath: /opt/proxy
             - name: ca-volume
               mountPath: /etc/grid-security/certificates
+            - name: config
+              mountPath: /opt/rucio/etc/rucio.config.common.json
+              subPath: rucio.config.common.json
+            - name: config
+              mountPath: /opt/rucio/etc/rucio.config.component.json
+              subPath: rucio.config.component.json
             {{- range $key, $val := .Values.additionalSecrets }}
             - name: {{ $key }}
               mountPath: {{ $val.mountPath }}
@@ -85,6 +108,7 @@ spec:
               containerPort: 8080
               protocol: TCP
           env:
+            {{- if .Values.exportConfigToEnv }}
             {{- range $key1, $val1 := .Values.config }}
             {{- range $key2, $val2 := $val1}}
             - name: RUCIO_CFG_{{ $key1 | upper }}_{{ $key2 | upper }}
@@ -94,10 +118,13 @@ spec:
                   key: {{ $key1 }}_{{ $key2 }}
             {{- end}}
             {{- end}}
+            {{- end}}
             {{- range $key1, $val1 := .Values.optional_config }}
             - name: {{ $key1 | upper }}
               value: "{{ $val1  }}"
             {{- end}}
+            - name: RUCIO_OVERRIDE_CONFIGS
+              value: "/opt/rucio/etc/rucio.config.common.json /opt/rucio/etc/rucio.config.component.json"
             - name: RUCIO_DAEMON
               value: "reaper"
             - name: RUCIO_DAEMON_ARGS
