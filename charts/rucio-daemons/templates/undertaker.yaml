@@ -10,8 +10,10 @@ metadata:
     heritage: "{{ .Release.Service }}"
 type: Opaque
 data:
-  rucio.config.common.json: {{ .Values.config | default dict | mustToPrettyJson | b64enc | quote }}
-  rucio.config.component.json: {{ .Values.undertaker.config | default dict | mustToPrettyJson | b64enc | quote }}
+  {{- $common_config := .Values.config | default dict | mustToPrettyJson | b64enc }}
+  {{- $component_config := .Values.undertaker.config | default dict | mustToPrettyJson | b64enc }}
+  rucio.config.common.json: {{ $common_config | quote }}
+  rucio.config.component.json: {{ $component_config | quote }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -46,9 +48,8 @@ spec:
     {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
     {{- end }}
-    {{- if or .Values.podAnnotations .Values.undertaker.podAnnotations}}
       annotations:
-    {{- end }}
+        checksum/config: {{ print "%s%s" $common_config $component_config | sha1sum }}
     {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
     {{- end }}
