@@ -105,11 +105,18 @@ spec:
           - name: httpdlog
             mountPath: /var/log/httpd
           {{- range $key, $val := .Values.additionalSecrets }}
-          {{- range $val.subPaths }}
+          {{- /* TODO: depreacte and remove support for subPaths (at plural) case */}}
+          {{-  if $val.subPaths }}
+          {{-   range $val.subPaths }}
           - name: {{ $key }}
             mountPath: {{ $val.mountPath }}{{ . }}
             subPath: {{ . }}
-          {{- end}}
+          {{-   end}}
+          {{-  else }}
+          - name: {{ $key }}
+            mountPath: {{ $val.mountPath }}
+            subPath: {{ $val.subPath }}
+          {{-  end}}
           {{- end}}
           {{- range $key, $val := .Values.persistentVolumes }}
           - name: {{ $key }}
