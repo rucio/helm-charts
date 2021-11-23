@@ -82,6 +82,7 @@ abacusCollectionReplica:
       cpu: "700m"
 
 abacusRse:
+  fillHistoryTable: 0
   threads: 1
   podAnnotations: {}
   resources:
