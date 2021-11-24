@@ -41,7 +41,7 @@ strategy:
     maxSurge: 1
     maxUnavailable: 1
 
-exportConfigToEnv: true
+exportConfigToEnv: false
 
 podLabels: {}
 podAnnotations: {}

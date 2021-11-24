@@ -9,7 +9,7 @@ image:
   tag: latest
   pullPolicy: Always
 
-exportConfigToEnv: true
+exportConfigToEnv: false
 
 #  Values needed for some of the probes
 probeSettings:
