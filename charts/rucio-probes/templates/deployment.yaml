@@ -1,3 +1,17 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ .Release.Name }}-probes.config.yaml
+  labels:
+    app: {{ template "rucio-probes.name" . }}
+    chart: {{ template "rucio-probes.chart" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+type: Opaque
+data:
+  {{- $common_config := .Values.config | default dict | mustToPrettyJson | b64enc }}
+  rucio.config.common.json: {{ $common_config | quote }}
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -31,12 +45,17 @@ spec:
       labels:
         app: {{ template "rucio-probes.name" . }}
         release: {{ .Release.Name }}
+      annotations:
+        checksum/config: {{ $common_config | sha1sum }}
     spec:
       volumes:
+        - name: config
+          secret:
+            secretName: {{ .Release.Name }}-probes.config.yaml
         - configMap:
             defaultMode: 0644
             name: {{ include "rucio-probes.fullname" . }}-jobber-config
-          name: config
+          name: jobber-config
 {{- if hasKey .Values.probeSettings "ftsProxySecret" }}
         - name: proxy-volume
           secret:
@@ -46,6 +65,7 @@ spec:
 
       containers:
       - env:
+            {{- if .Values.exportConfigToEnv }}
             {{- range $key1, $val1 := .Values.config }}
             {{- range $key2, $val2 := $val1}}
             - name: RUCIO_CFG_{{ $key1 | upper }}_{{ $key2 | upper }}
@@ -55,12 +75,18 @@ spec:
                   key: {{ $key1 }}_{{ $key2 }}
             {{- end}}
             {{- end}}
+            {{- end}}
+            - name: RUCIO_OVERRIDE_CONFIGS
+              value: "/opt/rucio/etc/rucio.config.common.json"
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         name: {{ .Chart.Name }}
         volumeMounts:
+        - name: config
+          mountPath: /opt/rucio/etc/rucio.config.common.json
+          subPath: rucio.config.common.json
         - mountPath: /etc/jobber-config/
-          name: config
+          name: jobber-config
 {{- if hasKey .Values.probeSettings "ftsProxySecret" }}
         - mountPath: /opt/proxy
           name: proxy-volume
