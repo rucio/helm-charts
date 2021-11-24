@@ -1,4 +1,18 @@
 {{- if gt .Values.authReplicaCount 0.0 -}}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ template "rucio.fullname" . }}-auth.config.yaml
+  labels:
+    app: {{ template "rucio.name" . }}-auth
+    chart: "{{ .Chart.Name }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+type: Opaque
+data:
+  {{- $common_config := .Values.config | default dict | mustToPrettyJson | b64enc }}
+  rucio.config.common.json: {{ $common_config | quote }}
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -28,11 +42,16 @@ spec:
       labels:
         app: {{ template "rucio.name" . }}-auth
         release: {{ .Release.Name }}
+      annotations:
+        checksum/config: {{ $common_config | sha1sum }}
     spec:
     {{- if .Values.serviceAccountName }}
       serviceAccountName: {{ .Values.serviceAccountName }}
     {{- end }}
       volumes:
+      - name: config
+        secret:
+          secretName: {{ template "rucio.fullname" . }}-auth.config.yaml
       - name: httpdlog
         emptyDir: {}
       {{- range $key, $val := .Values.additionalSecrets }}
@@ -103,6 +122,9 @@ spec:
             periodSeconds: {{ .Values.livenessProbe.authServer.periodSeconds }}
             timeoutSeconds: {{ .Values.livenessProbe.authServer.timeoutSeconds }}
           volumeMounts:
+            - name: config
+              mountPath: /opt/rucio/etc/rucio.config.common.json
+              subPath: rucio.config.common.json
             - name: httpdlog
               mountPath: /var/log/httpd
             {{- range $key, $val := .Values.additionalSecrets }}
@@ -142,6 +164,7 @@ spec:
                   name: {{ template "rucio.fullname" $ }}.cfg
                   key: {{ $key }}
             {{- end}}
+            {{- if .Values.exportConfigToEnv }}
             {{- range $key1, $val1 := .Values.config }}
             {{- range $key2, $val2 := $val1}}
             - name: RUCIO_CFG_{{ $key1 | upper }}_{{ $key2 | upper }}
@@ -149,6 +172,7 @@ spec:
                 secretKeyRef:
                   name: {{ template "rucio.fullname" $ }}.cfg
                   key: {{ $key1 }}_{{ $key2 }}
+            {{- end}}
             {{- end}}
             {{- end}}
             {{- range $key1, $val1 := .Values.optional_config }}
@@ -168,6 +192,8 @@ spec:
               value: "{{ .Values.serverType.authServer }}"
             - name: RUCIO_CFG_API_ENDPOINTS
               value: "auth,ping"
+            - name: RUCIO_OVERRIDE_CONFIGS
+              value: "/opt/rucio/etc/rucio.config.common.json"
             - name: RUCIO_LOG_FORMAT
               value: '{{ .Values.logFormat.authServer }}'
             - name: RUCIO_WSGI_DAEMON_PROCESSES
