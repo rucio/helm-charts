@@ -64,6 +64,9 @@ spec:
       - name: config
         secret:
           secretName: {{ template "rucio.fullname" . }}.config.undertaker.yaml
+      - name: proxy-volume
+        secret:
+          secretName: {{ .Release.Name }}-rucio-x509up
       {{- range $key, $val := .Values.additionalSecrets }}
       - name: {{ $key }}
         secret:
@@ -85,6 +88,8 @@ spec:
             - name: config
               mountPath: /opt/rucio/etc/rucio.config.component.json
               subPath: rucio.config.component.json
+            - name: proxy-volume
+              mountPath: /opt/proxy
             {{- range $key, $val := .Values.additionalSecrets }}
             - name: {{ $key }}
               mountPath: {{ $val.mountPath }}
