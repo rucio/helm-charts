@@ -132,6 +132,7 @@ spec:
             - name: cafile
               mountPath: /etc/grid-security/ca.pem
               subPath: ca.pem
+{{- end }}
             {{- range $key, $val := .Values.additionalSecrets }}
             {{- /* TODO: depreacte and remove support for subPaths (at plural) case */}}
             {{-  if $val.subPaths }}
@@ -146,7 +147,6 @@ spec:
               subPath: {{ $val.subPath }}
             {{-  end}}
             {{- end}}
-{{- end }}
           env:
             {{- range $key, $val := .Values.httpd_config }}
             - name: RUCIO_HTTPD_{{ $key | upper }}
