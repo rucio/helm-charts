@@ -7,6 +7,7 @@ abacusAccountCount: 0
 abacusCollectionReplicaCount: 0
 abacusRseCount: 0
 automatixCount: 0
+cacheConsumerCount: 0
 conveyorTransferSubmitterCount: 0
 conveyorPollerCount: 0
 conveyorFinisherCount: 0
