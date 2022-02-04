@@ -127,7 +127,7 @@ spec:
             - name: RUCIO_OVERRIDE_CONFIGS
               value: "/opt/rucio/etc/rucio.config.common.json /opt/rucio/etc/rucio.config.component.json"
             - name: RUCIO_DAEMON
-              value: "conveyor-fts-throttler"
+              value: "conveyor-throttler"
             - name: RUCIO_DAEMON_ARGS
               value: "{{- if .Values.conveyorThrottler.sleepTime }} --sleep-time {{ .Values.conveyorThrottler.sleepTime }}{{ end }}"
 {{- with .Values.conveyorThrottler.resources }}
