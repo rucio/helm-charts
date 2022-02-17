@@ -104,6 +104,11 @@ spec:
             - name: https
               containerPort: 443
               protocol: TCP
+{{- if .Values.monitoring.enabled }}
+            - name: metrics
+              containerPort: {{ .Values.monitoring.nativeMetricsPort }}
+              protocol: TCP
+{{- end }}
           livenessProbe:
             httpGet:
               path: /ping
@@ -174,6 +179,10 @@ spec:
 {{- else }}
             - name: RUCIO_ENABLE_SSL
               value: "False"
+{{- end }}
+{{- if .Values.monitoring.enabled }}
+            - name: RUCIO_METRICS_PORT
+              value: "{{ .Values.monitoring.nativeMetricsPort }}"
 {{- end }}
             - name: RUCIO_SERVER_TYPE
               value: "{{ .Values.serverType.traceServer }}"
