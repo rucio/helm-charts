@@ -101,6 +101,7 @@ monitoring:
   enabled: false
   exporterPort: 8080
   targetPort: 8080
+  nativeMetricsPort: 8081
   interval: 30s
   telemetryPath: /metrics
   namespace: monitoring

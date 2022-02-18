@@ -20,6 +20,11 @@ spec:
  {{- if .Values.monitoring.telemetryPath }}
     path: {{ .Values.monitoring.telemetryPath }}
  {{- end }}
+  - targetPort: {{ .Values.monitoring.nativeMetricsPort }}
+ {{- if .Values.monitoring.interval }}
+    interval: {{ .Values.monitoring.interval }}
+ {{- end }}
+    path: /metrics/
   jobLabel: {{ template "rucio.fullname" . }}-prometheus-exporter-auth
   namespaceSelector:
     matchNames:
