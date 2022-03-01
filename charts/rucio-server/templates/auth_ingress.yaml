@@ -2,7 +2,8 @@
 {{- if .Values.authIngress.enabled -}}
 {{- $fullName := include "rucio.fullname" . -}}
 {{- $ingressPath := .Values.authIngress.path -}}
-apiVersion: extensions/v1beta1
+{{- $kubeApiVersion := include "rucio.ingress.apiVersion" . -}}
+apiVersion: {{ $kubeApiVersion }}
 kind: Ingress
 metadata:
   name: {{ $fullName }}-auth
@@ -33,8 +34,16 @@ spec:
         paths:
           - path: {{ $ingressPath }}
             backend:
+    {{- if eq $kubeApiVersion "networking.k8s.io/v1" }}
+              service:
+                name: {{ $fullName }}-auth
+                port:
+                  number: {{ $.Values.authService.port }}
+            pathType: Prefix
+    {{- else }}
               serviceName: {{ $fullName }}-auth
               servicePort: {{ $.Values.authService.port }}
+    {{- end }}
   {{- end }}
 {{- end }}
 {{- end }}
