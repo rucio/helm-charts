@@ -87,7 +87,7 @@ spec:
 {{- if .Values.exposeErrorLogs.server }}
         - name: httpd-error-log
           image: busybox
-          args: [/bin/sh, -c, 'tail -n+1 -f /var/log/httpd/error_log']
+          args: [/bin/sh, -c, 'tail -n+1 -F /var/log/httpd/error_log']
           volumeMounts:
           - name: httpdlog
             mountPath: /var/log/httpd
