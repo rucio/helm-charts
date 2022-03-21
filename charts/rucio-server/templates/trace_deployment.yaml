@@ -160,17 +160,6 @@ spec:
                   name: {{ template "rucio.fullname" $ }}.cfg
                   key: {{ $key }}
             {{- end}}
-            {{- if .Values.exportConfigToEnv }}
-            {{- range $key1, $val1 := .Values.config }}
-            {{- range $key2, $val2 := $val1}}
-            - name: RUCIO_CFG_{{ $key1 | upper }}_{{ $key2 | upper }}
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "rucio.fullname" $ }}.cfg
-                  key: {{ $key1 }}_{{ $key2 }}
-            {{- end}}
-            {{- end}}
-            {{- end}}
 {{- if .Values.useSSL.traceServer }}
             - name: RUCIO_ENABLE_SSL
               value: "True"
