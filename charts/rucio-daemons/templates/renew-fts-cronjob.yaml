@@ -1,4 +1,4 @@
-{{- define "rucio-servers.renew-fts-proxy-jobspec" }}
+{{- define "rucio-daemons.renew-fts-proxy-jobspec" }}
 {{- if .Values.ftsRenewal.enabled }}
   serviceAccountName: {{ .Release.Name }}-rucio-edit
   volumes:
@@ -70,7 +70,7 @@ spec:
     spec:
       template:
         spec:
-          {{- include "rucio-servers.renew-fts-proxy-jobspec" . | indent 8 }}
+          {{- include "rucio-daemons.renew-fts-proxy-jobspec" . | indent 8 }}
 ---
 # Also run the cronjob as a one-time job on installation. To perform the first initialization of proxies
 apiVersion: batch/v1
@@ -83,5 +83,5 @@ metadata:
 spec:
   template:
     spec:
-      {{- include "rucio-servers.renew-fts-proxy-jobspec" . | indent 4 }}
+      {{- include "rucio-daemons.renew-fts-proxy-jobspec" . | indent 4 }}
 {{ end }}
