@@ -1,4 +1,65 @@
+{{- define "rucio-servers.renew-fts-proxy-jobspec" }}
+{{- if .Values.ftsRenewal.enabled }}
+  serviceAccountName: {{ .Release.Name }}-rucio-edit
+  volumes:
+  {{- if or (eq .Values.ftsRenewal.vo "atlas") (eq .Values.ftsRenewal.vo "dteam") }}
+  - name: longproxy
+    secret:
+      secretName: {{ .Release.Name }}-longproxy
+  {{- else }}
+  - name: usercert
+    secret:
+      secretName: {{ .Release.Name }}-fts-cert
+  - name: userkey
+    secret:
+      secretName: {{ .Release.Name }}-fts-key
+  {{- end }}
+  {{- range $key, $val := .Values.persistentVolumes }}
+  - name: {{ $key }}
+    persistentVolumeClaim:
+      claimName: {{ $val.name }}
+  {{- end}}
+  containers:
+    - name: renew-fts-cron
+      image: "{{ .Values.ftsRenewal.image.repository }}:{{ .Values.ftsRenewal.image.tag }}"
+      imagePullPolicy: {{ .Values.ftsRenewal.image.pullPolicy }}
+      volumeMounts:
+  {{- if or (eq .Values.ftsRenewal.vo "atlas") (eq .Values.ftsRenewal.vo "dteam") }}
+        - name: longproxy
+          mountPath: /opt/rucio/certs/
+  {{- else }}
+        - name: usercert
+          mountPath: /opt/rucio/certs/
+        - name: userkey
+          mountPath: /opt/rucio/keys/
+  {{- end }}
+  {{- range $key, $val := .Values.persistentVolumes }}
+        - name: {{ $key }}
+          mountPath: {{ $val.mountPath }}
+  {{- end}}
+      env:
+        {{- range $key1, $val1 := .Values.optional_config }}
+        - name: {{ $key1 | upper }}
+          value: "{{ $val1  }}"
+        {{- end}}
+        - name: RUCIO_VO
+          value: {{ .Values.ftsRenewal.vo | quote }}
+        - name: RUCIO_FTS_VOMS
+          value: {{ .Values.ftsRenewal.voms | quote }}
+        - name: RUCIO_FTS_SERVERS
+          value: {{ .Values.ftsRenewal.servers | quote }}
+        - name: RUCIO_FTS_SECRETS
+          value: "{{ .Release.Name }}-rucio-x509up"
+  {{- if or (eq .Values.ftsRenewal.vo "atlas") (eq .Values.ftsRenewal.vo "dteam") }}
+        - name: RUCIO_LONG_PROXY
+          value: {{ .Values.ftsRenewal.longProxy | quote }}
+  {{- end }}
+  restartPolicy: OnFailure
+{{- end }}
+{{- end }}
+
 {{- if .Values.ftsRenewal.enabled -}}
+---
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
@@ -9,59 +70,18 @@ spec:
     spec:
       template:
         spec:
-          serviceAccountName: {{ .Release.Name }}-rucio-edit
-          volumes:
-{{- if or (eq .Values.ftsRenewal.vo "atlas") (eq .Values.ftsRenewal.vo "dteam") }}
-          - name: longproxy
-            secret:
-              secretName: {{ .Release.Name }}-longproxy
-{{- else }}
-          - name: usercert
-            secret:
-              secretName: {{ .Release.Name }}-fts-cert
-          - name: userkey
-            secret:
-              secretName: {{ .Release.Name }}-fts-key
-{{- end }}
-{{- range $key, $val := .Values.persistentVolumes }}
-          - name: {{ $key }}
-            persistentVolumeClaim:
-              claimName: {{ $val.name }}
-{{- end}}
-          containers:
-            - name: renew-fts-cron
-              image: "{{ .Values.ftsRenewal.image.repository }}:{{ .Values.ftsRenewal.image.tag }}"
-              imagePullPolicy: {{ .Values.ftsRenewal.image.pullPolicy }}
-              volumeMounts:
-{{- if or (eq .Values.ftsRenewal.vo "atlas") (eq .Values.ftsRenewal.vo "dteam") }}
-                - name: longproxy
-                  mountPath: /opt/rucio/certs/
-{{- else }}
-                - name: usercert
-                  mountPath: /opt/rucio/certs/
-                - name: userkey
-                  mountPath: /opt/rucio/keys/
-{{- end }}
-{{- range $key, $val := .Values.persistentVolumes }}
-                - name: {{ $key }}
-                  mountPath: {{ $val.mountPath }}
-{{- end}}
-              env:
-                {{- range $key1, $val1 := .Values.optional_config }}
-                - name: {{ $key1 | upper }}
-                  value: "{{ $val1  }}"
-                {{- end}}
-                - name: RUCIO_VO
-                  value: {{ .Values.ftsRenewal.vo | quote }}
-                - name: RUCIO_FTS_VOMS
-                  value: {{ .Values.ftsRenewal.voms | quote }}
-                - name: RUCIO_FTS_SERVERS
-                  value: {{ .Values.ftsRenewal.servers | quote }}
-                - name: RUCIO_FTS_SECRETS
-                  value: "{{ .Release.Name }}-rucio-x509up"
-{{- if or (eq .Values.ftsRenewal.vo "atlas") (eq .Values.ftsRenewal.vo "dteam") }}
-                - name: RUCIO_LONG_PROXY
-                  value: {{ .Values.ftsRenewal.longProxy | quote }}
-{{- end }}
-          restartPolicy: OnFailure
+          {{- include "rucio-servers.renew-fts-proxy-jobspec" . | indent 8 }}
+---
+# Also run the cronjob as a one-time job on installation. To perform the first initialization of proxies
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Release.Name }}-renew-fts-proxy-on-helm-install
+  annotations:
+    helm.sh/hook: pre-install
+    helm.sh/hook-delete-policy: hook-succeeded
+spec:
+  template:
+    spec:
+      {{- include "rucio-servers.renew-fts-proxy-jobspec" . | indent 4 }}
 {{ end }}
