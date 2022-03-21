@@ -78,7 +78,7 @@ kind: Job
 metadata:
   name: {{ .Release.Name }}-renew-fts-proxy-on-helm-install
   annotations:
-    helm.sh/hook: pre-install
+    helm.sh/hook: post-install  # Relies on rucio service account, created by this helm chart
     helm.sh/hook-delete-policy: hook-succeeded
 spec:
   template:
