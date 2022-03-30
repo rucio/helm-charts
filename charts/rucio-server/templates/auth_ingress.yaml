@@ -21,7 +21,7 @@ spec:
   tls:
   {{- range .Values.authIngress.tls }}
     - hosts:
-      {{- range $.Values.ingress.hosts }}
+      {{- range $.Values.authIngress.hosts }}
         - {{ . }}
       {{- end }}
       secretName: {{ .secretName }}
