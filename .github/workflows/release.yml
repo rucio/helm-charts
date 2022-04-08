@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - master
-      - release-1.25
+      - release-*
 
 jobs:
   release:
