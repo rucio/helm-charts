@@ -72,12 +72,6 @@ spec:
           secret:
             secretName: {{ .Release.Name }}-hermes2-key
 {{ end }}
-        - name: config
-          mountPath: /opt/rucio/etc/rucio.config.common.json
-          subPath: rucio.config.common.json
-        - name: config
-          mountPath: /opt/rucio/etc/rucio.config.component.json
-          subPath: rucio.config.component.json
         {{- range $key, $val := .Values.additionalSecrets }}
         - name: {{ $key }}
           secret:
