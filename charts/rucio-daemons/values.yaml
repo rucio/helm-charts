@@ -94,6 +94,7 @@ abacusRse:
 
 automatix:
   threads: 1
+  sleepTime: 30
   podAnnotations: {}
   resources:
     limits:
