@@ -123,7 +123,7 @@ spec:
             - name: RUCIO_DAEMON
               value: "automatix"
             - name: RUCIO_DAEMON_ARGS
-              value: "{{- if .Values.automatix.threads }} --threads-per-process {{ .Values.automatix.threads }}{{ end }} {{- if .Values.automatix.inputFile }} --input-file {{ .Values.automatix.inputFile }}{{ end }}"
+              value: "{{- if .Values.automatix.threads }} --threads-per-process {{ .Values.automatix.threads }}{{ end }} {{- if .Values.automatix.inputFile }} --input-file {{ .Values.automatix.inputFile }}{{ end }} {{- if .Values.automatix.sleepTime }} --sleep-time {{ .Values.automatix.sleepTime }}{{ end }}"
             - name: X509_USER_PROXY
               value: "/opt/proxy/x509up"
 {{- with .Values.automatix.resources }}
