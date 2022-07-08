@@ -1,0 +1,141 @@
+{{- if gt .Values.replicaRecovererCount 0.0 -}}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ template "rucio.fullname" . }}.config.replica-recoverer
+  labels:
+    app: {{ template "rucio.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+type: Opaque
+data:
+  {{- $common_config := .Values.config | default dict | mustToPrettyJson | b64enc }}
+  {{- $component_config := .Values.replicaRecoverer.config | default dict | mustToPrettyJson | b64enc }}
+  rucio.config.common.json: {{ $common_config | quote }}
+  rucio.config.component.json: {{ $component_config | quote }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-replica-recoverer
+  labels:
+    app: {{ template "rucio.name" . }}
+    chart: {{ template "rucio.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaRecovererCount }}
+  selector:
+    matchLabels:
+      app: {{ template "rucio.name" . }}
+      release: {{ .Release.Name }}
+  strategy:
+    type: {{ .Values.strategy.type }}
+{{- if eq .Values.strategy.type "RollingUpdate" }}
+    {{- with .Values.strategy.rollingUpdate }}
+    rollingUpdate:
+{{ toYaml . | trim | indent 6 }}
+    {{- end }}
+{{- end }}
+  minReadySeconds: {{ .Values.minReadySeconds }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "rucio.name" . }}
+        release: {{ .Release.Name }}
+        rucio-daemon: replica-recoverer
+    {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      annotations:
+        checksum/config: {{ print "%s%s" $common_config $component_config | sha1sum }}
+    {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.replicaRecoverer.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    spec:
+    {{- if .Values.serviceAccountName }}
+      serviceAccountName: {{ .Values.serviceAccountName }}
+    {{- end }}
+      volumes:
+      - name: config
+        secret:
+          secretName: {{ template "rucio.fullname" . }}.config.replica-recoverer
+      - name: proxy-volume
+        secret:
+          secretName: {{ .Release.Name }}-rucio-x509up
+      - name: ca-volume
+        secret:
+          secretName: {{ .Release.Name }}-rucio-ca-bundle
+      {{- range $key, $val := .Values.additionalSecrets }}
+      - name: {{ $key }}
+        secret:
+          secretName: {{ $.Release.Name }}-{{ $val.secretName }}
+      {{- end}}
+      {{- range $key, $val := .Values.persistentVolumes }}
+      - name: {{ $key }}
+        persistentVolumeClaim:
+          claimName: {{ $val.name }}
+      {{- end}}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - name: proxy-volume
+              mountPath: /opt/proxy
+            - name: ca-volume
+              mountPath: /opt/certs
+            - name: config
+              mountPath: /opt/rucio/etc/rucio.config.common.json
+              subPath: rucio.config.common.json
+            - name: config
+              mountPath: /opt/rucio/etc/rucio.config.component.json
+              subPath: rucio.config.component.json
+            - name: config
+              mountPath: /opt/rucio/etc/suspicious_replica_recoverer.json
+              subPath: suspicious_replica_recoverer.json
+          {{- range $key, $val := .Values.additionalSecrets }}
+            - name: {{ $key }}
+              mountPath: {{ $val.mountPath }}
+              subPath: {{ $val.subPath }}
+          {{- end}}
+          {{- range $key, $val := .Values.persistentVolumes }}
+            - name: {{ $key }}
+              mountPath: {{ $val.mountPath }}
+          {{- end}}
+          ports:
+            - name: metrics
+              containerPort: 8080
+              protocol: TCP
+          env:
+            {{- range $key1, $val1 := .Values.optional_config }}
+            - name: {{ $key1 | upper }}
+              value: "{{ $val1  }}"
+            {{- end}}
+            - name: RUCIO_OVERRIDE_CONFIGS
+              value: "/opt/rucio/etc/rucio.config.common.json /opt/rucio/etc/rucio.config.component.json /opt/rucio/etc/suspicious_replica_recoverer.json"
+            - name: RUCIO_DAEMON
+              value: "replica-recoverer"
+            - name: RUCIO_DAEMON_ARGS
+              value: "{{- if .Values.replicaRecoverer.sleepTime }} --sleep-time {{ .Values.replicaRecoverer.sleepTime }}{{ end }}"
+{{- with .Values.replicaRecoverer.resources }}
+          resources:
+{{ toYaml . | trim | indent 12 }}
+{{ end }}
+{{- with .Values.replicaRecoverer.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.replicaRecoverer.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.replicaRecoverer.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{ end }}
