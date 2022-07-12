@@ -83,6 +83,8 @@ spec:
           volumeMounts:
           - name: httpdlog
             mountPath: /var/log/httpd
+          resources:
+{{ toYaml .Values.errorLogsExporterResources | indent 12 }}            
 {{- end }}
 {{- if .Values.monitoring.enabled }}
         - name: apache-exporter
