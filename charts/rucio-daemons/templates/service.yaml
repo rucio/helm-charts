@@ -4,7 +4,7 @@ kind: Service
 metadata:
   name: {{ template "rucio.fullname" . }}
   labels:
-    app: {{ template "rucio.name" . }}
+    app-group: {{ template "rucio.name" . }}
     chart: {{ template "rucio.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -16,6 +16,6 @@ spec:
       protocol: TCP
       name: metrics
   selector:
-    app: {{ template "rucio.name" . }}
+    app-group: {{ template "rucio.name" . }}
     release: {{ .Release.Name }}
 {{ end }}

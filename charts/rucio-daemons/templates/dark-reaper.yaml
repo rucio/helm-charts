@@ -1,10 +1,12 @@
 {{- if gt .Values.darkReaperCount 0.0 -}}
+{{- $rucio_daemon := "dark-reaper" }}
+{{- $app_label := printf "%s-%s" (include "rucio.name" .) $rucio_daemon }}
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ template "rucio.fullname" . }}.config.dark-reaper.yaml
+  name: {{ template "rucio.fullname" . }}.config.{{ $rucio_daemon }}.yaml
   labels:
-    app: {{ template "rucio.name" . }}
+    app: {{ $app_label }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -18,9 +20,10 @@ data:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-dark-reaper
+  name: {{ .Release.Name }}-{{ $rucio_daemon }}
   labels:
-    app: {{ template "rucio.name" . }}
+    app: {{ $app_label }}
+    app-group: {{ template "rucio.name" . }}
     chart: {{ template "rucio.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -28,7 +31,7 @@ spec:
   replicas: {{ .Values.darkReaperCount }}
   selector:
     matchLabels:
-      app: {{ template "rucio.name" . }}
+      app: {{ $app_label }}
       release: {{ .Release.Name }}
   strategy:
     type: {{ .Values.strategy.type }}
@@ -42,9 +45,10 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "rucio.name" . }}
+        app: {{ $app_label }}
+        app-group: {{ template "rucio.name" . }}
         release: {{ .Release.Name }}
-        rucio-daemon: dark-reaper
+        rucio-daemon: {{ $rucio_daemon }}
     {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
     {{- end }}
@@ -63,7 +67,7 @@ spec:
       volumes:
       - name: config
         secret:
-          secretName: {{ template "rucio.fullname" . }}.config.dark-reaper.yaml
+          secretName: {{ template "rucio.fullname" . }}.config.{{ $rucio_daemon }}.yaml
       - name: proxy-volume
         secret:
           secretName: {{ .Release.Name }}-rucio-x509up
@@ -116,7 +120,7 @@ spec:
             - name: RUCIO_OVERRIDE_CONFIGS
               value: "/opt/rucio/etc/rucio.config.common.json /opt/rucio/etc/rucio.config.component.json"
             - name: RUCIO_DAEMON
-              value: "dark-reaper"
+              value: "{{ $rucio_daemon }}"
             - name: RUCIO_DAEMON_ARGS
               value: '{{- if .Values.darkReaper.workers }} --total-workers {{ .Values.darkReaper.workers }}{{end}} {{- if .Values.darkReaper.scheme }} --scheme {{ .Values.darkReaper.scheme }}{{ end }} {{- if .Values.darkReaper.includeRses }} --include-rses="{{ .Values.darkReaper.includeRses }}"{{ end }} {{- if .Values.darkReaper.rses }} --rses {{ .Values.darkReaper.rses }}{{ end }} {{- if .Values.darkReaper.chunkSize }}  --chunk-size {{ .Values.darkReaper.chunkSize }}{{ end }} {{- if .Values.darkReaper.excludeRses }} --exclude-rses {{ .Values.darkReaper.excludeRses }}{{ end }}'
             - name: GLOBUS_THREAD_MODEL
