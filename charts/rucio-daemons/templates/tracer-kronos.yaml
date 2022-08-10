@@ -101,7 +101,7 @@ spec:
             - name: RUCIO_OVERRIDE_CONFIGS
               value: "/opt/rucio/etc/rucio.config.common.json /opt/rucio/etc/rucio.config.component.json"
             - name: RUCIO_DAEMON
-              value: "{{ $rucio_daemon }}"
+              value: "kronos"
             - name: RUCIO_DAEMON_ARGS
               value: "{{- if .Values.tracerKronos.threads }} --threads {{ .Values.tracerKronos.threads }}{{end}} {{- if .Values.tracerKronos.sleepTimeFiles }} --sleep-time-files {{ .Values.tracerKronos.sleepTimeFiles }}{{ end }}{{- if .Values.tracerKronos.sleepTimeDatasets }} --sleep-time-datasets {{ .Values.tracerKronos.sleepTimeDatasets }}{{ end }}"
 {{- with .Values.tracerKronos.resources }}
