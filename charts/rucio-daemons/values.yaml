@@ -204,7 +204,7 @@ hermes:
   threads: 1
   podAnnotations: {}
   bulk: 100
-  delay: 10
+  sleepTime: 10
   brokerTimeout: 3
   resources:
     limits:
