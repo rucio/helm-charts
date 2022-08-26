@@ -14,6 +14,6 @@ spec:
             - name: restart-pods
               image: "{{ .Values.automaticRestart.image.repository }}:{{ .Values.automaticRestart.image.tag }}"
               imagePullPolicy: {{ .Values.automaticRestart.image.pullPolicy }}
-              command: ["/bin/sh", "-c", "kubectl get deployment -l 'app in (rucio-server,rucio-server-trace,rucio-server-auth)' -o jsonpath='{.items[*].metadata.name}' | tr ' ' '\n' | xargs -n 1 kubectl rollout restart deployment"]
+              command: ["/bin/sh", "-c", "kubectl get deployment -l {{ .Values.automaticRestart.selectorLabel }} -o jsonpath='{.items[*].metadata.name}' | tr ' ' '\n' | xargs -n 1 kubectl rollout restart deployment"]
           restartPolicy: OnFailure
 {{ end }}

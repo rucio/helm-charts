@@ -132,6 +132,7 @@ automaticRestart:
     tag: latest
     pullPolicy: IfNotPresent
   schedule: "0 0 * * *"
+  selectorLabel: "'app in (rucio-server,rucio-server-trace,rucio-server-auth)'"
 
 additionalSecrets: {}
   # gcssecret:
