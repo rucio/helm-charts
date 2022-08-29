@@ -378,6 +378,7 @@ automaticRestart:
     tag: latest
     pullPolicy: IfNotPresent
   schedule: "0 0 * * *"
+  selectorLabel: "app-group=rucio-daemons"
 
 additionalSecrets: {}
   # gcssecret:
