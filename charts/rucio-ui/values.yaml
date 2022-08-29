@@ -52,7 +52,8 @@ additionalSecrets: {}
 #   subPath: gcs_rucio.json
 
 ## values used to configure apache
-httpd_config: {}
+httpd_config:
+  legacy_dn: "False"
   # mpm_mode: "event"
   # start_servers: "1"
   # min_spare_threads: "1"
