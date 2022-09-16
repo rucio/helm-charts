@@ -55,9 +55,9 @@ spec:
       - name: httpdlog
         emptyDir: {}
       {{- range $key, $val := .Values.additionalSecrets }}
-      - name: {{ $key }}
+      - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }} 
         secret:
-          secretName: {{ $.Release.Name }}-{{ $val.secretName }}
+          secretName: {{ coalesce $val.secretFullName (printf "%s-%s" $.Release.Name $val.secretName) }}
       {{- end}}
       {{- range $key, $val := .Values.persistentVolumes }}
       - name: {{ $key }}
@@ -136,12 +136,12 @@ spec:
             {{- /* TODO: depreacte and remove support for subPaths (at plural) case */}}
             {{-  if $val.subPaths }}
             {{-   range $val.subPaths }}
-            - name: {{ $key }}
+            - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }} 
               mountPath: {{ $val.mountPath }}{{ . }}
               subPath: {{ . }}
             {{-   end}}
             {{-  else }}
-            - name: {{ $key }}
+            - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }} 
               mountPath: {{ $val.mountPath }}
               subPath: {{ $val.subPath }}
             {{-  end}}

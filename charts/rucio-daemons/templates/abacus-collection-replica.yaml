@@ -75,9 +75,9 @@ spec:
         secret:
           secretName: {{ .Release.Name }}-rucio-ca-bundle
       {{- range $key, $val := .Values.additionalSecrets }}
-      - name: {{ $key }}
+      - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }} 
         secret:
-          secretName: {{ $.Release.Name }}-{{ $val.secretName }}
+          secretName: {{ coalesce $val.secretFullName (printf "%s-%s" $.Release.Name $val.secretName) }}
       {{- end}}
       {{- range $key, $val := .Values.persistentVolumes }}
       - name: {{ $key }}
@@ -100,7 +100,7 @@ spec:
               mountPath: /opt/rucio/etc/rucio.config.component.json
               subPath: rucio.config.component.json
             {{- range $key, $val := .Values.additionalSecrets }}
-            - name: {{ $key }}
+            - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }} 
               mountPath: {{ $val.mountPath }}
               subPath: {{ $val.subPath }}
             {{- end}}
