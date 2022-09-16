@@ -128,6 +128,13 @@ spec:
               mountPath: {{ $val.mountPath }}
             {{- end}}
           env:
+            {{- range $key, $val := .Values.httpd_config }}
+            - name: RUCIO_HTTPD_{{ $key | upper }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "rucio.fullname" $ }}.cfg
+                  key: {{ $key }}
+            {{- end}}
             {{- range $key1, $val1 := .Values.optional_config }}
             - name: {{ $key1 | upper }}
               value: "{{ $val1  }}"
