@@ -124,8 +124,6 @@ ftsRenewal:
   vo: "cms"
   voms: "cms:/cms/Role=production"
   servers: "https://fts3-devel.cern.ch:8446,https://cmsfts3.fnal.gov:8446,https://fts3.cern.ch:8446,https://lcgfts3.gridpp.rl.ac.uk:8446,https://fts3-pilot.cern.ch:8446"
-
-ftsRenewalResources:
   limits:
     cpu: 500m
     memory: 256Mi
@@ -141,14 +139,13 @@ automaticRestart:
     pullPolicy: IfNotPresent
   schedule: "0 0 * * *"
   selectorLabel: "'app in (rucio-server,rucio-server-trace,rucio-server-auth)'"
-
-automaticRestartResources:
-  limits:
-   cpu: 500m
-   memory: 256Mi
-  requests:
-   cpu: 100m
-   memory: 128Mi
+  resources:
+    limits:
+     cpu: 500m
+     memory: 256Mi
+    requests:
+     cpu: 100m
+     memory: 128Mi
 
 additionalSecrets: {}
   # gcssecret:

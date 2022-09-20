@@ -24,7 +24,7 @@
       image: "{{ .Values.ftsRenewal.image.repository }}:{{ .Values.ftsRenewal.image.tag }}"
       imagePullPolicy: {{ .Values.ftsRenewal.image.pullPolicy }}
       resources:
-{{ toYaml .Values.ftsRenewalResources | indent 15 }}
+{{ toYaml .Values.ftsRenewal | indent 15 }}
       volumeMounts:
   {{- if or (eq .Values.ftsRenewal.vo "atlas") (eq .Values.ftsRenewal.vo "dteam") }}
         - name: longproxy
