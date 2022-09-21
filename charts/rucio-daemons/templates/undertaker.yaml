@@ -72,9 +72,9 @@ spec:
         secret:
           secretName: {{ .Release.Name }}-rucio-x509up
       {{- range $key, $val := .Values.additionalSecrets }}
-      - name: {{ $key }}
+      - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }} 
         secret:
-          secretName: {{ $.Release.Name }}-{{ $val.secretName }}
+          secretName: {{ coalesce $val.secretFullName (printf "%s-%s" $.Release.Name $val.secretName) }}
       {{- end}}
       {{- range $key, $val := .Values.persistentVolumes }}
       - name: {{ $key }}
@@ -95,7 +95,7 @@ spec:
             - name: proxy-volume
               mountPath: /opt/proxy
             {{- range $key, $val := .Values.additionalSecrets }}
-            - name: {{ $key }}
+            - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }} 
               mountPath: {{ $val.mountPath }}
               subPath: {{ $val.subPath }}
             {{- end}}
