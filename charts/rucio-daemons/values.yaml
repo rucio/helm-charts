@@ -398,6 +398,13 @@ automaticRestart:
     pullPolicy: IfNotPresent
   schedule: "0 0 * * *"
   selectorLabel: "app-group=rucio-daemons"
+  resources:
+    limits:
+      cpu: 500m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
 
 additionalSecrets: {}
   # gcssecret:
