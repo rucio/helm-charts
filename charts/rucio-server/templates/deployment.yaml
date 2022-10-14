@@ -11,7 +11,7 @@ metadata:
 type: Opaque
 data:
   {{- $common_config := .Values.config | default dict | mustToPrettyJson | b64enc }}
-  rucio.config.common.json: {{ $common_config | quote }}
+  common.json: {{ $common_config | quote }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -116,8 +116,8 @@ spec:
 {{ toYaml .Values.serverResources | indent 12 }}
           volumeMounts:
           - name: config
-            mountPath: /opt/rucio/etc/rucio.config.common.json
-            subPath: rucio.config.common.json
+            mountPath: /opt/rucio/etc/conf.d/10_common.json
+            subPath: common.json
           {{- if .Values.ftsRenewal.enabled }}
           - name: proxy-volume
             mountPath: /opt/proxy
@@ -207,7 +207,7 @@ spec:
             - name: RUCIO_SERVER_TYPE
               value: "{{ .Values.serverType.server }}"
             - name: RUCIO_OVERRIDE_CONFIGS
-              value: "/opt/rucio/etc/rucio.config.common.json"
+              value: "/opt/rucio/etc/conf.d/"
             - name: RUCIO_LOG_FORMAT
               value: '{{ .Values.logFormat.server }}'
             - name: RUCIO_WSGI_DAEMON_PROCESSES

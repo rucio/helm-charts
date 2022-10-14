@@ -11,7 +11,7 @@ metadata:
 type: Opaque
 data:
   {{- $common_config := .Values.config | default dict | mustToPrettyJson | b64enc }}
-  rucio.config.common.json: {{ $common_config | quote }}
+  common.json: {{ $common_config | quote }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -130,8 +130,8 @@ spec:
             timeoutSeconds: {{ .Values.livenessProbe.authServer.timeoutSeconds }}
           volumeMounts:
             - name: config
-              mountPath: /opt/rucio/etc/rucio.config.common.json
-              subPath: rucio.config.common.json
+              mountPath: /opt/rucio/etc/conf.d/10_common.json
+              subPath: common.json
             - name: httpdlog
               mountPath: /var/log/httpd
             {{- range $key, $val := .Values.additionalSecrets }}
@@ -193,7 +193,7 @@ spec:
             - name: RUCIO_CFG_API_ENDPOINTS
               value: "auth,ping"
             - name: RUCIO_OVERRIDE_CONFIGS
-              value: "/opt/rucio/etc/rucio.config.common.json"
+              value: "/opt/rucio/etc/conf.d/"
             - name: RUCIO_LOG_FORMAT
               value: '{{ .Values.logFormat.authServer }}'
             - name: RUCIO_WSGI_DAEMON_PROCESSES
