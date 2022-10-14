@@ -10,7 +10,7 @@ metadata:
 type: Opaque
 data:
   {{- $common_config := .Values.config | default dict | mustToPrettyJson | b64enc }}
-  rucio.config.common.json: {{ $common_config | quote }}
+  common.json: {{ $common_config | quote }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -100,8 +100,8 @@ spec:
             {{- end }}
           volumeMounts:
             - name: config
-              mountPath: /opt/rucio/etc/rucio.config.common.json
-              subPath: rucio.config.common.json
+              mountPath: /opt/rucio/etc/conf.d/10_common.json
+              subPath: common.json
             - name: httpdlog
               mountPath: /var/log/httpd
             - name: aliases
@@ -155,7 +155,7 @@ spec:
             - name: RUCIO_DEFINE_ALIASES
               value: "True"
             - name: RUCIO_OVERRIDE_CONFIGS
-              value: "/opt/rucio/etc/rucio.config.common.json"
+              value: "/opt/rucio/etc/conf.d/"
             - name: RUCIO_LOG_FORMAT
               value: '[%{%Y-%m-%d %H:%M:%S}t]\t%v\t%h\t%{X-Forwarded-For}i\t%{X-Rucio-RequestId}i\t%>s\t%I\t%B\t%D\t\"%r\"\t\"%{X-Rucio-Auth-Token}i\"\t\"%{User-Agent}i\"\t%{X-Rucio-Script}i'
 {{- if not .Values.service.useSSL }}

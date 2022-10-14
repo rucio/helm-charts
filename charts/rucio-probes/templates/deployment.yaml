@@ -10,7 +10,7 @@ metadata:
 type: Opaque
 data:
   {{- $common_config := .Values.config | default dict | mustToPrettyJson | b64enc }}
-  rucio.config.common.json: {{ $common_config | quote }}
+  common.json: {{ $common_config | quote }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -66,14 +66,14 @@ spec:
       containers:
       - env:
         - name: RUCIO_OVERRIDE_CONFIGS
-          value: "/opt/rucio/etc/rucio.config.common.json"
+          value: "/opt/rucio/etc/common.json"
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         name: {{ .Chart.Name }}
         volumeMounts:
         - name: config
-          mountPath: /opt/rucio/etc/rucio.config.common.json
-          subPath: rucio.config.common.json
+          mountPath: /opt/rucio/etc/conf.d/10_common.json
+          subPath: common.json
         - mountPath: /etc/jobber-config/
           name: jobber-config
 {{- if hasKey .Values.probeSettings "ftsProxySecret" }}

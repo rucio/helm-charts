@@ -14,8 +14,8 @@ type: Opaque
 data:
   {{- $common_config := .Values.config | default dict | mustToPrettyJson | b64enc }}
   {{- $component_config := .Values.transmogrifier.config | default dict | mustToPrettyJson | b64enc }}
-  rucio.config.common.json: {{ $common_config | quote }}
-  rucio.config.component.json: {{ $component_config | quote }}
+  common.json: {{ $common_config | quote }}
+  component.json: {{ $component_config | quote }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -94,11 +94,11 @@ spec:
             - name: ca-volume
               mountPath: /opt/certs
             - name: config
-              mountPath: /opt/rucio/etc/rucio.config.common.json
-              subPath: rucio.config.common.json
+              mountPath: /opt/rucio/etc/conf.d/10_common.json
+              subPath: common.json
             - name: config
-              mountPath: /opt/rucio/etc/rucio.config.component.json
-              subPath: rucio.config.component.json
+              mountPath: /opt/rucio/etc/conf.d/20_component.json
+              subPath: component.json
             {{- range $key, $val := .Values.additionalSecrets }}
             - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }} 
               mountPath: {{ $val.mountPath }}
@@ -118,7 +118,7 @@ spec:
               value: "{{ $val1  }}"
             {{- end}}
             - name: RUCIO_OVERRIDE_CONFIGS
-              value: "/opt/rucio/etc/rucio.config.common.json /opt/rucio/etc/rucio.config.component.json"
+              value: "/opt/rucio/etc/conf.d/"
             - name: RUCIO_DAEMON
               value: "{{ $rucio_daemon }}"
             - name: RUCIO_DAEMON_ARGS
