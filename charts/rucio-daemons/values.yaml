@@ -25,6 +25,7 @@ judgeRepairerCount: 0
 oauthManagerCount: 0
 undertakerCount: 0
 reaperCount: 0
+replicaRecovererCount: 0
 transmogrifierCount: 0
 tracerKronosCount: 0
 minosCount: 0
@@ -297,6 +298,17 @@ reaper:
   scheme: ""
   threads: 4
   includeRses: ""
+  podAnnotations: {}
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "200Mi"
+      cpu: "700m"
+
+replicaRecoverer:
+  threads: 1
   podAnnotations: {}
   resources:
     limits:
