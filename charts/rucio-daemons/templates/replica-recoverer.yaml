@@ -1,4 +1,4 @@
-{{- if gt .Values.transmogrifierCount 0.0 -}}
+{{- if gt .Values.replicaRecovererCount 0.0 -}}
 {{- $rucio_daemon := "replica-recoverer" }}
 {{- $app_label := printf "%s-%s" (include "rucio.name" .) $rucio_daemon }}
 
