@@ -1,0 +1,172 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ template "rucio.fullname" . }}.config.yaml
+  labels:
+    app: {{ template "rucio.name" . }}
+    chart: {{ template "rucio.chart" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+type: Opaque
+data:
+  {{- $common_config := .Values.config | default dict | mustToPrettyJson | b64enc }}
+  common.json: {{ $common_config | quote }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "rucio.fullname" . }}
+  labels:
+    app: {{ template "rucio.name" . }}
+    chart: {{ template "rucio.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "rucio.name" . }}
+      release: {{ .Release.Name }}
+  strategy:
+    type: {{ .Values.strategy.type }}
+{{- if eq .Values.strategy.type "RollingUpdate" }}
+    {{- with .Values.strategy.rollingUpdate }}
+    rollingUpdate:
+{{ toYaml . | trim | indent 6 }}
+    {{- end }}
+{{- end }}
+  minReadySeconds: {{ .Values.minReadySeconds }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "rucio.name" . }}
+        release: {{ .Release.Name }}
+      annotations:
+        checksum/config: {{ $common_config | sha1sum }}
+    spec:
+      volumes:
+      - name: config
+        secret:
+          secretName: {{ template "rucio.fullname" . }}.config.yaml
+      - name: httpdlog
+        emptyDir: {}
+      {{- if eq .Values.service.useSSL true }}
+      - name: hostcert
+        secret:
+          secretName: {{ .Release.Name }}-hostcert
+      - name: hostkey
+        secret:
+          secretName: {{ .Release.Name }}-hostkey
+      - name: cafile
+        secret:
+          secretName: {{ .Release.Name }}-cafile
+      {{- end }}
+      {{- range $key, $val := .Values.additionalSecrets }}
+      - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }}
+        secret:
+          secretName: {{ coalesce $val.secretFullName (printf "%s-%s" $.Release.Name $val.secretName) }}
+      {{- end}}
+      {{- range $key, $val := .Values.persistentVolumes }}
+      - name: {{ $key }}
+        persistentVolumeClaim:
+          claimName: {{ $val.name }}
+      {{- end}}
+      containers:
+{{- if .Values.exposeErrorLogs }}
+        - name: httpd-error-log
+          image: busybox
+          args: [/bin/sh, -c, 'tail -n+1 -F /var/log/httpd/error_log']
+          volumeMounts:
+          - name: httpdlog
+            mountPath: /var/log/httpd
+{{- end }}
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+            {{- if .Values.service.useSSL }}
+            - name: https
+              containerPort: 443
+              protocol: TCP
+            {{- end }}
+          volumeMounts:
+            - name: config
+              mountPath: /opt/rucio/etc/conf.d/10_common.json
+              subPath: common.json
+            - name: httpdlog
+              mountPath: /var/log/httpd
+            {{- if .Values.service.useSSL }}
+            - name: hostcert
+              mountPath: /etc/grid-security/hostcert.pem
+              subPath: hostcert.pem
+            - name: hostkey
+              mountPath: /etc/grid-security/hostkey.pem
+              subPath: hostkey.pem
+            - name: cafile
+              mountPath: /etc/grid-security/ca.pem
+              subPath: ca.pem
+            {{- end}}
+            {{- range $key, $val := .Values.additionalSecrets }}
+            - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }} 
+              mountPath: {{ $val.mountPath }}
+              subPath: {{ $val.subPath }}
+            {{- end}}
+            {{- range $key, $val := .Values.persistentVolumes }}
+            - name: {{ $key }}
+              mountPath: {{ $val.mountPath }}
+            {{- end}}
+          env:
+            {{- range $key, $val := .Values.config.httpd }}
+            - name: RUCIO_HTTPD_{{ $key | upper }}
+              value: {{ $val | quote }}
+            {{- end }}
+            {{- range $key, $val := .Values.config.httpdWebui }}
+            - name: RUCIO_{{ $key | upper }}
+              value: {{ $val | quote }}
+            {{- end }}
+            {{ range $i, $provider := .Values.config.oidcProviders }}
+            {{- range $key, $val := $provider }}
+            - name: RUCIO_CFG_OIDC_REACT_APP_{{ $key | upper }}_{{ $i }}
+              value: {{ $val | quote }}
+            {{- end }}
+            {{- end }}
+            {{- range $key, $val := .Values.config.react }}
+            - name: {{ $key | upper }}
+              value: {{ $val | quote }}
+            {{- end }}
+            {{- range $key1, $val1 := .Values.optional_config }}
+            - name: {{ $key1 | upper }}
+              value: "{{ $val1  }}"
+            {{- end}}
+            - name: RUCIO_HOST
+              value: {{ required "A valid rucio_host value pointing to the rucio server is required" .Values.config.react.rucio_host }}
+            - name: RUCIO_AUTH_HOST
+              value: {{ required "A valid rucio_auth_host value pointing to the rucio auth server is required" .Values.config.react.rucio_auth_host }}
+            - name: RUCIO_OVERRIDE_CONFIGS
+              value: "/opt/rucio/etc/conf.d/"
+            - name: RUCIO_LOG_FORMAT
+              value: '[%{%Y-%m-%d %H:%M:%S}t]\t%v\t%h\t%{X-Forwarded-For}i\t%{X-Rucio-RequestId}i\t%>s\t%I\t%B\t%D\t\"%r\"\t\"%{X-Rucio-Auth-Token}i\"\t\"%{User-Agent}i\"\t%{X-Rucio-Script}i'
+          {{- if not .Values.service.useSSL }}
+            - name: RUCIO_ENABLE_SSL
+              value: "False"
+{{- else }}
+            - name: RUCIO_ENABLE_SSL
+              value: "True"
+{{- end }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

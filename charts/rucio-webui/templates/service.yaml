@@ -1,0 +1,25 @@
+{{- if gt .Values.replicaCount 0.0 -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "rucio.fullname" . }}
+  labels:
+    app: {{ template "rucio.name" . }}
+    chart: {{ template "rucio.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+{{- with .Values.service.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+  type: {{ $.Values.service.type }}
+  ports:
+    - port: {{ $.Values.service.port }}
+      targetPort: {{ $.Values.service.targetPort }}
+      protocol: TCP
+      name: {{ $.Values.service.portName }}
+  selector:
+    app: {{ template "rucio.name" . }}
+    release: {{ .Release.Name }}
+{{- end }}
