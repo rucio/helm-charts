@@ -69,8 +69,8 @@ config:
 
   ## Rucio WebUI specific configuration for apache 
   httpdWebui:
-    hostname:
-    server_admin:
+    # hostname:
+    # server_admin:
     log_level: 'info'
 
   ## Configuration for OIDC providers

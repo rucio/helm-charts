@@ -134,8 +134,10 @@ spec:
             {{- end }}
             {{- end }}
             {{- range $key, $val := .Values.config.react }}
+            {{- if and (ne $key "rucio_host") (ne $key "rucio_auth_host") }}
             - name: {{ $key | upper }}
               value: {{ $val | quote }}
+            {{- end }}
             {{- end }}
             {{- range $key1, $val1 := .Values.optional_config }}
             - name: {{ $key1 | upper }}
