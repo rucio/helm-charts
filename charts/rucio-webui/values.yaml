@@ -25,9 +25,7 @@ service:
   type: NodePort
   # Run the webui server on port 443 instead of 80 and accept X509 certificates
   useSSL: true
-  port: 443
-  targetPort: https
-  portName: https
+
 
 ingress:
   enabled: true
