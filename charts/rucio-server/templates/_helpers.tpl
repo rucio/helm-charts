@@ -34,10 +34,21 @@ Create chart name and version as used by the chart label.
 {{/*
 Get Ingress Kube API Version
 */}}
-{{- define "rucio.ingress.apiVersion" -}}
+{{- define "rucio.kubeApiVersion.ingress" -}}
   {{- if semverCompare ">= 1.19.x" (default .Capabilities.KubeVersion.Version .Values.kubeVersionOverride) -}}
     {{- print "networking.k8s.io/v1" -}}
   {{- else -}}
     {{- print "extensions/v1beta1" -}}
+  {{- end -}}
+{{- end -}}
+
+{{/*
+Get CronJob Kube API Version
+*/}}
+{{- define "rucio.kubeApiVersion.cronjob" -}}
+  {{- if semverCompare ">= 1.22.x" (default .Capabilities.KubeVersion.Version .Values.kubeVersionOverride) -}}
+    {{- print "batch/v1" -}}
+  {{- else -}}
+    {{- print "batch/v1beta1" -}}
   {{- end -}}
 {{- end -}}

@@ -62,7 +62,7 @@
 
 {{- if .Values.ftsRenewal.enabled -}}
 ---
-apiVersion: batch/v1beta1
+apiVersion: {{ template "rucio.kubeApiVersion.cronjob" . }}
 kind: CronJob
 metadata:
   name: {{ .Release.Name }}-renew-fts-proxy

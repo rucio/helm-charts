@@ -1,5 +1,5 @@
 {{- if .Values.automaticRestart.enabled -}}
-apiVersion: batch/v1beta1
+apiVersion: {{ template "rucio.kubeApiVersion.cronjob" . }}
 kind: CronJob
 metadata:
   name: {{ .Release.Name }}-automatic-restart
