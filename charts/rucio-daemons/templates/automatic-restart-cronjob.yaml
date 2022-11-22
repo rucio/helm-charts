@@ -15,5 +15,7 @@ spec:
               image: "{{ .Values.automaticRestart.image.repository }}:{{ .Values.automaticRestart.image.tag }}"
               imagePullPolicy: {{ .Values.automaticRestart.image.pullPolicy }}
               command: ["/bin/sh", "-c", "kubectl get deployment -l {{ .Values.automaticRestart.selectorLabel }} -o jsonpath='{.items[*].metadata.name}' | tr ' ' '\n' | xargs -n 1 kubectl rollout restart deployment"]
+              resources:
+{{ toYaml .Values.automaticRestart.resources | indent 16 }}
           restartPolicy: OnFailure
 {{ end }}
