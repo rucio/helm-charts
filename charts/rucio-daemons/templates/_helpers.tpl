@@ -30,3 +30,14 @@ Create chart name and version as used by the chart label.
 {{- define "rucio.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/*
+Get CronJob Kube API Version
+*/}}
+{{- define "rucio.kubeApiVersion.cronjob" -}}
+  {{- if semverCompare ">= 1.22.x" (default .Capabilities.KubeVersion.Version .Values.kubeVersionOverride) -}}
+    {{- print "batch/v1" -}}
+  {{- else -}}
+    {{- print "batch/v1beta1" -}}
+  {{- end -}}
+{{- end -}}
