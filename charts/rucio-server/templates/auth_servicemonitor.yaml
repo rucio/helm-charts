@@ -20,11 +20,27 @@ spec:
  {{- if .Values.monitoring.telemetryPath }}
     path: {{ .Values.monitoring.telemetryPath }}
  {{- end }}
+{{- if .Values.monitoring.serviceMonitor.metricRelabelings }}
+    metricRelabelings:
+{{ tpl (toYaml .Values.monitoring.serviceMonitor.metricRelabelings | indent 6) . }}
+{{- end }}
+{{- if .Values.monitoring.serviceMonitor.relabelings }}
+    relabelings:
+{{ toYaml .Values.monitoring.serviceMonitor.relabelings | indent 6 }}
+{{- end }}
   - targetPort: {{ .Values.monitoring.nativeMetricsPort }}
  {{- if .Values.monitoring.interval }}
     interval: {{ .Values.monitoring.interval }}
  {{- end }}
     path: /metrics/
+{{- if .Values.monitoring.serviceMonitor.metricRelabelings }}
+    metricRelabelings:
+{{ tpl (toYaml .Values.monitoring.serviceMonitor.metricRelabelings | indent 6) . }}
+{{- end }}
+{{- if .Values.monitoring.serviceMonitor.relabelings }}
+    relabelings:
+{{ toYaml .Values.monitoring.serviceMonitor.relabelings | indent 6 }}
+{{- end }}
   jobLabel: {{ template "rucio.fullname" . }}-prometheus-exporter-auth
   namespaceSelector:
     matchNames:
