@@ -18,6 +18,9 @@ spec:
     - port: {{ ternary 443 80 $.Values.service.useSSL }}
       targetPort: {{ ternary "https" "http" $.Values.service.useSSL }}
       protocol: TCP
+      {{- if $.Values.service.nodePort }}
+      nodePort: {{ $.Values.service.nodePort }}
+      {{- end }}
       name: {{ ternary "https" "http" $.Values.service.useSSL }}
   selector:
     app: {{ template "rucio.name" . }}
