@@ -25,7 +25,7 @@ service:
   type: NodePort
   # Run the webui server on port 443 instead of 80 and accept X509 certificates
   useSSL: true
-
+  # nodePort: 
 
 ingress:
   enabled: false
@@ -67,23 +67,23 @@ config:
 
   ## Rucio WebUI specific configuration for apache 
   httpdWebui:
-    # hostname:
+    hostname: kube-playground-7p7333rqr5xx-node-0.cern.ch
     # server_admin:
-    log_level: 'info'
+    logLevel: 'info'
 
   ## Configuration for OIDC providers
   oidcProviders: #[]
     - name: "CERN SSO"
-      client_id: "rucio-webui"
-      authorization_endpoint: "https://login.cern.ch/adfs/oauth2/authorize"
-      token_endpoint: "https://login.cern.ch/adfs/oauth2/token"
-      redirect_uri: "https://rucio-webui.cern.ch/auth/oidc/callback"
+      clientId: "rucio-webui"
+      authorizationEndpoint: "https://login.cern.ch/adfs/oauth2/authorize"
+      tokenEndpoint: "https://login.cern.ch/adfs/oauth2/token"
+      redirectUri: "https://rucio-webui.cern.ch/auth/oidc/callback"
       scopes: "openid profile email"
 
   ## Configuration for the WebUI React App
   react:
-    rucio_host:
-    rucio_auth_host: 
+    rucioHost: https://rucio-devmaany.cern.ch
+    rucioAuthHost: https://rucio-devmaany.cern.ch
     # webui_login_page_image_primary: "" Mount the image as secret and set the path here
     # webui_login_page_image_secondary: "" Mount the image as secret and set the path here
 

@@ -72,14 +72,14 @@ spec:
           claimName: {{ $val.name }}
       {{- end}}
       containers:
-{{- if .Values.exposeErrorLogs }}
+      {{- if .Values.exposeErrorLogs }}
         - name: httpd-error-log
           image: busybox
           args: [/bin/sh, -c, 'tail -n+1 -F /var/log/httpd/error_log']
           volumeMounts:
           - name: httpdlog
             mountPath: /var/log/httpd
-{{- end }}
+      {{- end }}
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -120,33 +120,33 @@ spec:
             {{- end}}
           env:
             {{- range $key, $val := .Values.config.httpd }}
-            - name: RUCIO_HTTPD_{{ $key | upper }}
+            - name: RUCIO_HTTPD_{{ $key | snakecase | upper }}
               value: {{ $val | quote }}
             {{- end }}
             {{- range $key, $val := .Values.config.httpdWebui }}
-            - name: RUCIO_{{ $key | upper }}
+            - name: RUCIO_{{ $key | snakecase | upper }}
               value: {{ $val | quote }}
             {{- end }}
             {{ range $i, $provider := .Values.config.oidcProviders }}
             {{- range $key, $val := $provider }}
-            - name: RUCIO_CFG_OIDC_REACT_APP_{{ $key | upper }}_{{ $i }}
+            - name: RUCIO_CFG_OIDC_REACT_APP_{{ $key | snakecase | upper }}_{{ $i }}
               value: {{ $val | quote }}
             {{- end }}
             {{- end }}
             {{- range $key, $val := .Values.config.react }}
-            {{- if and (ne $key "rucio_host") (ne $key "rucio_auth_host") }}
+            {{- if and (ne $key "rucioHost") (ne $key "rucioAuthHost") }}
             - name: {{ $key | upper }}
               value: {{ $val | quote }}
             {{- end }}
             {{- end }}
-            {{- range $key1, $val1 := .Values.optional_config }}
+            {{- range $key1, $val1 := .Values.optionalConfig }}
             - name: {{ $key1 | upper }}
               value: "{{ $val1  }}"
             {{- end}}
             - name: RUCIO_HOST
-              value: {{ required "A valid rucio_host value pointing to the rucio server is required" .Values.config.react.rucio_host }}
+              value: {{ required "A valid rucioHost value pointing to the rucio server is required" .Values.config.react.rucioHost }}
             - name: RUCIO_AUTH_HOST
-              value: {{ required "A valid rucio_auth_host value pointing to the rucio auth server is required" .Values.config.react.rucio_auth_host }}
+              value: {{ required "A valid rucioAuthHost value pointing to the rucio auth server is required" .Values.config.react.rucioAuthHost }}
             - name: RUCIO_OVERRIDE_CONFIGS
               value: "/opt/rucio/etc/conf.d/"
             - name: RUCIO_LOG_FORMAT
@@ -154,10 +154,10 @@ spec:
           {{- if not .Values.service.useSSL }}
             - name: RUCIO_ENABLE_SSL
               value: "False"
-{{- else }}
+          {{- else }}
             - name: RUCIO_ENABLE_SSL
               value: "True"
-{{- end }}
+          {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}
