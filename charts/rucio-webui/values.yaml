@@ -17,8 +17,8 @@ strategy:
 minReadySeconds: 5
 
 image:
-  repository: maany/rucio-webui
-  tag: release-1.29.0-pre-alpha
+  repository: rucio/rucio-webui
+  tag: release-1.30.0
   pullPolicy: Always
 
 service:
@@ -82,8 +82,8 @@ config:
 
   ## Configuration for the WebUI React App
   react:
-    rucioHost: https://rucio-devmaany.cern.ch
-    rucioAuthHost: https://rucio-devmaany.cern.ch
+    rucioHost:
+    rucioAuthHost:
     # webui_login_page_image_primary: "" Mount the image as secret and set the path here
     # webui_login_page_image_secondary: "" Mount the image as secret and set the path here
 
