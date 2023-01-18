@@ -52,6 +52,13 @@
           value: {{ .Values.ftsRenewal.servers | quote }}
         - name: RUCIO_FTS_SECRETS
           value: "{{ .Release.Name }}-rucio-x509up"
+  {{- if .Values.ftsRenewal.gridPassphraseRequired }}
+        - name: GRID_PASSPHRASE
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-grid-passphrase
+              key: passphrase
+  {{- end }}
   {{- if or (eq .Values.ftsRenewal.vo "atlas") (eq .Values.ftsRenewal.vo "dteam") }}
         - name: RUCIO_LONG_PROXY
           value: {{ .Values.ftsRenewal.longProxy | quote }}
