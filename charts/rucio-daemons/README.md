@@ -62,17 +62,32 @@ The conveyor needs a delegated X509 user proxy and the necessary CA so that it c
         pullPolicy: Always
       vo: "cms"
       voms: "cms:/cms/Role=production"
-      gridPassphraseRequired: false
+      gridPassphrase:
+        required: false # set to true to require a passphrase
+        existingSecret:
+          name: 'my-explicit-secret-name' # set here the name of the kubernetes secret
+          key: 'passphrase'  # can be overwritten if desired
       servers: "https://fts3-devel.cern.ch:8446,https://fts3-pilot.cern.ch:8446"
+      ftsCerts: # required by default when vo is other
+        existingKeySecret:
+        name: 'my-explicit-secret-name' # set here the name of the kubernetes secret
+        key: 'userkey.pem'  # can be overwritten if desired
+        existingCertSecret:
+        name: 'my-explicit-secret-name' # set here the name of the kubernetes secret
+        key: 'usercert.pem'  # can be overwritten if desired
+      longProxy: # required for vo atlas or dteam
+        existingSecret:
+        name: 'my-explicit-secret-name' # set here the name of the kubernetes secret
+        key: 'long.proxy'  # can be overwritten if desired
 
 The possible VOs are:
 
-- `atlas` expects a long proxy as input secret (`<releasename>-longproxy`). It then creates a user proxy with the given VOMS extensions and with 96h lifetime and saves it as a cluster secret (`<releasename>-rucio-x509up`).
-- `cms` expects a separate key and cert as input secrets (`<releasename>-fts-key` and `<releasename>-fts-cert`). It then creates a user proxy with the given VOMS extensions and with 96h lifetime and delegates it to the given FTS servers. Then saves it as a cluster secret (`<releasename>-rucio-x509up`).
-- `escape` expects a separate key and cert as input secrets (`<releasename>-fts-key` and `<releasename>-fts-cert`), as well as a grid passphrase called `<releasename>-grid-passphrase`. It then creates a user proxy with the given VOMS extensions and with 96h lifetime and delegates it to the given FTS servers. Then saves it as a cluster secret (`<releasename>-rucio-x509up`).
+- `atlas` expects a long proxy as input secret. It then creates a user proxy with the given VOMS extensions and with 96h lifetime and saves it as a cluster secret (`<releasename>-rucio-x509up`).
+- `cms` expects a separate key and cert as input secrets. It then creates a user proxy with the given VOMS extensions and with 96h lifetime and delegates it to the given FTS servers. Then saves it as a cluster secret (`<releasename>-rucio-x509up`).
+- `escape` expects a separate key and cert as input secrets, as well as a grid passphrase called. It then creates a user proxy with the given VOMS extensions and with 96h lifetime and delegates it to the given FTS servers. Then saves it as a cluster secret (`<releasename>-rucio-x509up`).
 - `dteam` expects a long proxy like `atlas` and then creates, delegates and saves the user proxy like `cms`.
 - `tutorial` expects a separate key and cert as input secrets like `cms` and then directly delegates to FTS. No proxy generation and `<releasename>-rucio-x509up` has to be manually created.
-- Any other VO value will lead to the execution of the default script and expects a separate key and cert as input secrets (`<releasename>-fts-key` and `<releasename>-fts-cert`). It then creates a user proxy with the given VOMS extensions and with 96h lifetime and delegates it to the given FTS servers. Then saves it as a cluster secret (`<releasename>-rucio-x509up`). Additionally a grid passphrase can be specified and saved in a dedicated secret called `<releasename>-grid-passphrase` (refer to [fts-cron](https://github.com/rucio/containers/tree/master/fts-cron) for more details).
+- Any other VO value will lead to the execution of the default script and expects a separate key and cert as input secrets. It then creates a user proxy with the given VOMS extensions and with 96h lifetime and delegates it to the given FTS servers. Then saves it as a cluster secret (`<releasename>-rucio-x509up`). Additionally a grid passphrase can be specified and saved in a dedicated secret called (refer to [fts-cron](https://github.com/rucio/containers/tree/master/fts-cron) for more details).
 
 When the release is first installed the pods won't start since the necessary `<releasename>-rucio-x509up` secret hasn't been created by the cronjob, yet. In that case you can run the job once manually:
 
