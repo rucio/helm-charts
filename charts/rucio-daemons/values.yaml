@@ -398,8 +398,23 @@ ftsRenewal:
     pullPolicy: Always
   vo: "cms"
   voms: "cms:/cms/Role=production"
-  gridPassphraseRequired: false
+  gridPassphrase:
+   required: false # set to true to require a passphrase
+   existingSecret:
+     name: 'my-explicit-secret-name' # set here the name of the kubernetes secret
+     key: 'passphrase'  # can be overwritten if desired
   servers: "https://fts3-devel.cern.ch:8446,https://cmsfts3.fnal.gov:8446,https://fts3.cern.ch:8446,https://lcgfts3.gridpp.rl.ac.uk:8446,https://fts3-pilot.cern.ch:8446"
+  ftsCerts: # required by default when vo is other
+    existingKeySecret:
+     name: 'my-explicit-secret-name' # set here the name of the kubernetes secret
+     key: 'userkey.pem'  # can be overwritten if desired
+    existingCertSecret:
+     name: 'my-explicit-secret-name' # set here the name of the kubernetes secret
+     key: 'usercert.pem'  # can be overwritten if desired
+  longProxy: # required for vo atlas or dteam
+    existingSecret:
+     name: 'my-explicit-secret-name' # set here the name of the kubernetes secret
+     key: 'long.proxy'  # can be overwritten if desired
   resources:
     limits:
       cpu: 500m
