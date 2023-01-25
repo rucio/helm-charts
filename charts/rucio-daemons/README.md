@@ -34,25 +34,13 @@ To install the chart so that is will connected to a MySQL DB running at `mysql.d
       --set config.database.default="mysql://rucio:rucio@mysql.db/rucio"
       rucio/rucio-daemons
 
-## Configuration
-
-The default configuration values for this chart are listed in `values.yaml` our you can get them with:
-
-    $ helm inspect values rucio/rucio-daemons
-
-Specify each parameter using the `--set key=value[,key=value]` argument to `helm install` as shown before.
-
-Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
-
-    $ helm install --name my-release -f values.yaml rucio/rucio-daemons
-
 ## Certificates
 
 Some of the daemons require certificates and CAs to work. They expect specific secrets that need to be created before the pod can start.
 
 ### Conveyor
 
-The conveyor needs a delegated X509 user proxy and the necessary CA so that it can submit jobs to FTS. For the CA you have to add a `<releasename>-rucio-ca-bundle` secret. For the user proxy a cronjob can be setup to either generate it from a long proxy or directly delegate the user proxy to FTS. The cronjob uses the [fts-cron](https://github.com/rucio/containers/tree/master/fts-cron) container which expects different input secrets and has a different behaviour depending on the selected VO. The cronjob runs every 6 hours. An example configuration looks like this:
+The conveyor needs a delegated X509 user proxy and the necessary CA so that it can submit jobs to FTS. For the CA you have to add a `<releasename>-rucio-ca-bundle` secret. For the user proxy a cronjob can be setup to either generate it from a long proxy or directly delegate the user proxy to FTS. The cronjob uses the [fts-cron](https://github.com/rucio/containers/tree/master/fts-cron) container which expects different input secrets and has a different behaviour depending on the selected VO. When enabled, the cronjob runs once upon installation and then every 6 hours. An example configuration looks like this:
 
     ftsRenewal:
       enabled: 1
@@ -87,11 +75,7 @@ The possible VOs are:
 - `escape` expects a separate key and cert as input secrets, as well as a grid passphrase called. It then creates a user proxy with the given VOMS extensions and with 96h lifetime and delegates it to the given FTS servers. Then saves it as a cluster secret (`<releasename>-rucio-x509up`).
 - `dteam` expects a long proxy like `atlas` and then creates, delegates and saves the user proxy like `cms`.
 - `tutorial` expects a separate key and cert as input secrets like `cms` and then directly delegates to FTS. No proxy generation and `<releasename>-rucio-x509up` has to be manually created.
-- Any other VO value will lead to the execution of the default script and expects a separate key and cert as input secrets. It then creates a user proxy with the given VOMS extensions and with 96h lifetime and delegates it to the given FTS servers. Then saves it as a cluster secret (`<releasename>-rucio-x509up`). Additionally a grid passphrase can be specified and saved in a dedicated secret called (refer to [fts-cron](https://github.com/rucio/containers/tree/master/fts-cron) for more details).
-
-When the release is first installed the pods won't start since the necessary `<releasename>-rucio-x509up` secret hasn't been created by the cronjob, yet. In that case you can run the job once manually:
-
-    kubectl create job renew-manual-1 --from=cronjob/<releasename>-renew-fts-proxy
+- Any other VO value will lead to the execution of the default script and expects a separate key and cert as input secrets. It then creates a user proxy with the given VOMS extensions and with 96h lifetime and delegates it to the given FTS servers. Then saves it as a cluster secret (`<releasename>-rucio-x509up`). Additionally a grid passphrase can be specified and saved in a dedicated secret.
 
 ### Reaper
 
