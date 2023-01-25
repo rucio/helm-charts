@@ -34,6 +34,18 @@ To install the chart so that is will connected to a MySQL DB running at `mysql.d
       --set config.database.default="mysql://rucio:rucio@mysql.db/rucio"
       rucio/rucio-daemons
 
+## Configuration
+
+The default configuration values for this chart are listed in `values.yaml` our you can get them with:
+
+    $ helm inspect values rucio/rucio-daemons
+
+Specify each parameter using the `--set key=value[,key=value]` argument to `helm install` as shown before.
+
+Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
+
+    $ helm install --name my-release -f values.yaml rucio/rucio-daemons
+
 ## Certificates
 
 Some of the daemons require certificates and CAs to work. They expect specific secrets that need to be created before the pod can start.
