@@ -56,6 +56,7 @@ The conveyor needs a delegated X509 user proxy and the necessary CA so that it c
 
     ftsRenewal:
       enabled: 1
+      schedule: "12 */6 * * *"
       image:
         repository: rucio/fts-cron
         tag: latest
@@ -63,22 +64,23 @@ The conveyor needs a delegated X509 user proxy and the necessary CA so that it c
       vo: "cms"
       voms: "cms:/cms/Role=production"
       gridPassphrase:
-        required: false # set to true to require a passphrase
+        required: false
         existingSecret:
-          name: 'my-explicit-secret-name' # set here the name of the kubernetes secret
-          key: 'passphrase'  # can be overwritten if desired
-      servers: "https://fts3-devel.cern.ch:8446,https://fts3-pilot.cern.ch:8446"
-      ftsCerts: # required by default when vo is other
-        existingKeySecret:
-        name: 'my-explicit-secret-name' # set here the name of the kubernetes secret
-        key: 'userkey.pem'  # can be overwritten if desired
-        existingCertSecret:
-        name: 'my-explicit-secret-name' # set here the name of the kubernetes secret
-        key: 'usercert.pem'  # can be overwritten if desired
-      longProxy: # required for vo atlas or dteam
+          name: 'my-explicit-secret-name'
+          key: 'passphrase'
+      servers: "https://fts3-devel.cern.ch:8446,https://cmsfts3.fnal.gov:8446,https://fts3.cern.ch:8446,https://lcgfts3.gridpp.rl.ac.uk:8446,https://fts3-pilot.cern.ch:8446"
+      ftsCert:
         existingSecret:
-        name: 'my-explicit-secret-name' # set here the name of the kubernetes secret
-        key: 'long.proxy'  # can be overwritten if desired
+          name: 'my-explicit-secret-name'
+          key: 'usercert.pem'
+      ftsKey:
+        existingSecret:
+          name: 'my-explicit-secret-name'
+          key: 'userkey.pem'
+      longProxy:
+        existingSecret:
+          name: '' # e.g., my-explicit-secret-name
+          key: '' # e.g., long.proxy
 
 The possible VOs are:
 

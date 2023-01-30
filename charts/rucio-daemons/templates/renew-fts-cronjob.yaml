@@ -5,14 +5,14 @@
   {{- if or (eq .Values.ftsRenewal.vo "atlas") (eq .Values.ftsRenewal.vo "dteam") }}
   - name: longproxy
     secret:
-      secretName: {{ .Values.ftsRenewal.longProxy.existingSecret.name | quote }}
+      secretName: {{ if empty .Values.ftsRenewal.longProxy.existingSecret.name }} {{ .Release.Name }}-longproxy {{- else }} {{ .Values.ftsRenewal.longProxy.existingSecret.name | quote }} {{ end }}
   {{- else }}
   - name: usercert
     secret:
-      secretName: {{ .Values.ftsRenewal.ftsCerts.existingCertSecret.name | quote }}
+      secretName: {{ .Values.ftsRenewal.ftsCert.existingSecret.name | quote }}
   - name: userkey
     secret:
-      secretName: {{ .Values.ftsRenewal.ftsCerts.existingKeySecret.name | quote }}
+      secretName: {{ .Values.ftsRenewal.ftsKey.existingSecret.name | quote }}
   {{- end }}
   {{- range $key, $val := .Values.persistentVolumes }}
   - name: {{ $key }}
@@ -61,12 +61,12 @@
   {{- end }}
   {{- if or (eq .Values.ftsRenewal.vo "atlas") (eq .Values.ftsRenewal.vo "dteam") }}
         - name: RUCIO_LONG_PROXY
-          value: {{ .Values.ftsRenewal.longProxy.existingSecret.key | quote }}
+          value: {{ .Values.ftsRenewal.longProxy.existingSecret.key | default "long.proxy" | quote }}
   {{- else }}
         - name: USERCERT_NAME
-          value: {{ .Values.ftsRenewal.ftsCerts.existingCertSecret.key | quote }}
+          value: {{ .Values.ftsRenewal.ftsCert.existingSecret.key | quote }}
         - name: USERKEY_NAME
-          value: {{ .Values.ftsRenewal.ftsCerts.existingKeySecret.key | quote }}
+          value: {{ .Values.ftsRenewal.ftsKey.existingSecret.key | quote }}
   {{- end }}
   restartPolicy: OnFailure
 {{- end }}
