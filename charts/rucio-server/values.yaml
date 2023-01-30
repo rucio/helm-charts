@@ -43,6 +43,9 @@ service:
     # loadbalancer.openstack.org/network-id: "<id>"
     # service.beta.kubernetes.io/openstack-internal-load-balancer: "true"
     # loadbalancer.openstack.org/cascade-delete: "false"
+  loadBalancerIP: null
+  loadBalancerClass: null
+  allocateLoadBalancerNodePorts: true
 
 authService:
   type: ClusterIP
@@ -51,6 +54,9 @@ authService:
   protocol: TCP
   name: http
   annotations: {}
+  loadBalancerIP: null
+  loadBalancerClass: null
+  allocateLoadBalancerNodePorts: true
 
 traceService:
   type: ClusterIP
@@ -59,6 +65,9 @@ traceService:
   protocol: TCP
   name: http
   annotations: {}
+  loadBalancerIP: null
+  loadBalancerClass: null
+  allocateLoadBalancerNodePorts: true
 
 strategy:
   type: RollingUpdate

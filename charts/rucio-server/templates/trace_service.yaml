@@ -22,4 +22,13 @@ spec:
   selector:
     app: {{ template "rucio.name" . }}-trace
     release: {{ .Release.Name }}
+{{- if .Values.traceService.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.traceService.loadBalancerIP }}
+{{- end }}
+{{- if .Values.traceService.loadBalancerClass }}
+  loadBalancerClass: {{ .Values.traceService.loadBalancerClass }}
+{{- end }}
+{{- if not .Values.traceService.allocateLoadBalancerNodePorts }}
+  allocateLoadBalancerNodePorts: {{ .Values.traceService.allocateLoadBalancerNodePorts }}
+{{- end }}
 {{- end }}

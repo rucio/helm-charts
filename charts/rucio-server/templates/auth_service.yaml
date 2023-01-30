@@ -22,4 +22,13 @@ spec:
   selector:
     app: {{ template "rucio.name" . }}-auth
     release: {{ .Release.Name }}
+{{- if .Values.authService.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.authService.loadBalancerIP }}
+{{- end }}
+{{- if .Values.authService.loadBalancerClass }}
+  loadBalancerClass: {{ .Values.authService.loadBalancerClass }}
+{{- end }}
+{{- if not .Values.authService.allocateLoadBalancerNodePorts }}
+  allocateLoadBalancerNodePorts: {{ .Values.authService.allocateLoadBalancerNodePorts }}
+{{- end }}
 {{- end }}
