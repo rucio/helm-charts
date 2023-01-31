@@ -64,9 +64,9 @@
           value: {{ .Values.ftsRenewal.longProxy.existingSecret.key | default "long.proxy" | quote }}
   {{- else }}
         - name: USERCERT_NAME
-          value: {{ .Values.ftsRenewal.ftsCert.existingSecret.key | quote }}
+          value: {{ .Values.ftsRenewal.ftsCert.existingSecret.key | default "usercert.pem" | quote }}
         - name: USERKEY_NAME
-          value: {{ .Values.ftsRenewal.ftsKey.existingSecret.key | quote }}
+          value: {{ .Values.ftsRenewal.ftsKey.existingSecret.key | default "new_userkey.pem" | quote }}
   {{- end }}
   restartPolicy: OnFailure
 {{- end }}
