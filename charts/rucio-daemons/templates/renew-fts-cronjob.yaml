@@ -9,10 +9,10 @@
   {{- else }}
   - name: usercert
     secret:
-      secretName: {{ .Values.ftsRenewal.ftsCert.existingSecret.name | quote }}
+      secretName: {{ if empty .Values.ftsRenewal.ftsCert.existingSecret.name }} {{ .Release.Name }}-fts-cert {{- else }} {{ .Values.ftsRenewal.ftsCert.existingSecret.name | quote }} {{ end }}
   - name: userkey
     secret:
-      secretName: {{ .Values.ftsRenewal.ftsKey.existingSecret.name | quote }}
+      secretName: {{ if empty .Values.ftsRenewal.ftsKey.existingSecret.name }} {{ .Release.Name }}-fts-key {{- else }} {{ .Values.ftsRenewal.ftsKey.existingSecret.name | quote }} {{ end }}
   {{- end }}
   {{- range $key, $val := .Values.persistentVolumes }}
   - name: {{ $key }}
