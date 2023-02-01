@@ -1,4 +1,4 @@
-# Rucio Helm Charts 
+# Rucio Helm Charts
 
 ##  Data Management for science in the Big Data era.
 
