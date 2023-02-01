@@ -1,3 +1,5 @@
+[![Release Charts](https://github.com/rucio/helm-charts/actions/workflows/release.yml/badge.svg)](https://github.com/rucio/helm-charts/actions/workflows/release.yml) [![Lint and Test Charts](https://github.com/rucio/helm-charts/actions/workflows/lint-test.yml/badge.svg)](https://github.com/rucio/helm-charts/actions/workflows/lint-test.yml)
+
 # Rucio Helm Charts 
 
 ##  Data Management for science in the Big Data era.
