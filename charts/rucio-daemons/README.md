@@ -68,7 +68,7 @@ The conveyor needs a delegated X509 user proxy and the necessary CA so that it c
         existingSecret:
           name: 'grid-passphrase'
           key: 'passphrase'
-      servers: "https://fts3-devel.cern.ch:8446,https://cmsfts3.fnal.gov:8446,https://fts3.cern.ch:8446,https://lcgfts3.gridpp.rl.ac.uk:8446,https://fts3-pilot.cern.ch:8446"
+      servers: "https://fts3-devel.cern.ch:8446,https://fts3-pilot.cern.ch:8446"
       ftsCert:
         existingSecret:
           name: '' # e.g., fts-cert
