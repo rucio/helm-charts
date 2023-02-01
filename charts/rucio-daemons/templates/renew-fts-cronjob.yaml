@@ -5,14 +5,14 @@
   {{- if or (eq .Values.ftsRenewal.vo "atlas") (eq .Values.ftsRenewal.vo "dteam") }}
   - name: longproxy
     secret:
-      secretName: {{ if empty .Values.ftsRenewal.longProxy.existingSecret.name }} {{ .Release.Name }}-longproxy {{- else }} {{ .Values.ftsRenewal.longProxy.existingSecret.name | quote }} {{ end }}
+      secretName: {{ .Release.Name }}-longproxy
   {{- else }}
   - name: usercert
     secret:
-      secretName: {{ if empty .Values.ftsRenewal.ftsCert.existingSecret.name }} {{ .Release.Name }}-fts-cert {{- else }} {{ .Values.ftsRenewal.ftsCert.existingSecret.name | quote }} {{ end }}
+      secretName: {{ .Release.Name }}-fts-cert
   - name: userkey
     secret:
-      secretName: {{ if empty .Values.ftsRenewal.ftsKey.existingSecret.name }} {{ .Release.Name }}-fts-key {{- else }} {{ .Values.ftsRenewal.ftsKey.existingSecret.name | quote }} {{ end }}
+      secretName: {{ .Release.Name }}-fts-key
   {{- end }}
   {{- range $key, $val := .Values.persistentVolumes }}
   - name: {{ $key }}
@@ -52,21 +52,9 @@
           value: {{ .Values.ftsRenewal.servers | quote }}
         - name: RUCIO_FTS_SECRETS
           value: "{{ .Release.Name }}-rucio-x509up"
-  {{- if .Values.ftsRenewal.gridPassphrase.required }}
-        - name: GRID_PASSPHRASE
-          valueFrom:
-            secretKeyRef:
-              name: {{ .Values.ftsRenewal.gridPassphrase.existingSecret.name | quote }}
-              key: {{ .Values.ftsRenewal.gridPassphrase.existingSecret.key | quote }}
-  {{- end }}
   {{- if or (eq .Values.ftsRenewal.vo "atlas") (eq .Values.ftsRenewal.vo "dteam") }}
         - name: RUCIO_LONG_PROXY
-          value: {{ .Values.ftsRenewal.longProxy.existingSecret.key | default "long.proxy" | quote }}
-  {{- else }}
-        - name: USERCERT_NAME
-          value: {{ .Values.ftsRenewal.ftsCert.existingSecret.key | default "usercert.pem" | quote }}
-        - name: USERKEY_NAME
-          value: {{ .Values.ftsRenewal.ftsKey.existingSecret.key | default "new_userkey.pem" | quote }}
+          value: {{ .Values.ftsRenewal.longProxy | quote }}
   {{- end }}
   restartPolicy: OnFailure
 {{- end }}
