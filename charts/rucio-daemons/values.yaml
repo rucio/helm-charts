@@ -562,4 +562,3 @@ config:
   # credentials:
     # gcs: "/opt/rucio/etc/google-cloud-storage-test.json"
     # signature_lifetime: "3600"
-
