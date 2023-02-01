@@ -77,7 +77,8 @@ The conveyor needs a delegated X509 user proxy and the necessary CA so that it c
         existingSecret:
           name: '' # e.g., fts-key
           key: '' # e.g., userkey.pem
-      longProxy:
+      longProxy: ''
+      ftsLongProxy:
         existingSecret:
           name: '' # e.g., long-proxy
           key: '' # e.g., long.proxy
