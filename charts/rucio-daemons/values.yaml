@@ -390,13 +390,13 @@ necromancer:
       cpu: "100m"
 
 ftsRenewal:
-  enabled: 0
+  enabled: 1
   schedule: "12 */6 * * *"
   image:
     repository: rucio/fts-cron
     tag: latest
     pullPolicy: Always
-  vo: "cms"
+  vo: "atlas"
   voms: "cms:/cms/Role=production"
   gridPassphrase:
     required: false
@@ -412,7 +412,8 @@ ftsRenewal:
     existingSecret:
       name: '' # e.g., fts-key
       key: '' # e.g., userkey.pem
-  longProxy:
+  longProxy: ''
+  ftsLongProxy:
     existingSecret:
       name: '' # e.g., long-proxy
       key: '' # e.g., long.proxy
