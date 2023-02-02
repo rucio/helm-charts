@@ -5,14 +5,14 @@
   {{- if or (eq .Values.ftsRenewal.vo "atlas") (eq .Values.ftsRenewal.vo "dteam") }}
   - name: longproxy
     secret:
-      secretName: {{ .Release.Name }}-longproxy
+      secretName: {{ if empty .Values.ftsRenewal.ftsLongProxy.existingSecret.name }} {{ .Release.Name }}-longproxy {{- else }} {{ .Values.ftsRenewal.ftsLongProxy.existingSecret.name }} {{ end }}
   {{- else }}
   - name: usercert
     secret:
-      secretName: {{ .Release.Name }}-fts-cert
+      secretName: {{ if empty .Values.ftsRenewal.ftsCert.existingSecret.name }} {{ .Release.Name }}-fts-cert {{- else }} {{ .Values.ftsRenewal.ftsCert.existingSecret.name }} {{ end }}
   - name: userkey
     secret:
-      secretName: {{ .Release.Name }}-fts-key
+      secretName: {{ if empty .Values.ftsRenewal.ftsKey.existingSecret.name }} {{ .Release.Name }}-fts-key {{- else }} {{ .Values.ftsRenewal.ftsKey.existingSecret.name }} {{ end }}
   {{- end }}
   {{- range $key, $val := .Values.persistentVolumes }}
   - name: {{ $key }}
@@ -52,9 +52,26 @@
           value: {{ .Values.ftsRenewal.servers | quote }}
         - name: RUCIO_FTS_SECRETS
           value: "{{ .Release.Name }}-rucio-x509up"
+  {{- if .Values.ftsRenewal.gridPassphrase.required }}
+        - name: GRID_PASSPHRASE
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.ftsRenewal.gridPassphrase.existingSecret.name | quote }}
+              key: {{ .Values.ftsRenewal.gridPassphrase.existingSecret.key | quote }}
+  {{- end }}
   {{- if or (eq .Values.ftsRenewal.vo "atlas") (eq .Values.ftsRenewal.vo "dteam") }}
+    {{- if .Values.ftsRenewal.longProxy }}
         - name: RUCIO_LONG_PROXY
           value: {{ .Values.ftsRenewal.longProxy | quote }}
+    {{- else }}
+        - name: RUCIO_LONG_PROXY
+          value: {{ .Values.ftsRenewal.ftsLongProxy.existingSecret.key | default "long.proxy" | quote }}
+    {{- end }}
+  {{- else }}
+        - name: USERCERT_NAME
+          value: {{ .Values.ftsRenewal.ftsCert.existingSecret.key | default "usercert.pem" | quote }}
+        - name: USERKEY_NAME
+          value: {{ .Values.ftsRenewal.ftsKey.existingSecret.key | default "new_userkey.pem" | quote }}
   {{- end }}
   restartPolicy: OnFailure
 {{- end }}
