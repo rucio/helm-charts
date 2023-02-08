@@ -6,6 +6,12 @@
   - name: longproxy
     secret:
       secretName: {{ if empty .Values.ftsRenewal.ftsLongProxy.existingSecret.name }} {{ .Release.Name }}-longproxy {{- else }} {{ .Values.ftsRenewal.ftsLongProxy.existingSecret.name }} {{ end }}
+  {{- else if (eq .Values.ftsRenewal.vo "multi_vo")}}
+  {{- range $val := .Values.ftsRenewal.vomses }}
+  - name: longproxy-{{$val.vo}}
+    secret:
+      secretName: {{ if empty $.Values.ftsRenewal.ftsLongProxy.existingSecret.name }} {{ $.Release.Name }}-longproxy-{{$val.vo}} {{- else }} {{ $.Values.ftsRenewal.ftsLongProxy.existingSecret.name }}-{{$val.vo}} {{ end }}
+  {{- end }}
   {{- else }}
   - name: usercert
     secret:
@@ -14,11 +20,16 @@
     secret:
       secretName: {{ if empty .Values.ftsRenewal.ftsKey.existingSecret.name }} {{ .Release.Name }}-fts-key {{- else }} {{ .Values.ftsRenewal.ftsKey.existingSecret.name }} {{ end }}
   {{- end }}
+  {{- range $key, $val := .Values.additionalSecrets }}
+  - name: {{ $key }}
+    secret:
+      secretName: {{ $.Release.Name }}-{{ $val.secretName }}
+  {{- end }}
   {{- range $key, $val := .Values.persistentVolumes }}
   - name: {{ $key }}
     persistentVolumeClaim:
       claimName: {{ $val.name }}
-  {{- end}}
+  {{- end }}
   containers:
     - name: renew-fts-cron
       image: "{{ .Values.ftsRenewal.image.repository }}:{{ .Values.ftsRenewal.image.tag }}"
@@ -29,29 +40,47 @@
   {{- if or (eq .Values.ftsRenewal.vo "atlas") (eq .Values.ftsRenewal.vo "dteam") }}
         - name: longproxy
           mountPath: /opt/rucio/certs/
+  {{- else if (eq .Values.ftsRenewal.vo "multi_vo")}}
+  {{- range $val := .Values.ftsRenewal.vomses }}
+        - name: longproxy-{{$val.vo}}
+          mountPath: /opt/rucio/certs/{{$val.vo}}/
+  {{- end }}
   {{- else }}
         - name: usercert
           mountPath: /opt/rucio/certs/
         - name: userkey
           mountPath: /opt/rucio/keys/
   {{- end }}
+  {{- range $key, $val := .Values.additionalSecrets }}
+        - name: {{ $key }}
+          mountPath: {{ $val.mountPath }}
+  {{- end }}
   {{- range $key, $val := .Values.persistentVolumes }}
         - name: {{ $key }}
           mountPath: {{ $val.mountPath }}
-  {{- end}}
+  {{- end }}
       env:
         {{- range $key1, $val1 := .Values.optional_config }}
         - name: {{ $key1 | upper }}
-          value: "{{ $val1  }}"
-        {{- end}}
+          value: "{{ $val1 }}"
+        {{- end }}
         - name: RUCIO_VO
           value: {{ .Values.ftsRenewal.vo | quote }}
+  {{- if (eq .Values.ftsRenewal.vo "multi_vo")}}
+        - name: RUCIO_FTS_VOS
+          value: {{ range $val := .Values.ftsRenewal.vomses }}{{$val.vo}} {{end}}
+        {{- range $val := .Values.ftsRenewal.vomses }}
+        - name: RUCIO_FTS_VOMS_{{ $val.vo | upper}}
+          value: {{ $val.voms }}
+  {{- end }}
+  {{- else}}
         - name: RUCIO_FTS_VOMS
           value: {{ .Values.ftsRenewal.voms | quote }}
+        {{- end }}
         - name: RUCIO_FTS_SERVERS
           value: {{ .Values.ftsRenewal.servers | quote }}
         - name: RUCIO_FTS_SECRETS
-          value: "{{ .Release.Name }}-rucio-x509up"
+          value: {{ if empty .Values.ftsRenewal.ftsSecrets }} {{ .Release.Name }}-rucio-x509up {{- else }} {{ .Values.ftsRenewal.ftsSecrets }} {{ end }}
   {{- if .Values.ftsRenewal.gridPassphrase.required }}
         - name: GRID_PASSPHRASE
           valueFrom:
@@ -59,7 +88,7 @@
               name: {{ .Values.ftsRenewal.gridPassphrase.existingSecret.name | quote }}
               key: {{ .Values.ftsRenewal.gridPassphrase.existingSecret.key | quote }}
   {{- end }}
-  {{- if or (eq .Values.ftsRenewal.vo "atlas") (eq .Values.ftsRenewal.vo "dteam") }}
+  {{- if or (eq .Values.ftsRenewal.vo "atlas") (eq .Values.ftsRenewal.vo "dteam") (eq .Values.ftsRenewal.vo "multi_vo") }}
     {{- if .Values.ftsRenewal.longProxy }}
         - name: RUCIO_LONG_PROXY
           value: {{ .Values.ftsRenewal.longProxy | quote }}
