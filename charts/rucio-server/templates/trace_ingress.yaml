@@ -17,6 +17,9 @@ metadata:
 {{ toYaml . | indent 4 }}
 {{- end }}
 spec:
+{{- if .Values.traceIngress.ingressClassName }}
+  ingressClassName: {{ .Values.traceIngress.ingressClassName }}
+{{ end }}
 {{- if .Values.traceIngress.tls }}
   tls:
   {{- range .Values.traceIngress.tls }}

@@ -36,9 +36,9 @@ proxy:
   #rucioAuthProxyScheme: "https"
   
 ingress:
-  enabled: true
+  enabled: false
+  # ingressClassName: traefik
   annotations:
-    kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/ssl-passthrough: "true"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
   path: /
