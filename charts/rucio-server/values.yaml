@@ -45,6 +45,7 @@ service:
     # loadbalancer.openstack.org/cascade-delete: "false"
   loadBalancerIP: null
   loadBalancerClass: null
+  externalTrafficPolicy: null
   allocateLoadBalancerNodePorts: true
 
 authService:
