@@ -10,17 +10,17 @@ traceReplicaCount: 0
 
 # When set, run extra busybox containers in the relevant pods to also expose the error logs
 exposeErrorLogs:
-  server: True
-  authServer: True
-  traceServer: True
+  server: true
+  authServer: true
+  traceServer: true
 
 errorLogsExporterResources:
   limits:
-   cpu: 30m
-   memory: 50Mi
+    cpu: 30m
+    memory: 50Mi
   requests:
-   cpu: 20m
-   memory: 20Mi
+    cpu: 20m
+    memory: 20Mi
 
 # Set to true to enable SSL support for the different servers to be able accept X509 certificates and proxies.
 useSSL:
@@ -135,11 +135,11 @@ monitoring:
 
 metricsExporterResources:
   limits:
-   cpu: 30m
-   memory: 50Mi
+    cpu: 30m
+    memory: 50Mi
   requests:
-   cpu: 20m
-   memory: 20Mi
+    cpu: 20m
+    memory: 20Mi
 
 ftsRenewal:
   enabled: 0
@@ -169,11 +169,11 @@ automaticRestart:
   selectorLabel: "'app in (rucio-server,rucio-server-trace,rucio-server-auth)'"
   resources:
     limits:
-     cpu: 500m
-     memory: 256Mi
+      cpu: 500m
+      memory: 256Mi
     requests:
-     cpu: 100m
-     memory: 128Mi
+      cpu: 100m
+      memory: 128Mi
 
 additionalSecrets: {}
   # - volumeName: gcssecret
@@ -185,10 +185,11 @@ wsgi:
   daemonProcesses: "4"
   daemonThreads: "4"
 
+## values used to configure apache
 httpd_config:
-  mpm_mode: "event"
-  enable_status: "True"
-  legacy_dn: "False"
+  # mpm_mode: "event"
+  # enable_status: "True"
+  # legacy_dn: "False"
   # keep_alive: "On"
   # keep_alive_timeout: "5"
   # max_keep_alive_requests: "128"
@@ -200,6 +201,8 @@ httpd_config:
   # max_spare_threads: "512"
   # max_request_workers: "1280"
   # max_connections_per_child: "2048"
+  # max_clients: "20"
+  # mpm_mode: "worker"
 
 ingress:
   enabled: false
@@ -287,16 +290,6 @@ traceIngress:
   #   certificate: |+
   #     -----BEGIN CERTIFICATE-----
   #     -----END CERTIFICATE-----
-
-## values used to configure apache
-httpd_config:
-  # mpm_mode: "worker"
-  # start_servers: "1"
-  # min_spare_threads: "1"
-  # max_spare_threads: "20"
-  # threads_per_child: "5"
-  # max_clients: "20"
-  # max_requests_per_child: "8192"
 
 ## values used to configure Rucio
 config:
