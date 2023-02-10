@@ -31,16 +31,14 @@ minReadySeconds: 5
 
 proxy:
   rucioProxy: ""
-  #rucioProxyScheme: "https"
+  # rucioProxyScheme: "https"
   rucioAuthProxy: ""
-  #rucioAuthProxyScheme: "https"
-  
+  # rucioAuthProxyScheme: "https"
+
 ingress:
   enabled: false
   # ingressClassName: traefik
-  annotations:
-    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  annotations: {}
   path: /
   hosts: []
   #   - my.rucio.test
