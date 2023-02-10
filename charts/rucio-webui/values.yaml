@@ -72,7 +72,7 @@ config:
     logLevel: 'info'
 
   ## Configuration for OIDC providers
-  oidcProviders: # []
+  oidcProviders:  # []
     - name: "CERN SSO"
       clientId: "rucio-webui"
       authorizationEndpoint: "https://login.cern.ch/adfs/oauth2/authorize"
