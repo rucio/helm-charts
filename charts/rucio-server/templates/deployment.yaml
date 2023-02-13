@@ -232,6 +232,9 @@ spec:
               value: "{{ .Values.wsgi.daemonProcesses }}"
             - name: RUCIO_WSGI_DAEMON_THREADS
               value: "{{ .Values.wsgi.daemonThreads }}"
+{{- with .Values.additionalEnvs }}
+{{ toYaml . | indent 12 }}
+{{- end}}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
