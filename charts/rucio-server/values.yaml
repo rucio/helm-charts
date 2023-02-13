@@ -181,6 +181,12 @@ additionalSecrets: {}
   #   mountPath: /opt/rucio/etc/gcs_rucio.json
   #   subPath: gcs_rucio.json
 
+additionalEnvs: {}
+  # - name: NODE_IP
+  #   valueFrom:
+  #     fieldRef:
+  #       status.hostIP
+
 wsgi:
   daemonProcesses: "4"
   daemonThreads: "4"
