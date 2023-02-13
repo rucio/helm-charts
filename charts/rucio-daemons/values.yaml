@@ -398,27 +398,35 @@ ftsRenewal:
     repository: rucio/fts-cron
     tag: latest
     pullPolicy: Always
-  vo: "cms"
-  voms: "cms:/cms/Role=production"
-  gridPassphrase:
-    required: false
-    existingSecret:
-      name: 'grid-passphrase'
-      key: 'passphrase'
   servers: "https://fts3-devel.cern.ch:8446,https://cmsfts3.fnal.gov:8446,https://fts3.cern.ch:8446,https://lcgfts3.gridpp.rl.ac.uk:8446,https://fts3-pilot.cern.ch:8446"
-  ftsCert:
-    existingSecret:
-      name: '' # e.g., fts-cert
-      key: '' # e.g., usercert.pem
-  ftsKey:
-    existingSecret:
-      name: '' # e.g., fts-key
-      key: '' # e.g., userkey.pem
-  longProxy: ''
-  ftsLongProxy:
-    existingSecret:
-      name: '' # e.g., long-proxy
-      key: '' # e.g., long.proxy
+  script: 'default'  # one of: 'default', 'atlas', 'dteam', 'multi_vo', 'tutorial', 'escape'. The associated scripts can be found here: https://github.com/rucio/containers/tree/master/fts-cron
+  vos:
+    - vo: "cms"
+      voms: "cms:/cms/Role=production"
+  secretMounts: {}
+    # - secretName: fts-cert
+    #   mountPath: /opt/rucio/certs/usercert.pem
+    #   subPath: usercert.pem
+    # - secretName: fts-key
+    #   mountPath: /opt/rucio/certs/new_userkey.pem
+    #   subPath: new_userkey.pem
+    # - secretName: longproxy
+    #   mountPath: /opt/rucio/certs/long.proxy
+    #   subPath: long.proxy
+  additionalEnvs: {}
+    # - name: RUCIO_FTS_SECRETS
+    #   value: release-rucio-x509up
+    # - name: USERCERT_NAME
+    #   value: "usercert.pem"
+    # - name: USERKEY_NAME
+    #   value: "new_userkey.pem"
+    # - name: RUCIO_LONG_PROXY
+    #   value: long.proxy
+    # - name: GRID_PASSPHRASE
+    #   valueFrom:
+    #     secretKeyRef:
+    #       name:
+    #       key:
   resources:
     limits:
       cpu: 500m
@@ -582,4 +590,3 @@ config:
   # credentials:
     # gcs: "/opt/rucio/etc/google-cloud-storage-test.json"
     # signature_lifetime: "3600"
-
