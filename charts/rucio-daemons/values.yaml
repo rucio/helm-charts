@@ -43,6 +43,8 @@ strategy:
     maxSurge: 1
     maxUnavailable: 1
 
+useDeprecatedImplicitSecrets: true
+
 podLabels: {}
 podAnnotations: {}
 

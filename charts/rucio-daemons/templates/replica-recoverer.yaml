@@ -71,12 +71,14 @@ spec:
       - name: config-component
         secret:
           secretName: {{ template "rucio.fullname" . }}.config.{{ $rucio_daemon }}
+    {{- if .Values.useDeprecatedImplicitSecrets }}
       - name: proxy-volume
         secret:
           secretName: {{ .Release.Name }}-rucio-x509up
       - name: ca-volume
         secret:
           secretName: {{ .Release.Name }}-rucio-ca-bundle
+    {{- end }}
       {{- range $key, $val := .Values.additionalSecrets }}
       - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }}
         secret:
@@ -92,10 +94,12 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           volumeMounts:
+          {{- if .Values.useDeprecatedImplicitSecrets }}
             - name: proxy-volume
               mountPath: /opt/proxy
             - name: ca-volume
               mountPath: /opt/certs
+          {{- end }}
             - name: config-common
               mountPath: /opt/rucio/etc/conf.d/10_common.json
               subPath: common.json
