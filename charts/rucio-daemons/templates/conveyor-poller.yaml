@@ -78,10 +78,12 @@ spec:
         secret:
           secretName: {{ .Release.Name }}-rucio-ca-bundle
     {{- end }}
-      {{- range $key, $val := .Values.additionalSecrets }}
+      {{- range $collection := tuple .Values.secretMounts .Values.conveyorPoller.secretMounts .Values.additionalSecrets .Values.conveyorPoller.additionalSecrets }}
+      {{- range $key, $val := $collection }}
       - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }} 
         secret:
           secretName: {{ coalesce $val.secretFullName (printf "%s-%s" $.Release.Name $val.secretName) }}
+      {{- end}}
       {{- end}}
       {{- range $key, $val := .Values.persistentVolumes }}
       - name: {{ $key }}
@@ -105,10 +107,12 @@ spec:
             - name: config-component
               mountPath: /opt/rucio/etc/conf.d/20_component.json
               subPath: component.json
-          {{- range $key, $val := .Values.additionalSecrets }}
+          {{- range $collection := tuple .Values.secretMounts .Values.conveyorPoller.secretMounts .Values.additionalSecrets .Values.conveyorPoller.additionalSecrets }}
+          {{- range $key, $val := $collection }}
             - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }} 
               mountPath: {{ $val.mountPath }}
               subPath: {{ $val.subPath }}
+          {{- end}}
           {{- end}}
           {{- range $key, $val := .Values.persistentVolumes }}
             - name: {{ $key }}

@@ -70,10 +70,12 @@ spec:
       - name: config-component
         secret:
           secretName: {{ template "rucio.fullname" . }}.config.{{ $rucio_daemon }}
-      {{- range $key, $val := .Values.additionalSecrets }}
+      {{- range $collection := tuple .Values.secretMounts .Values.tracerKronos.secretMounts .Values.additionalSecrets .Values.tracerKronos.additionalSecrets }}
+      {{- range $key, $val := $collection }}
       - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }} 
         secret:
           secretName: {{ coalesce $val.secretFullName (printf "%s-%s" $.Release.Name $val.secretName) }}
+      {{- end}}
       {{- end}}
       containers:
         - name: {{ .Chart.Name }}
@@ -86,10 +88,12 @@ spec:
             - name: config-component
               mountPath: /opt/rucio/etc/conf.d/20_component.json
               subPath: component.json
-            {{- range $key, $val := .Values.additionalSecrets }}
+            {{- range $collection := tuple .Values.secretMounts .Values.tracerKronos.secretMounts .Values.additionalSecrets .Values.tracerKronos.additionalSecrets }}
+            {{- range $key, $val := $collection }}
             - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }} 
               mountPath: {{ $val.mountPath }}
               subPath: {{ $val.subPath }}
+            {{- end}}
             {{- end}}
           ports:
             - name: metrics
