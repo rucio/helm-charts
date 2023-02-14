@@ -1,5 +1,7 @@
 {{- if gt .Values.conveyorTransferSubmitterCount 0.0 -}}
 {{- $rucio_daemon := "conveyor-submitter" }}
+{{- $component_values := .Values.conveyorTransferSubmitter }}
+{{- $component_count := .Values.conveyorTransferSubmitterCount }}
 {{- $app_label := printf "%s-%s" (include "rucio.name" .) $rucio_daemon }}
 apiVersion: v1
 kind: Secret
@@ -13,7 +15,7 @@ metadata:
 type: Opaque
 data:
   {{- $common_config := .Values.config | default dict | mustToPrettyJson | b64enc }}
-  {{- $component_config := .Values.conveyorTransferSubmitter.config | default dict | mustToPrettyJson | b64enc }}
+  {{- $component_config := $component_values.config | default dict | mustToPrettyJson | b64enc }}
   component.json: {{ $component_config | quote }}
 ---
 apiVersion: apps/v1
@@ -27,7 +29,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  replicas: {{ .Values.conveyorTransferSubmitterCount }}
+  replicas: {{ $component_count }}
   selector:
     matchLabels:
       app: {{ $app_label }}
@@ -56,7 +58,7 @@ spec:
     {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
     {{- end }}
-    {{- with .Values.conveyorTransferSubmitter.podAnnotations }}
+    {{- with $component_values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
     {{- end }}
     spec:
@@ -78,7 +80,7 @@ spec:
         secret:
           secretName: {{ .Release.Name }}-rucio-ca-bundle
     {{- end }}
-      {{- range $collection := tuple .Values.secretMounts .Values.conveyorTransferSubmitter.secretMounts .Values.additionalSecrets .Values.conveyorTransferSubmitter.additionalSecrets }}
+      {{- range $collection := tuple .Values.secretMounts $component_values.secretMounts .Values.additionalSecrets $component_values.additionalSecrets }}
       {{- range $key, $val := $collection }}
       - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }} 
         secret:
@@ -107,7 +109,7 @@ spec:
             - name: config-component
               mountPath: /opt/rucio/etc/conf.d/20_component.json
               subPath: component.json
-            {{- range $collection := tuple .Values.secretMounts .Values.conveyorTransferSubmitter.secretMounts .Values.additionalSecrets .Values.conveyorTransferSubmitter.additionalSecrets }}
+            {{- range $collection := tuple .Values.secretMounts $component_values.secretMounts .Values.additionalSecrets $component_values.additionalSecrets }}
             {{- range $key, $val := $collection }}
             - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }} 
               mountPath: {{ $val.mountPath }}
@@ -132,20 +134,20 @@ spec:
             - name: RUCIO_DAEMON
               value: "{{ $rucio_daemon }}"
             - name: RUCIO_DAEMON_ARGS
-              value: "{{- if .Values.conveyorTransferSubmitter.threads }} --total-threads {{ .Values.conveyorTransferSubmitter.threads }}{{ end }} {{- if .Values.conveyorTransferSubmitter.bulk }} --bulk {{ .Values.conveyorTransferSubmitter.bulk }}{{ end }} {{- if .Values.conveyorTransferSubmitter.groupBulk }} --group-bulk {{ .Values.conveyorTransferSubmitter.groupBulk }}{{ end}}{{- if .Values.conveyorTransferSubmitter.groupPolicy }} --group-policy {{ .Values.conveyorTransferSubmitter.groupPolicy }}{{ end }} {{- if .Values.conveyorTransferSubmitter.mock }} --mock {{ .Values.conveyorTransferSubmitter.mock }}{{ end }} {{- if .Values.conveyorTransferSubmitter.sourceStrategy }} --source-strategy {{ .Values.conveyorTransferSubmitter.sourceStrategy }}{{ end }} {{- if .Values.conveyorTransferSubmitter.excludeRses }} --exclude-rses {{ .Values.conveyorTransferSubmitter.excludeRses }}{{ end}} {{- if .Values.conveyorTransferSubmitter.includeRses }} --include-rses {{ .Values.conveyorTransferSubmitter.includeRses }}{{ end}} {{- if .Values.conveyorTransferSubmitter.rses }} --rses {{ .Values.conveyorTransferSubmitter.rses }}{{ end}} {{- if .Values.conveyorTransferSubmitter.sleepTime }} --sleep-time {{ .Values.conveyorTransferSubmitter.sleepTime }}{{ end}} {{- if .Values.conveyorTransferSubmitter.activities }} --activities {{ .Values.conveyorTransferSubmitter.activities }}{{ end}} {{- if .Values.conveyorTransferSubmitter.excludeActivities }} --exclude-activities {{ .Values.conveyorTransferSubmitter.excludeActivities }}{{ end}} {{- if .Values.conveyorTransferSubmitter.maxSources }} --max-sources {{ .Values.conveyorTransferSubmitter.maxSources }}{{end }} {{- if .Values.conveyorTransferSubmitter.ignoreAvailability }} --ignore-availability {{ end }} {{- if .Values.conveyorTransferSubmitter.retryOtherFts }} --retry-other-fts {{ end}} {{- if kindIs "float64" .Values.conveyorTransferSubmitter.archiveTimeout }}  --archive-timeout-override {{ .Values.conveyorTransferSubmitter.archiveTimeout }}{{ end}}"
-{{- with .Values.conveyorTransferSubmitter.resources }}
+              value: "{{- if $component_values.threads }} --total-threads {{ $component_values.threads }}{{ end }} {{- if $component_values.bulk }} --bulk {{ $component_values.bulk }}{{ end }} {{- if $component_values.groupBulk }} --group-bulk {{ $component_values.groupBulk }}{{ end}}{{- if $component_values.groupPolicy }} --group-policy {{ $component_values.groupPolicy }}{{ end }} {{- if $component_values.mock }} --mock {{ $component_values.mock }}{{ end }} {{- if $component_values.sourceStrategy }} --source-strategy {{ $component_values.sourceStrategy }}{{ end }} {{- if $component_values.excludeRses }} --exclude-rses {{ $component_values.excludeRses }}{{ end}} {{- if $component_values.includeRses }} --include-rses {{ $component_values.includeRses }}{{ end}} {{- if $component_values.rses }} --rses {{ $component_values.rses }}{{ end}} {{- if $component_values.sleepTime }} --sleep-time {{ $component_values.sleepTime }}{{ end}} {{- if $component_values.activities }} --activities {{ $component_values.activities }}{{ end}} {{- if $component_values.excludeActivities }} --exclude-activities {{ $component_values.excludeActivities }}{{ end}} {{- if $component_values.maxSources }} --max-sources {{ $component_values.maxSources }}{{end }} {{- if $component_values.ignoreAvailability }} --ignore-availability {{ end }} {{- if $component_values.retryOtherFts }} --retry-other-fts {{ end}} {{- if kindIs "float64" $component_values.archiveTimeout }}  --archive-timeout-override {{ $component_values.archiveTimeout }}{{ end}}"
+{{- with $component_values.resources }}
           resources:
 {{ toYaml . | trim | indent 12 }}
 {{ end }}
-{{- with .Values.conveyorTransferSubmitter.nodeSelector }}
+{{- with $component_values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
 {{- end }}
-{{- with .Values.conveyorTransferSubmitter.affinity }}
+{{- with $component_values.affinity }}
       affinity:
 {{ toYaml . | indent 8 }}
 {{- end }}
-{{- with .Values.conveyorTransferSubmitter.tolerations }}
+{{- with $component_values.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
 {{- end }}

@@ -1,5 +1,7 @@
 {{- if gt .Values.conveyorStagerCount 0.0 -}}
 {{- $rucio_daemon := "conveyor-stager" }}
+{{- $component_values := .Values.conveyorStager }}
+{{- $component_count := .Values.conveyorStagerCount }}
 {{- $app_label := printf "%s-%s" (include "rucio.name" .) $rucio_daemon }}
 apiVersion: v1
 kind: Secret
@@ -13,7 +15,7 @@ metadata:
 type: Opaque
 data:
   {{- $common_config := .Values.config | default dict | mustToPrettyJson | b64enc }}
-  {{- $component_config := .Values.conveyorStager.config | default dict | mustToPrettyJson | b64enc }}
+  {{- $component_config := $component_values.config | default dict | mustToPrettyJson | b64enc }}
   component.json: {{ $component_config | quote }}
 ---
 apiVersion: apps/v1
@@ -27,7 +29,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  replicas: {{ .Values.conveyorStagerCount }}
+  replicas: {{ $component_count }}
   selector:
     matchLabels:
       app: {{ $app_label }}
@@ -69,7 +71,7 @@ spec:
         secret:
           secretName: {{ .Release.Name }}-rucio-ca-bundle
     {{- end }}
-      {{- range $collection := tuple .Values.secretMounts .Values.conveyorStager.secretMounts .Values.additionalSecrets .Values.conveyorStager.additionalSecrets }}
+      {{- range $collection := tuple .Values.secretMounts $component_values.secretMounts .Values.additionalSecrets $component_values.additionalSecrets }}
       {{- range $key, $val := $collection }}
       - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }} 
         secret:
@@ -98,7 +100,7 @@ spec:
             - name: config-component
               mountPath: /opt/rucio/etc/conf.d/20_component.json
               subPath: component.json
-          {{- range $collection := tuple .Values.secretMounts .Values.conveyorStager.secretMounts .Values.additionalSecrets .Values.conveyorStager.additionalSecrets }}
+          {{- range $collection := tuple .Values.secretMounts $component_values.secretMounts .Values.additionalSecrets $component_values.additionalSecrets }}
           {{- range $key, $val := $collection }}
             - name: {{ $key }}
               mountPath: {{ $val.mountPath }}
@@ -123,20 +125,20 @@ spec:
             - name: RUCIO_DAEMON
               value: "{{ $rucio_daemon }}"
             - name: RUCIO_DAEMON_ARGS
-              value: "{{- if .Values.conveyorStager.threads }} --total-threads {{ .Values.conveyorStager.threads }}{{ end }} {{- if .Values.conveyorStager.bulk }} --bulk {{ .Values.conveyorStager.bulk }}{{ end }} {{- if .Values.conveyorStager.bulk }} --bulk {{ .Values.conveyorStager.bulk }}{{ end }} {{- if .Values.conveyorStager.sleepTime }} --sleep-time {{ .Values.conveyorStager.sleepTime }}{{ end }} {{- if .Values.conveyorStager.activities }} --activities {{ .Values.conveyorStager.activities }}{{ end }}"
-{{- with .Values.conveyorStager.resources }}
+              value: "{{- if $component_values.threads }} --total-threads {{ $component_values.threads }}{{ end }} {{- if $component_values.bulk }} --bulk {{ $component_values.bulk }}{{ end }} {{- if $component_values.bulk }} --bulk {{ $component_values.bulk }}{{ end }} {{- if $component_values.sleepTime }} --sleep-time {{ $component_values.sleepTime }}{{ end }} {{- if $component_values.activities }} --activities {{ $component_values.activities }}{{ end }}"
+{{- with $component_values.resources }}
           resources:
 {{ toYaml . | trim | indent 12 }}
 {{ end }}
-{{- with .Values.conveyorStager.nodeSelector }}
+{{- with $component_values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
 {{- end }}
-{{- with .Values.conveyorStager.affinity }}
+{{- with $component_values.affinity }}
       affinity:
 {{ toYaml . | indent 8 }}
 {{- end }}
-{{- with .Values.conveyorStager.tolerations }}
+{{- with $component_values.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
 {{- end }}

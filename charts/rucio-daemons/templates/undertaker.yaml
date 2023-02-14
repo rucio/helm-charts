@@ -1,5 +1,7 @@
 {{- if gt .Values.undertakerCount 0.0 -}}
 {{- $rucio_daemon := "undertaker" }}
+{{- $component_values := .Values.undertaker }}
+{{- $component_count := .Values.undertakerCount }}
 {{- $app_label := printf "%s-%s" (include "rucio.name" .) $rucio_daemon }}
 apiVersion: v1
 kind: Secret
@@ -13,7 +15,7 @@ metadata:
 type: Opaque
 data:
   {{- $common_config := .Values.config | default dict | mustToPrettyJson | b64enc }}
-  {{- $component_config := .Values.undertaker.config | default dict | mustToPrettyJson | b64enc }}
+  {{- $component_config := $component_values.config | default dict | mustToPrettyJson | b64enc }}
   component.json: {{ $component_config | quote }}
 ---
 apiVersion: apps/v1
@@ -27,7 +29,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  replicas: {{ .Values.undertakerCount }}
+  replicas: {{ $component_count }}
   selector:
     matchLabels:
       app: {{ $app_label }}
@@ -56,7 +58,7 @@ spec:
     {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
     {{- end }}
-    {{- with .Values.undertaker.podAnnotations }}
+    {{- with $component_values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
     {{- end }}
     spec:
@@ -73,7 +75,7 @@ spec:
       - name: proxy-volume
         secret:
           secretName: {{ .Release.Name }}-rucio-x509up
-      {{- range $collection := tuple .Values.secretMounts .Values.undertaker.secretMounts .Values.additionalSecrets .Values.undertaker.additionalSecrets }}
+      {{- range $collection := tuple .Values.secretMounts $component_values.secretMounts .Values.additionalSecrets $component_values.additionalSecrets }}
       {{- range $key, $val := $collection }}
       - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }} 
         secret:
@@ -98,7 +100,7 @@ spec:
               subPath: component.json
             - name: proxy-volume
               mountPath: /opt/proxy
-            {{- range $collection := tuple .Values.secretMounts .Values.undertaker.secretMounts .Values.additionalSecrets .Values.undertaker.additionalSecrets }}
+            {{- range $collection := tuple .Values.secretMounts $component_values.secretMounts .Values.additionalSecrets $component_values.additionalSecrets }}
             {{- range $key, $val := $collection }}
             - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }} 
               mountPath: {{ $val.mountPath }}
@@ -123,20 +125,20 @@ spec:
             - name: RUCIO_DAEMON
               value: "{{ $rucio_daemon }}"
             - name: RUCIO_DAEMON_ARGS
-              value: "{{- if .Values.undertaker.threads }} --total-workers {{ .Values.undertaker.threads }}{{end}} {{- if .Values.undertaker.chunkSize }} --chunk-size {{ .Values.undertaker.chunkSize }}{{ end }}"
-{{- with .Values.undertaker.resources }}
+              value: "{{- if $component_values.threads }} --total-workers {{ $component_values.threads }}{{end}} {{- if $component_values.chunkSize }} --chunk-size {{ $component_values.chunkSize }}{{ end }}"
+{{- with $component_values.resources }}
           resources:
 {{ toYaml . | trim | indent 12 }}
 {{ end }}
-{{- with .Values.undertaker.nodeSelector }}
+{{- with $component_values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
 {{- end }}
-{{- with .Values.undertaker.affinity }}
+{{- with $component_values.affinity }}
       affinity:
 {{ toYaml . | indent 8 }}
 {{- end }}
-{{- with .Values.undertaker.tolerations }}
+{{- with $component_values.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
 {{- end }}

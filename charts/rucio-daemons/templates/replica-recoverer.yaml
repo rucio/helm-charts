@@ -1,5 +1,7 @@
 {{- if gt .Values.replicaRecovererCount 0.0 -}}
 {{- $rucio_daemon := "replica-recoverer" }}
+{{- $component_values := .Values.replicaRecoverer }}
+{{- $component_count := .Values.replicaRecovererCount }}
 {{- $app_label := printf "%s-%s" (include "rucio.name" .) $rucio_daemon }}
 
 apiVersion: v1
@@ -14,7 +16,7 @@ metadata:
 type: Opaque
 data:
   {{- $common_config := .Values.config | default dict | mustToPrettyJson | b64enc }}
-  {{- $component_config := .Values.replicaRecoverer.config | default dict | mustToPrettyJson | b64enc }}
+  {{- $component_config := $component_values.config | default dict | mustToPrettyJson | b64enc }}
   component.json: {{ $component_config | quote }}
 ---
 apiVersion: apps/v1
@@ -28,7 +30,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  replicas: {{ .Values.replicaRecovererCount }}
+  replicas: {{ $component_count }}
   selector:
     matchLabels:
       app: {{ $app_label }}
@@ -57,7 +59,7 @@ spec:
     {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
     {{- end }}
-    {{- with .Values.replicaRecoverer.podAnnotations }}
+    {{- with $component_values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
     {{- end }}
     spec:
@@ -79,7 +81,7 @@ spec:
         secret:
           secretName: {{ .Release.Name }}-rucio-ca-bundle
     {{- end }}
-      {{- range $collection := tuple .Values.secretMounts .Values.replicaRecoverer.secretMounts .Values.additionalSecrets .Values.replicaRecoverer.additionalSecrets }}
+      {{- range $collection := tuple .Values.secretMounts $component_values.secretMounts .Values.additionalSecrets $component_values.additionalSecrets }}
       {{- range $key, $val := $collection }}
       - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }}
         secret:
@@ -108,7 +110,7 @@ spec:
             - name: config-component
               mountPath: /opt/rucio/etc/conf.d/20_component.json
               subPath: component.json
-            {{- range $collection := tuple .Values.secretMounts .Values.replicaRecoverer.secretMounts .Values.additionalSecrets .Values.replicaRecoverer.additionalSecrets }}
+            {{- range $collection := tuple .Values.secretMounts $component_values.secretMounts .Values.additionalSecrets $component_values.additionalSecrets }}
             {{- range $key, $val := $collection }}
             - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }}
               mountPath: {{ $val.mountPath }}
@@ -133,20 +135,20 @@ spec:
             - name: RUCIO_DAEMON
               value: "{{ $rucio_daemon }}"
             - name: RUCIO_DAEMON_ARGS
-              value: "{{- if .Values.replicaRecoverer.sleepTime }} --sleep-time {{ .Values.replicaRecoverer.sleepTime }}{{ end }}"
-{{- with .Values.replicaRecoverer.resources }}
+              value: "{{- if $component_values.sleepTime }} --sleep-time {{ $component_values.sleepTime }}{{ end }}"
+{{- with $component_values.resources }}
           resources:
 {{ toYaml . | trim | indent 12 }}
 {{ end }}
-{{- with .Values.replicaRecoverer.nodeSelector }}
+{{- with $component_values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
 {{- end }}
-{{- with .Values.replicaRecoverer.affinity }}
+{{- with $component_values.affinity }}
       affinity:
 {{ toYaml . | indent 8 }}
 {{- end }}
-{{- with .Values.replicaRecoverer.tolerations }}
+{{- with $component_values.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
 {{- end }}

@@ -1,5 +1,7 @@
 {{- if gt .Values.conveyorFinisherCount 0.0 -}}
 {{- $rucio_daemon := "conveyor-finisher" }}
+{{- $component_values := .Values.conveyorFinisher }}
+{{- $component_count := .Values.conveyorFinisherCount }}
 {{- $app_label := printf "%s-%s" (include "rucio.name" .) $rucio_daemon }}
 apiVersion: v1
 kind: Secret
@@ -13,7 +15,7 @@ metadata:
 type: Opaque
 data:
   {{- $common_config := .Values.config | default dict | mustToPrettyJson | b64enc }}
-  {{- $component_config := .Values.conveyorFinisher.config | default dict | mustToPrettyJson | b64enc }}
+  {{- $component_config := $component_values.config | default dict | mustToPrettyJson | b64enc }}
   component.json: {{ $component_config | quote }}
 ---
 apiVersion: apps/v1
@@ -27,7 +29,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  replicas: {{ .Values.conveyorFinisherCount }}
+  replicas: {{ $component_count }}
   selector:
     matchLabels:
       app: {{ $app_label }}
@@ -56,7 +58,7 @@ spec:
     {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
     {{- end }}
-    {{- with .Values.conveyorFinisher.podAnnotations }}
+    {{- with $component_values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
     {{- end }}
     spec:
@@ -78,7 +80,7 @@ spec:
         secret:
           secretName: {{ .Release.Name }}-rucio-ca-bundle
     {{- end }}
-      {{- range $collection := tuple .Values.secretMounts .Values.conveyorFinisher.secretMounts .Values.additionalSecrets .Values.conveyorFinisher.additionalSecrets }}
+      {{- range $collection := tuple .Values.secretMounts $component_values.secretMounts .Values.additionalSecrets $component_values.additionalSecrets }}
       {{- range $key, $val := $collection }}
       - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }} 
         secret:
@@ -107,7 +109,7 @@ spec:
             - name: config-component
               mountPath: /opt/rucio/etc/conf.d/20_component.json
               subPath: component.json
-          {{- range $collection := tuple .Values.secretMounts .Values.conveyorFinisher.secretMounts .Values.additionalSecrets .Values.conveyorFinisher.additionalSecrets }}
+          {{- range $collection := tuple .Values.secretMounts $component_values.secretMounts .Values.additionalSecrets $component_values.additionalSecrets }}
           {{- range $key, $val := $collection }}
             - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }} 
               mountPath: {{ $val.mountPath }}
@@ -132,20 +134,20 @@ spec:
             - name: RUCIO_DAEMON
               value: "{{ $rucio_daemon }}"
             - name: RUCIO_DAEMON_ARGS
-              value: "{{- if .Values.conveyorFinisher.threads }} --total-threads {{ .Values.conveyorFinisher.threads }}{{ end }} {{- if .Values.conveyorFinisher.dbBulk }} --db-bulk {{ .Values.conveyorFinisher.dbBulk }}{{ end }} {{- if .Values.conveyorFinisher.bulk }} --bulk {{ .Values.conveyorFinisher.bulk }}{{ end }} {{- if .Values.conveyorFinisher.sleepTime }} --sleep-time {{ .Values.conveyorFinisher.sleepTime }}{{ end }} {{- if .Values.conveyorFinisher.activities }} --activities {{ .Values.conveyorFinisher.activities }}{{ end }}"
-{{- with .Values.conveyorFinisher.resources }}
+              value: "{{- if $component_values.threads }} --total-threads {{ $component_values.threads }}{{ end }} {{- if $component_values.dbBulk }} --db-bulk {{ $component_values.dbBulk }}{{ end }} {{- if $component_values.bulk }} --bulk {{ $component_values.bulk }}{{ end }} {{- if $component_values.sleepTime }} --sleep-time {{ $component_values.sleepTime }}{{ end }} {{- if $component_values.activities }} --activities {{ $component_values.activities }}{{ end }}"
+{{- with $component_values.resources }}
           resources:
 {{ toYaml . | trim | indent 12 }}
 {{ end }}
-{{- with .Values.conveyorFinisher.nodeSelector }}
+{{- with $component_values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
 {{- end }}
-{{- with .Values.conveyorFinisher.affinity }}
+{{- with $component_values.affinity }}
       affinity:
 {{ toYaml . | indent 8 }}
 {{- end }}
-{{- with .Values.conveyorFinisher.tolerations }}
+{{- with $component_values.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
 {{- end }}

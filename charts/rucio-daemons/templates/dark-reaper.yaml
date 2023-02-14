@@ -1,5 +1,7 @@
 {{- if gt .Values.darkReaperCount 0.0 -}}
 {{- $rucio_daemon := "dark-reaper" }}
+{{- $component_values := .Values.darkReaper }}
+{{- $component_count := .Values.darkReaperCount }}
 {{- $app_label := printf "%s-%s" (include "rucio.name" .) $rucio_daemon }}
 apiVersion: v1
 kind: Secret
@@ -13,7 +15,7 @@ metadata:
 type: Opaque
 data:
   {{- $common_config := .Values.config | default dict | mustToPrettyJson | b64enc }}
-  {{- $component_config := .Values.darkReaper.config | default dict | mustToPrettyJson | b64enc }}
+  {{- $component_config := $component_values.config | default dict | mustToPrettyJson | b64enc }}
   component.json: {{ $component_config | quote }}
 ---
 apiVersion: apps/v1
@@ -27,7 +29,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  replicas: {{ .Values.darkReaperCount }}
+  replicas: {{ $component_count }}
   selector:
     matchLabels:
       app: {{ $app_label }}
@@ -56,7 +58,7 @@ spec:
     {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
     {{- end }}
-    {{- with .Values.darkReaper.podAnnotations }}
+    {{- with $component_values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
     {{- end }}
     spec:
@@ -78,7 +80,7 @@ spec:
         secret:
           secretName: {{ .Release.Name }}-rucio-ca-bundle-reaper
     {{- end }}
-      {{- range $collection := tuple .Values.secretMounts .Values.darkReaper.secretMounts .Values.additionalSecrets .Values.darkReaper.additionalSecrets }}
+      {{- range $collection := tuple .Values.secretMounts $component_values.secretMounts .Values.additionalSecrets $component_values.additionalSecrets }}
       {{- range $key, $val := $collection }}
       - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }} 
         secret:
@@ -107,7 +109,7 @@ spec:
             - name: config-component
               mountPath: /opt/rucio/etc/conf.d/20_component.json
               subPath: component.json
-            {{- range $collection := tuple .Values.secretMounts .Values.darkReaper.secretMounts .Values.additionalSecrets .Values.darkReaper.additionalSecrets }}
+            {{- range $collection := tuple .Values.secretMounts $component_values.secretMounts .Values.additionalSecrets $component_values.additionalSecrets }}
             {{- range $key, $val := $collection }}
             - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }} 
               mountPath: {{ $val.mountPath }}
@@ -132,26 +134,26 @@ spec:
             - name: RUCIO_DAEMON
               value: "{{ $rucio_daemon }}"
             - name: RUCIO_DAEMON_ARGS
-              value: '{{- if .Values.darkReaper.workers }} --total-workers {{ .Values.darkReaper.workers }}{{end}} {{- if .Values.darkReaper.scheme }} --scheme {{ .Values.darkReaper.scheme }}{{ end }} {{- if .Values.darkReaper.includeRses }} --include-rses="{{ .Values.darkReaper.includeRses }}"{{ end }} {{- if .Values.darkReaper.rses }} --rses {{ .Values.darkReaper.rses }}{{ end }} {{- if .Values.darkReaper.chunkSize }}  --chunk-size {{ .Values.darkReaper.chunkSize }}{{ end }} {{- if .Values.darkReaper.excludeRses }} --exclude-rses {{ .Values.darkReaper.excludeRses }}{{ end }}'
+              value: '{{- if $component_values.workers }} --total-workers {{ $component_values.workers }}{{end}} {{- if $component_values.scheme }} --scheme {{ $component_values.scheme }}{{ end }} {{- if $component_values.includeRses }} --include-rses="{{ $component_values.includeRses }}"{{ end }} {{- if $component_values.rses }} --rses {{ $component_values.rses }}{{ end }} {{- if $component_values.chunkSize }}  --chunk-size {{ $component_values.chunkSize }}{{ end }} {{- if $component_values.excludeRses }} --exclude-rses {{ $component_values.excludeRses }}{{ end }}'
             - name: GLOBUS_THREAD_MODEL
               value: "pthread"
             - name: RUCIO_HOME
               value: "/opt/rucio/reaper"
             - name: X509_USER_PROXY
               value: "/opt/proxy/x509up"
-{{- with .Values.darkReaper.resources }}
+{{- with $component_values.resources }}
           resources:
 {{ toYaml . | trim | indent 12 }}
 {{ end }}
-{{- with .Values.darkReaper.nodeSelector }}
+{{- with $component_values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
 {{- end }}
-{{- with .Values.darkReaper.affinity }}
+{{- with $component_values.affinity }}
       affinity:
 {{ toYaml . | indent 8 }}
 {{- end }}
-{{- with .Values.darkReaper.tolerations }}
+{{- with $component_values.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
 {{- end }}
