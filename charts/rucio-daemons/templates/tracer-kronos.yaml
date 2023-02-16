@@ -94,7 +94,9 @@ spec:
             {{- range $key, $val := $collection }}
             - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }} 
               mountPath: {{ $val.mountPath }}
-              subPath: {{ $val.subPath }}
+              {{- if $val.subPath }}
+              subPath: "{{ $val.subPath }}"
+              {{- end }}
             {{- end}}
             {{- end}}
           ports:
