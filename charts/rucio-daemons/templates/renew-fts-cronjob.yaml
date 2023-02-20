@@ -78,7 +78,7 @@
         - name: RUCIO_FTS_SCRIPT
           value: "{{ .Values.ftsRenewal.script }}"
         - name: RUCIO_FTS_VO_COUNT
-          value: {{ len .Values.ftsRenewal.vos }}
+          value: "{{ len .Values.ftsRenewal.vos }}"
         {{- range $key, $val := .Values.ftsRenewal.vos }}
         - name: RUCIO_FTS_VO_{{ $key }}
           value: {{ $val.vo }}
