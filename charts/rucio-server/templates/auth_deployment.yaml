@@ -64,6 +64,7 @@ spec:
         persistentVolumeClaim:
           claimName: {{ $val.name }}
       {{- end}}
+{{- if .Values.useDeprecatedImplicitSecrets }}
 {{- if .Values.useSSL.authServer }}
       - name: hostcert
         secret:
@@ -74,6 +75,7 @@ spec:
       - name: cafile
         secret:
           secretName: {{ .Release.Name }}-auth-cafile
+{{- end }}
 {{- end }}
       containers:
 {{- if .Values.exposeErrorLogs.authServer }}
@@ -152,6 +154,7 @@ spec:
             - name: {{ $key }}
               mountPath: {{ $val.mountPath }}
             {{- end}}
+{{- if .Values.useDeprecatedImplicitSecrets }}
 {{- if .Values.useSSL.authServer }}
             - name: hostcert
               mountPath: /etc/grid-security/hostcert.pem
@@ -162,6 +165,7 @@ spec:
             - name: cafile
               mountPath: /etc/grid-security/ca.pem
               subPath: ca.pem
+{{- end }}
 {{- end }}
           env:
             {{- range $key, $val := .Values.httpd_config }}
