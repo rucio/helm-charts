@@ -59,6 +59,7 @@ spec:
         secret:
           secretName: {{ coalesce $val.secretFullName (printf "%s-%s" $.Release.Name $val.secretName) }}
       {{- end}}
+{{- if .Values.useDeprecatedImplicitSecrets }}
 {{- if .Values.useSSL.traceServer }}
       - name: hostcert
         secret:
@@ -69,6 +70,7 @@ spec:
       - name: cafile
         secret:
           secretName: {{ .Release.Name }}-trace-cafile
+{{- end }}
 {{- end }}
       containers:
 {{- if .Values.exposeErrorLogs.traceServer }}
@@ -127,6 +129,7 @@ spec:
               subPath: common.json
             - name: httpdlog
               mountPath: /var/log/httpd
+{{- if .Values.useDeprecatedImplicitSecrets }}
 {{- if .Values.useSSL.traceServer }}
             - name: hostcert
               mountPath: /etc/grid-security/hostcert.pem
@@ -137,6 +140,7 @@ spec:
             - name: cafile
               mountPath: /etc/grid-security/ca.pem
               subPath: ca.pem
+{{- end }}
 {{- end }}
             {{- range $key, $val := .Values.additionalSecrets }}
             {{- /* TODO: depreacte and remove support for subPaths (at plural) case */}}
