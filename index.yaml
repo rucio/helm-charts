@@ -2,6 +2,23 @@ apiVersion: v1
 entries:
   rucio-daemons:
   - apiVersion: v1
+    created: "2023-02-20T08:02:07.247996744Z"
+    description: A Helm chart to deploy daemons for Rucio
+    digest: 0e85015722cd0e7ff315c70b22873f4c51f3af392508b67b54c6d1366eeea0d4
+    home: https://rucio.cern.ch/
+    keywords:
+    - data-management
+    - science
+    maintainers:
+    - email: rucio-dev@cern.ch
+      name: Rucio development team
+    name: rucio-daemons
+    sources:
+    - https://github.com/rucio/rucio
+    urls:
+    - https://github.com/rucio/helm-charts/releases/download/rucio-daemons-1.30.6/rucio-daemons-1.30.6.tgz
+    version: 1.30.6
+  - apiVersion: v1
     created: "2023-02-20T07:43:47.81235716Z"
     description: A Helm chart to deploy daemons for Rucio
     digest: f4034547cbd752353a5f0afd0e0faabf200be235ba99ae688a4bd295191ce95b
@@ -2303,4 +2320,4 @@ entries:
     urls:
     - https://github.com/rucio/helm-charts/releases/download/rucio-webui-1.30.0/rucio-webui-1.30.0.tgz
     version: 1.30.0
-generated: "2023-02-20T07:43:47.813255671Z"
+generated: "2023-02-20T08:02:07.249229854Z"
