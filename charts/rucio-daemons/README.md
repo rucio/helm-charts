@@ -61,36 +61,33 @@ The conveyor needs a delegated X509 user proxy and the necessary CA so that it c
         repository: rucio/fts-cron
         tag: latest
         pullPolicy: Always
-      vo: "cms"
-      voms: "cms:/cms/Role=production"
-      gridPassphrase:
-        required: false
-        existingSecret:
-          name: 'grid-passphrase'
-          key: 'passphrase'
       servers: "https://fts3-devel.cern.ch:8446,https://fts3-pilot.cern.ch:8446"
-      ftsCert:
-        existingSecret:
-          name: '' # e.g., fts-cert
-          key: '' # e.g., usercert.pem
-      ftsKey:
-        existingSecret:
-          name: '' # e.g., fts-key
-          key: '' # e.g., userkey.pem
-      longProxy: ''
-      ftsLongProxy:
-        existingSecret:
-          name: '' # e.g., long-proxy
-          key: '' # e.g., long.proxy
+      script: default
+      vos:
+        - vo: "cms"
+          voms: "cms:/cms/Role=production"
 
-The possible VOs are:
+Please check directly the scripts in the [fts-cron](https://github.com/rucio/containers/tree/master/fts-cron)
+container to see their required input. For example, the "atlas" script requires
+a proxy certificate (longproxy) to be mounted into the pod at the correct
+location. And it will be used to generate a short proxy into the kubernetes 
+secret with the name given in the `RUCIO_FTS_SECRETS` env variable. 
+The configuration will be like that:
 
-- `atlas` expects a long proxy as input secret. It then creates a user proxy with the given VOMS extensions and with 96h lifetime and saves it as a cluster secret (`<releasename>-rucio-x509up`).
-- `cms` expects a separate key and cert as input secrets. It then creates a user proxy with the given VOMS extensions and with 96h lifetime and delegates it to the given FTS servers. Then saves it as a cluster secret (`<releasename>-rucio-x509up`).
-- `escape` expects a separate key and cert as input secrets, as well as a grid passphrase called. It then creates a user proxy with the given VOMS extensions and with 96h lifetime and delegates it to the given FTS servers. Then saves it as a cluster secret (`<releasename>-rucio-x509up`).
-- `dteam` expects a long proxy like `atlas` and then creates, delegates and saves the user proxy like `cms`.
-- `tutorial` expects a separate key and cert as input secrets like `cms` and then directly delegates to FTS. No proxy generation and `<releasename>-rucio-x509up` has to be manually created.
-- Any other VO value will lead to the execution of the default script and expects a separate key and cert as input secrets. It then creates a user proxy with the given VOMS extensions and with 96h lifetime and delegates it to the given FTS servers. Then saves it as a cluster secret (`<releasename>-rucio-x509up`). Additionally a grid passphrase can be specified and saved in a dedicated secret.
+      script: atlas
+      vos:
+        - vo: "atlas"
+          voms: "atlas:/atlas/Role=production"
+        secretMounts:
+          - secretFullName: release-longproxy
+            mountPath: /opt/rucio/certs/long.proxy
+            subPath: long.proxy
+        additionalEnvs:
+          - name: RUCIO_LONG_PROXY
+            value: long.proxy
+          - name: RUCIO_FTS_SECRETS
+            value: release-rucio-x509up
+
 
 ### Reaper
 

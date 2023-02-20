@@ -1,5 +1,7 @@
 {{- if gt .Values.hermes2Count 0.0 -}}
 {{- $rucio_daemon := "hermes2" }}
+{{- $component_values := .Values.hermes2 }}
+{{- $component_count := .Values.hermes2Count }}
 {{- $app_label := printf "%s-%s" (include "rucio.name" .) $rucio_daemon }}
 apiVersion: v1
 kind: Secret
@@ -13,8 +15,7 @@ metadata:
 type: Opaque
 data:
   {{- $common_config := .Values.config | default dict | mustToPrettyJson | b64enc }}
-  {{- $component_config := .Values.hermes2.config | default dict | mustToPrettyJson | b64enc }}
-  common.json: {{ $common_config | quote }}
+  {{- $component_config := $component_values.config | default dict | mustToPrettyJson | b64enc }}
   component.json: {{ $component_config | quote }}
 ---
 apiVersion: apps/v1
@@ -28,7 +29,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  replicas: {{ .Values.hermes2Count }}
+  replicas: {{ $component_count }}
   selector:
     matchLabels:
       app: {{ $app_label }}
@@ -57,7 +58,7 @@ spec:
     {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
     {{- end }}
-    {{- with .Values.hermes2.podAnnotations }}
+    {{- with $component_values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
     {{- end }}
     spec:
@@ -65,10 +66,13 @@ spec:
       serviceAccountName: {{ .Values.serviceAccountName }}
     {{- end }}
       volumes:
-        - name: config
+        - name: config-common
           secret:
-            secretName: {{ template "rucio.fullname" . }}.config.hermes2.yaml
-{{ if .Values.hermes2.useSSL }}
+            secretName: {{ template "rucio.fullname" . }}.config.common
+        - name: config-component
+          secret:
+            secretName: {{ template "rucio.fullname" . }}.config.{{ $rucio_daemon }}
+{{ if $component_values.useSSL }}
         - name: usercert
           secret:
             secretName: {{ .Release.Name }}-hermes2-cert
@@ -76,10 +80,12 @@ spec:
           secret:
             secretName: {{ .Release.Name }}-hermes2-key
 {{ end }}
-        {{- range $key, $val := .Values.additionalSecrets }}
+        {{- range $collection := tuple .Values.secretMounts $component_values.secretMounts .Values.additionalSecrets $component_values.additionalSecrets }}
+        {{- range $key, $val := $collection }}
         - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }} 
           secret:
             secretName: {{ coalesce $val.secretFullName (printf "%s-%s" $.Release.Name $val.secretName) }}
+        {{- end}}
         {{- end}}
         {{- range $key, $val := .Values.persistentVolumes }}
         - name: {{ $key }}
@@ -91,22 +97,26 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           volumeMounts:
-{{ if .Values.hermes2.useSSL }}
+{{ if $component_values.useSSL }}
             - name: usercert
               mountPath: /opt/rucio/certs/
             - name: userkey
               mountPath: /opt/rucio/keys/
 {{ end }}
-            - name: config
+            - name: config-common
               mountPath: /opt/rucio/etc/conf.d/10_common.json
               subPath: common.json
-            - name: config
+            - name: config-component
               mountPath: /opt/rucio/etc/conf.d/20_component.json
               subPath: component.json
-            {{- range $key, $val := .Values.additionalSecrets }}
+            {{- range $collection := tuple .Values.secretMounts $component_values.secretMounts .Values.additionalSecrets $component_values.additionalSecrets }}
+            {{- range $key, $val := $collection }}
             - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }} 
               mountPath: {{ $val.mountPath }}
-              subPath: {{ $val.subPath }}
+              {{- if $val.subPath }}
+              subPath: "{{ $val.subPath }}"
+              {{- end }}
+            {{- end}}
             {{- end}}
             {{- range $key, $val := .Values.persistentVolumes }}
             - name: {{ $key }}
@@ -126,20 +136,20 @@ spec:
             - name: RUCIO_DAEMON
               value: "{{ $rucio_daemon }}"
             - name: RUCIO_DAEMON_ARGS
-              value: "{{- if .Values.hermes2.threads }} --threads {{ .Values.hermes2.threads }}{{ end }} {{ if .Values.hermes2.bulk }} --bulk {{ .Values.hermes2.bulk }}{{ end }}"
-{{- with .Values.hermes2.resources }}
+              value: "{{- if $component_values.threads }} --threads {{ $component_values.threads }}{{ end }} {{ if $component_values.bulk }} --bulk {{ $component_values.bulk }}{{ end }}"
+{{- with $component_values.resources }}
           resources:
 {{ toYaml . | trim | indent 12 }}
 {{ end }}
-{{- with .Values.hermes2.nodeSelector }}
+{{- with $component_values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
 {{- end }}
-{{- with .Values.hermes2.affinity }}
+{{- with $component_values.affinity }}
       affinity:
 {{ toYaml . | indent 8 }}
 {{- end }}
-{{- with .Values.hermes2.tolerations }}
+{{- with $component_values.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
 {{- end }}

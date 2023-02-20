@@ -1,10 +1,12 @@
 {{- if gt .Values.abacusCollectionReplicaCount 0.0 -}}
 {{- $rucio_daemon := "abacus-collection-replica" }}
+{{- $component_values := .Values.abacusCollectionReplica }}
+{{- $component_count := .Values.abacusCollectionReplicaCount }}
 {{- $app_label := printf "%s-%s" (include "rucio.name" .) $rucio_daemon }}
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ template "rucio.fullname" . }}.config.{{ $rucio_daemon }}.yaml
+  name: {{ template "rucio.fullname" . }}.config.{{ $rucio_daemon }}
   labels:
     app: {{ $app_label }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -13,8 +15,7 @@ metadata:
 type: Opaque
 data:
   {{- $common_config := .Values.config | default dict | mustToPrettyJson | b64enc }}
-  {{- $component_config := .Values.abacusCollectionReplica.config | default dict | mustToPrettyJson | b64enc }}
-  common.json: {{ $common_config | quote }}
+  {{- $component_config := $component_values.config | default dict | mustToPrettyJson | b64enc }}
   component.json: {{ $component_config | quote }}
 ---
 apiVersion: apps/v1
@@ -28,7 +29,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  replicas: {{ .Values.abacusCollectionReplicaCount }}
+  replicas: {{ $component_count }}
   selector:
     matchLabels:
       app: {{ $app_label }}
@@ -57,7 +58,7 @@ spec:
     {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
     {{- end }}
-    {{- with .Values.abacusCollectionReplica.podAnnotations }}
+    {{- with $component_values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
     {{- end }}
     spec:
@@ -65,19 +66,26 @@ spec:
       serviceAccountName: {{ .Values.serviceAccountName }}
     {{- end }}
       volumes:
-      - name: config
+      - name: config-common
         secret:
-          secretName: {{ template "rucio.fullname" . }}.config.{{ $rucio_daemon }}.yaml
+          secretName: {{ template "rucio.fullname" . }}.config.common
+      - name: config-component
+        secret:
+          secretName: {{ template "rucio.fullname" . }}.config.{{ $rucio_daemon }}
+    {{- if .Values.useDeprecatedImplicitSecrets }}
       - name: proxy-volume
         secret:
           secretName: {{ .Release.Name }}-rucio-x509up
       - name: ca-volume
         secret:
           secretName: {{ .Release.Name }}-rucio-ca-bundle
-      {{- range $key, $val := .Values.additionalSecrets }}
+    {{- end }}
+      {{- range $collection := tuple .Values.secretMounts $component_values.secretMounts .Values.additionalSecrets $component_values.additionalSecrets }}
+      {{- range $key, $val := $collection }}
       - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }} 
         secret:
           secretName: {{ coalesce $val.secretFullName (printf "%s-%s" $.Release.Name $val.secretName) }}
+      {{- end}}
       {{- end}}
       {{- range $key, $val := .Values.persistentVolumes }}
       - name: {{ $key }}
@@ -89,20 +97,26 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           volumeMounts:
+          {{- if .Values.useDeprecatedImplicitSecrets }}
             - name: proxy-volume
               mountPath: /opt/proxy
             - name: ca-volume
               mountPath: /opt/certs
-            - name: config
+          {{- end }}
+            - name: config-common
               mountPath: /opt/rucio/etc/conf.d/10_common.json
               subPath: common.json
-            - name: config
+            - name: config-component
               mountPath: /opt/rucio/etc/conf.d/20_component.json
               subPath: component.json
-            {{- range $key, $val := .Values.additionalSecrets }}
+            {{- range $collection := tuple .Values.secretMounts $component_values.secretMounts .Values.additionalSecrets $component_values.additionalSecrets }}
+            {{- range $key, $val := $collection }}
             - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }} 
               mountPath: {{ $val.mountPath }}
-              subPath: {{ $val.subPath }}
+              {{- if $val.subPath }}
+              subPath: "{{ $val.subPath }}"
+              {{- end }}
+            {{- end}}
             {{- end}}
             {{- range $key, $val := .Values.persistentVolumes }}
             - name: {{ $key }}
@@ -118,20 +132,20 @@ spec:
             - name: RUCIO_DAEMON
               value: "{{ $rucio_daemon }}"
             - name: RUCIO_DAEMON_ARGS
-              value: "--threads {{ .Values.abacusCollectionReplica.threads }}"
-{{- with .Values.abacusCollectionReplica.resources }}
+              value: "--threads {{ $component_values.threads }}"
+{{- with $component_values.resources }}
           resources:
 {{ toYaml . | trim | indent 12 }}
 {{ end }}
-{{- with .Values.abacusCollectionReplica.nodeSelector }}
+{{- with $component_values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
 {{- end }}
-{{- with .Values.abacusCollectionReplica.affinity }}
+{{- with $component_values.affinity }}
       affinity:
 {{ toYaml . | indent 8 }}
 {{- end }}
-{{- with .Values.abacusCollectionReplica.tolerations }}
+{{- with $component_values.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
 {{- end }}
