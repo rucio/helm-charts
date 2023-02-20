@@ -54,10 +54,12 @@ spec:
           secretName: {{ template "rucio.fullname" . }}-trace.config.yaml
       - name: httpdlog
         emptyDir: {}
-      {{- range $key, $val := .Values.additionalSecrets }}
-      - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }} 
+      {{- range $collection := tuple .Values.secretMounts .Values.additionalSecrets}}
+      {{- range $key, $val := $collection }}
+      - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }}
         secret:
           secretName: {{ coalesce $val.secretFullName (printf "%s-%s" $.Release.Name $val.secretName) }}
+      {{- end}}
       {{- end}}
 {{- if .Values.useDeprecatedImplicitSecrets }}
 {{- if .Values.useSSL.traceServer }}
@@ -142,7 +144,8 @@ spec:
               subPath: ca.pem
 {{- end }}
 {{- end }}
-            {{- range $key, $val := .Values.additionalSecrets }}
+            {{- range $collection := tuple .Values.secretMounts .Values.additionalSecrets}}
+            {{- range $key, $val := $collection }}
             {{- /* TODO: depreacte and remove support for subPaths (at plural) case */}}
             {{-  if $val.subPaths }}
             {{-   range $val.subPaths }}
@@ -155,6 +158,7 @@ spec:
               mountPath: {{ $val.mountPath }}
               subPath: {{ $val.subPath }}
             {{-  end}}
+            {{- end}}
             {{- end}}
           env:
             {{- range $key, $val := .Values.httpd_config }}

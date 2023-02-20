@@ -54,10 +54,12 @@ spec:
           secretName: {{ template "rucio.fullname" . }}-auth.config.yaml
       - name: httpdlog
         emptyDir: {}
-      {{- range $key, $val := .Values.additionalSecrets }}
-      - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }} 
+      {{- range $collection := tuple .Values.secretMounts .Values.additionalSecrets}}
+      {{- range $key, $val := $collection }}
+      - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }}
         secret:
           secretName: {{ coalesce $val.secretFullName (printf "%s-%s" $.Release.Name $val.secretName) }}
+      {{- end}}
       {{- end}}
       {{- range $key, $val := .Values.persistentVolumes }}
       - name: {{ $key }}
@@ -136,7 +138,8 @@ spec:
               subPath: common.json
             - name: httpdlog
               mountPath: /var/log/httpd
-            {{- range $key, $val := .Values.additionalSecrets }}
+            {{- range $collection := tuple .Values.secretMounts .Values.additionalSecrets}}
+            {{- range $key, $val := $collection }}
             {{- /* TODO: depreacte and remove support for subPaths (at plural) case */}}
             {{-  if $val.subPaths }}
             {{-   range $val.subPaths }}
@@ -149,6 +152,7 @@ spec:
               mountPath: {{ $val.mountPath }}
               subPath: {{ $val.subPath }}
             {{-  end}}
+            {{- end}}
             {{- end}}
             {{- range $key, $val := .Values.persistentVolumes }}
             - name: {{ $key }}
