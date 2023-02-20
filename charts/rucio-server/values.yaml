@@ -8,6 +8,8 @@ replicaCount: 0
 authReplicaCount: 0
 traceReplicaCount: 0
 
+useDeprecatedImplicitSecrets: true
+
 # When set, run extra busybox containers in the relevant pods to also expose the error logs
 exposeErrorLogs:
   server: true
@@ -148,9 +150,35 @@ ftsRenewal:
     repository: rucio/fts-cron
     tag: latest
     pullPolicy: Always
-  vo: "cms"
-  voms: "cms:/cms/Role=production"
   servers: "https://fts3-devel.cern.ch:8446,https://cmsfts3.fnal.gov:8446,https://fts3.cern.ch:8446,https://lcgfts3.gridpp.rl.ac.uk:8446,https://fts3-pilot.cern.ch:8446"
+  script: 'default'  # one of: 'default', 'atlas', 'dteam', 'multi_vo', 'tutorial', 'escape'. The associated scripts can be found here: https://github.com/rucio/containers/tree/master/fts-cron
+  vos:
+    - vo: "cms"
+      voms: "cms:/cms/Role=production"
+  secretMounts: []
+    # - secretName: fts-cert
+    #   mountPath: /opt/rucio/certs/usercert.pem
+    #   subPath: usercert.pem
+    # - secretName: fts-key
+    #   mountPath: /opt/rucio/certs/new_userkey.pem
+    #   subPath: new_userkey.pem
+    # - secretName: longproxy
+    #   mountPath: /opt/rucio/certs/long.proxy
+    #   subPath: long.proxy
+  additionalEnvs: []
+    # - name: RUCIO_FTS_SECRETS
+    #   value: release-rucio-x509up
+    # - name: USERCERT_NAME
+    #   value: "usercert.pem"
+    # - name: USERKEY_NAME
+    #   value: "new_userkey.pem"
+    # - name: RUCIO_LONG_PROXY
+    #   value: long.proxy
+    # - name: GRID_PASSPHRASE
+    #   valueFrom:
+    #     secretKeyRef:
+    #       name:
+    #       key:
   resources:
     limits:
       cpu: 500m
@@ -175,13 +203,13 @@ automaticRestart:
       cpu: 100m
       memory: 128Mi
 
-additionalSecrets: {}
+additionalSecrets: []
   # - volumeName: gcssecret
   #   secretName: gcssecret
   #   mountPath: /opt/rucio/etc/gcs_rucio.json
   #   subPath: gcs_rucio.json
 
-additionalEnvs: {}
+additionalEnvs: []
   # - name: NODE_IP
   #   valueFrom:
   #     fieldRef:

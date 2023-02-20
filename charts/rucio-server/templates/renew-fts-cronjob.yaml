@@ -2,6 +2,17 @@
 {{- if .Values.ftsRenewal.enabled }}
   serviceAccountName: {{ .Release.Name }}-rucio-edit
   volumes:
+  - name: config-common
+    secret:
+      secretName: {{ template "rucio.fullname" . }}.config.common
+  {{- range $collection := tuple .Values.secretMounts .Values.ftsRenewal.secretMounts .Values.additionalSecrets .Values.ftsRenewal.additionalSecrets }}
+  {{- range $key, $val := $collection }}
+  - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }}
+    secret:
+      secretName: {{ coalesce $val.secretFullName (printf "%s-%s" $.Release.Name $val.secretName) }}
+  {{- end}}
+  {{- end}}
+  {{- if .Values.useDeprecatedImplicitSecrets }}
   {{- if or (eq .Values.ftsRenewal.vo "atlas") (eq .Values.ftsRenewal.vo "dteam") }}
   - name: longproxy
     secret:
@@ -12,7 +23,8 @@
       secretName: {{ .Release.Name }}-fts-cert
   - name: userkey
     secret:
-      secretName: {{ .Release.Name }}-fts-key
+      secretName:  {{ .Release.Name }}-fts-key
+  {{- end }}
   {{- end }}
   {{- range $key, $val := .Values.persistentVolumes }}
   - name: {{ $key }}
@@ -26,6 +38,10 @@
       resources:
 {{ toYaml .Values.ftsRenewal.resources | indent 15 }}
       volumeMounts:
+        - name: config-common
+          mountPath: /opt/rucio/etc/conf.d/10_common.json
+          subPath: common.json
+  {{- if .Values.useDeprecatedImplicitSecrets }}
   {{- if or (eq .Values.ftsRenewal.vo "atlas") (eq .Values.ftsRenewal.vo "dteam") }}
         - name: longproxy
           mountPath: /opt/rucio/certs/
@@ -34,6 +50,16 @@
           mountPath: /opt/rucio/certs/
         - name: userkey
           mountPath: /opt/rucio/keys/
+  {{- end }}
+  {{- end }}
+  {{- range $collection := tuple .Values.secretMounts .Values.ftsRenewal.secretMounts .Values.additionalSecrets .Values.ftsRenewal.additionalSecrets }}
+  {{- range $key, $val := $collection }}
+        - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }}
+          mountPath: {{ $val.mountPath }}
+          {{- if $val.subPath }}
+          subPath: "{{ $val.subPath }}"
+          {{- end }}
+  {{- end }}
   {{- end }}
   {{- range $key, $val := .Values.persistentVolumes }}
         - name: {{ $key }}
@@ -45,17 +71,34 @@
           value: "{{ $val1  }}"
         {{- end}}
         - name: RUCIO_VO
-          value: {{ .Values.ftsRenewal.vo | quote }}
+          value: {{ coalesce .Values.ftsRenewal.vo (first .Values.ftsRenewal.vos).vo | quote }}
         - name: RUCIO_FTS_VOMS
-          value: {{ .Values.ftsRenewal.voms | quote }}
+          value: {{ coalesce .Values.ftsRenewal.voms (first .Values.ftsRenewal.vos).voms | quote }}
+  {{- if not .Values.ftsRenewal.vo}}
+        - name: RUCIO_FTS_SCRIPT
+          value: "{{ .Values.ftsRenewal.script }}"
+        - name: RUCIO_FTS_VO_COUNT
+          value: "{{ len .Values.ftsRenewal.vos }}"
+        {{- range $key, $val := .Values.ftsRenewal.vos }}
+        - name: RUCIO_FTS_VO_{{ $key }}
+          value: {{ $val.vo }}
+        - name: RUCIO_FTS_VOMS_{{ $key }}
+          value: {{ $val.voms }}
+        {{- end }}
+  {{- end }}
         - name: RUCIO_FTS_SERVERS
           value: {{ .Values.ftsRenewal.servers | quote }}
+  {{- if .Values.useDeprecatedImplicitSecrets }}
         - name: RUCIO_FTS_SECRETS
           value: "{{ .Release.Name }}-rucio-x509up"
   {{- if or (eq .Values.ftsRenewal.vo "atlas") (eq .Values.ftsRenewal.vo "dteam") }}
         - name: RUCIO_LONG_PROXY
           value: {{ .Values.ftsRenewal.longProxy | quote }}
   {{- end }}
+  {{- end }}
+  {{- with .Values.ftsRenewal.additionalEnvs }}
+{{ toYaml . | indent 8 }}
+  {{- end}}
   restartPolicy: OnFailure
 {{- end }}
 {{- end }}
