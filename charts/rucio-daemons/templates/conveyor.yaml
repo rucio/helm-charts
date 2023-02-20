@@ -1,5 +1,6 @@
 {{- define "rucio-daemons.conveyor-deployement" }}
 {{- $app_label := printf "%s-%s" (include "rucio.name" .) .rucio_daemon }}
+---
 apiVersion: v1
 kind: Secret
 metadata:
