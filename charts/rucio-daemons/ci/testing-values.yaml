@@ -1,0 +1,353 @@
+abacusAccountCount: 1
+abacusCollectionReplicaCount: 1
+abacusRseCount: 1
+automatixCount: 1
+cacheConsumerCount: 1
+conveyorTransferSubmitterCount: 1
+conveyorPollerCount: 1
+conveyorFinisherCount: 1
+conveyorReceiverCount: 1
+conveyorThrottlerCount: 1
+conveyorStagerCount: 1
+darkReaperCount: 1
+hermesCount: 1
+hermes2Count: 1
+judgeCleanerCount: 1
+judgeEvaluatorCount: 1
+judgeInjectorCount: 1
+judgeRepairerCount: 1
+minosCount: 1
+minosTemporaryExpirationCount: 1
+necromancerCount: 1
+oauthManagerCount: 1
+reaperCount: 1
+replicaRecovererCount: 1
+tracerKronosCount: 1
+transmogrifierCount: 1
+undertakerCount: 1
+
+useDeprecatedImplicitSecrets: false
+
+image:
+  repository: rucio/rucio-daemons
+  tag: release-1.26.5
+  pullPolicy: IfNotPresent
+
+automaticRestart:
+  enabled: 1
+  image:
+    repository: bitnami/kubectl
+    tag: 1.18
+    pullPolicy: IfNotPresent
+  schedule: "7 1 * * *"
+
+monitoring:
+  enabled: false
+  exporterPort: 8080
+  targetPort: 8080
+  interval: 30s
+  telemetryPath: /metrics
+  namespace: monitoring
+  labels:
+    release: prometheus-operator
+  serviceMonitor:
+    relabelings:
+      - sourceLabels: [__meta_kubernetes_pod_node_name]
+        separator: ;
+        regex: ^(.*)$
+        targetLabel: nodename
+        replacement: $1
+        action: replace
+
+additionalSecrets:
+  rse-accounts:
+    secretName: rse-accounts
+    mountPath: /opt/rucio/etc/rse-accounts.cfg
+    subPath: rse-accounts.cfg
+
+secretMounts:
+  - secretName: suffix-of-the-secret-name
+    mountPath: /some/path.json
+  - volumeName: gcsrucio
+    secretName: gcsrucio
+    mountPath: /opt/rucio/etc/gcs_rucio.json
+    subPath: gcs_rucio.json
+  - secretFullName: daemonint-reaper-archive-bulk-patch
+    secretName: reaper-archive-bulk-patch
+    mountPath: /patch/reaper_archive_bulk.patch
+    subPath: reaper_archive_bulk.patch
+
+conveyorTransferSubmitter:
+  activities: "'Data Challenge'"
+  sleepTime: 10
+  threads: 1
+  sourceStrategy: "throughput"
+  bulk: 1000
+  groupBulk: 10
+  groupPolicy: "activity_dest"
+  resources:
+    limits:
+      memory: "100Mi"
+      cpu: "100m"
+    requests:
+      memory: "100Mi"
+      cpu: "100m"
+  config:
+    a: b
+
+
+conveyorPoller:
+  activities: "'Activity 1'"
+  dbBulk: 2000
+  threads: 1
+  resources:
+    limits:
+      memory: "100Mi"
+      cpu: "100m"
+    requests:
+      memory: "100Mi"
+      cpu: "100m"
+  config:
+    conveyor:
+      scheme: "srm,gsiftp,root,http,https"
+      transfertool: "fts3"
+
+conveyorFinisher:
+  threads: 1
+  resources:
+    limits:
+      memory: "000Mi"
+      cpu: "100m"
+    requests:
+      memory: "100Mi"
+      cpu: "100m"
+  config:
+    c: d
+
+conveyorReceiver:
+  threads: 1
+  resources:
+    limits:
+      memory: "100Mi"
+      cpu: "100m"
+    requests:
+      memory: "100Mi"
+      cpu: "100m"
+
+conveyorThrottler:
+  threads: 1
+  resources:
+    limits:
+      memory: "100Mi"
+      cpu: "100m"
+    requests:
+      memory: "100Mi"
+      cpu: "100m"
+
+darkReaper:
+  workers: 1
+  includeRses: "(type=CALIBDISK|type=DATADISK|type=GROUPDISK|type=LOCALGROUPDISK|type=SCRATCHDISK)"
+  resources:
+    limits:
+      memory: "100Mi"
+      cpu: "100m"
+    requests:
+      memory: "100Mi"
+      cpu: "100m"
+
+hermes:
+  threads: 1
+  bulk: 1000
+  delay: 10
+  resources:
+    limits:
+      memory: "100Mi"
+      cpu: "100m"
+    requests:
+      memory: "100Mi"
+      cpu: "50m"
+
+judgeCleaner:
+  threads: 1
+  resources:
+    limits:
+      memory: "100Mi"
+      cpu: "100m"
+    requests:
+      memory: "100Mi"
+      cpu: "50m"
+
+judgeEvaluator:
+  threads: 2
+  resources:
+    limits:
+      memory: "100Mi"
+      cpu: "100m"
+    requests:
+      memory: "100Mi"
+      cpu: "100m"
+
+judgeInjector:
+  threads: 1
+  resources:
+    limits:
+      memory: "100Mi"
+      cpu: "100m"
+    requests:
+      memory: "100Mi"
+      cpu: "100m"
+
+judgeRepairer:
+  threads: 1
+  resources:
+    limits:
+      memory: "100Mi"
+      cpu: "100m"
+    requests:
+      memory: "100Mi"
+      cpu: "50m"
+
+minos:
+  threads: 1
+  resources:
+    limits:
+      memory: "100Mi"
+      cpu: "100m"
+    requests:
+      memory: "100Mi"
+      cpu: "100m"
+
+minosTemporaryExpiration:
+  threads: 1
+  resources:
+    limits:
+      memory: "100Mi"
+      cpu: "100m"
+    requests:
+      memory: "100Mi"
+      cpu: "100m"
+
+necromancer:
+  bulk: 1000
+  resources:
+    limits:
+      memory: "100Mi"
+      cpu: "100m"
+    requests:
+      memory: "100Mi"
+      cpu: "100m"
+
+undertaker:
+  threads: 1
+  resources:
+    limits:
+      memory: "100Mi"
+      cpu: "100m"
+    requests:
+      memory: "100Mi"
+      cpu: "100m"
+
+reaper:
+  includeRses: "(type=X|type=Y)"
+  excludeRses: "(site=A|site=B)"
+  threads: 1
+  resources:
+    limits:
+      memory: "1000Mi"
+      cpu: "100m"
+    requests:
+      memory: "100Mi"
+      cpu: "100m"
+
+transmogrifier:
+  threads: 1
+  resources:
+    limits:
+      memory: "100Mi"
+      cpu: "100m"
+    requests:
+      memory: "100Mi"
+      cpu: "100m"
+
+tracerKronos:
+  threads: 1
+  resources:
+    limits:
+      memory: "100Mi"
+      cpu: "100m"
+    requests:
+      memory: "100Mi"
+      cpu: "100m"
+
+ftsRenewal:
+  enabled: 1
+  image:
+    repository: rucio/fts-cron
+    tag: java
+    pullPolicy: IfNotPresent
+  script: "cms"
+  vos:
+    - vo: "cms"
+      voms: "cms:/cms/Role=production"
+  servers: "https://d.f:8446,https://a.b.c:8446"
+  secretMounts:
+    - secretName: longproxy
+      mountPath: /opt/rucio/certs/
+  additionalEnvs:
+    - name: RUCIO_FTS_SECRETS
+      value: daemonint-rucio-x509up
+    - name: RUCIO_LONG_PROXY
+      value: "latest_x509up.rfc.proxy"
+
+config:
+  core:
+    default_mail_from: "a@b.c"
+
+  monitor:
+    carbon_server: "a.carbon.server"
+    carbon_port: "8888"
+    user_scope: "rucio-scope"
+    enable_metrics: "True"
+
+  conveyor:
+    scheme: "srm,gsiftp,root,http,https"
+    transfertool: "fts3"
+    ftshosts: "https://fts1.a.b:8446,https://fts3-b.c:8446"
+    cache_time: "600"
+    user_deterministic_id: "True"
+    poll_timeout: "30"
+    submit_timeout: "30"
+    bring_online: "604800"
+    queue_mode: "strict"
+    using_memcache: "True"
+    ftsmonhosts: "https://fts1.a.b:8446,https://fts3-b.c:8446"
+    webdav_transfer_mode: "pull"
+
+  messaging_hermes:
+    brokers: "a.com"
+    voname: "cms"
+    email_from: "a@b.c"
+
+  messaging_fts3:
+    brokers: "a.com"
+    voname: "cms"
+    email_from: "a@b.c"
+
+  tracer_kronos:
+    dataset_wait: "10"
+    brokers: "a.com"
+    voname: "cms"
+    email_from: "a@b.c"
+    chunksize: "1"
+    subscription_id: "subscription-id"
+    queue: "/queue/"
+    reconnect_attempts: "100"
+    port: "1111"
+    prefetch_size: "1"
+
+  policy:
+    permission: "cms"
+    schema: "cms"
+
+  credentials:
+    gcs: "/opt/rucio/etc/gcs_rucio.json"
