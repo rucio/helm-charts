@@ -5,7 +5,7 @@
   - name: config-common
     secret:
       secretName: {{ template "rucio.fullname" . }}.config.common
-  {{- range $collection := tuple .Values.secretMounts .Values.ftsRenewal.secretMounts .Values.additionalSecrets .Values.ftsRenewal.additionalSecrets }}
+  {{- range $collection := tuple (coalesce .Values.ftsRenewal.secretMounts .Values.secretMounts .Values.additionalSecrets) .Values.ftsRenewal.extraSecretMounts }}
   {{- range $key, $val := $collection }}
   - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }}
     secret:
@@ -52,7 +52,7 @@
           mountPath: /opt/rucio/keys/
   {{- end }}
   {{- end }}
-  {{- range $collection := tuple .Values.secretMounts .Values.ftsRenewal.secretMounts .Values.additionalSecrets .Values.ftsRenewal.additionalSecrets }}
+  {{- range $collection := tuple (coalesce .Values.ftsRenewal.secretMounts .Values.secretMounts .Values.additionalSecrets) .Values.ftsRenewal.extraSecretMounts }}
   {{- range $key, $val := $collection }}
         - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }}
           mountPath: {{ $val.mountPath }}

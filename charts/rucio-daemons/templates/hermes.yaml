@@ -80,7 +80,7 @@ spec:
           secret:
             secretName: {{ .Release.Name }}-hermes-key
 {{ end }}
-        {{- range $collection := tuple .Values.secretMounts $component_values.secretMounts .Values.additionalSecrets $component_values.additionalSecrets }}
+        {{- range $collection := tuple (coalesce $component_values.secretMounts .Values.secretMounts .Values.additionalSecrets) $component_values.extraSecretMounts }}
         {{- range $key, $val := $collection }}
         - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }} 
           secret:
@@ -109,7 +109,7 @@ spec:
             - name: config-component
               mountPath: /opt/rucio/etc/conf.d/20_component.json
               subPath: component.json
-            {{- range $collection := tuple .Values.secretMounts $component_values.secretMounts .Values.additionalSecrets $component_values.additionalSecrets }}
+            {{- range $collection := tuple (coalesce $component_values.secretMounts .Values.secretMounts .Values.additionalSecrets) $component_values.extraSecretMounts }}
             {{- range $key, $val := $collection }}
             - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }} 
               mountPath: {{ $val.mountPath }}
