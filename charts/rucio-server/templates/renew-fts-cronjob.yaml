@@ -54,11 +54,20 @@
   {{- end }}
   {{- range $collection := tuple .Values.secretMounts .Values.ftsRenewal.secretMounts .Values.additionalSecrets .Values.ftsRenewal.additionalSecrets }}
   {{- range $key, $val := $collection }}
+      {{- /* TODO: depreacte and remove support for subPaths (at plural) case */}}
+      {{-  if $val.subPaths }}
+      {{-   range $val.subPaths }}
+        - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }}
+          mountPath: {{ $val.mountPath }}{{ . }}
+          subPath: {{ . }}
+      {{-   end}}
+      {{-  else }}
         - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }}
           mountPath: {{ $val.mountPath }}
           {{- if $val.subPath }}
           subPath: "{{ $val.subPath }}"
           {{- end }}
+      {{-  end}}
   {{- end }}
   {{- end }}
   {{- range $key, $val := .Values.persistentVolumes }}
