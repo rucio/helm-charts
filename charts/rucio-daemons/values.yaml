@@ -149,6 +149,20 @@ conveyorTransferSubmitter:
       memory: "200Mi"
       cpu: "700m"
 
+conveyorStager:
+  threads: 1
+  podAnnotations: {}
+  activities: "'test1' 'test2'"
+  sleepTime: 10
+  archiveTimeout: ""
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "200Mi"
+      cpu: "700m"
+
 conveyorPoller:
   threads: 1
   podAnnotations: {}
@@ -403,7 +417,7 @@ ftsRenewal:
   vos:
     - vo: "cms"
       voms: "cms:/cms/Role=production"
-  secretMounts: {}
+  secretMounts: []
     # - secretName: fts-cert
     #   mountPath: /opt/rucio/certs/usercert.pem
     #   subPath: usercert.pem
@@ -413,7 +427,7 @@ ftsRenewal:
     # - secretName: longproxy
     #   mountPath: /opt/rucio/certs/long.proxy
     #   subPath: long.proxy
-  additionalEnvs: {}
+  additionalEnvs: []
     # - name: RUCIO_FTS_SECRETS
     #   value: release-rucio-x509up
     # - name: USERCERT_NAME
