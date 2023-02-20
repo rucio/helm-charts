@@ -203,7 +203,7 @@ automaticRestart:
       cpu: 100m
       memory: 128Mi
 
-additionalSecrets: []
+secretMounts: []
   # - volumeName: gcssecret
   #   secretName: gcssecret
   #   mountPath: /opt/rucio/etc/gcs_rucio.json

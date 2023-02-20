@@ -75,7 +75,7 @@ spec:
       - name: proxy-volume
         secret:
           secretName: {{ .Release.Name }}-rucio-x509up
-      {{- range $collection := tuple .Values.secretMounts $component_values.secretMounts .Values.additionalSecrets $component_values.additionalSecrets }}
+      {{- range $collection := tuple (coalesce $component_values.secretMounts .Values.secretMounts .Values.additionalSecrets) $component_values.extraSecretMounts }}
       {{- range $key, $val := $collection }}
       - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }} 
         secret:
@@ -100,7 +100,7 @@ spec:
               subPath: component.json
             - name: proxy-volume
               mountPath: /opt/proxy
-            {{- range $collection := tuple .Values.secretMounts $component_values.secretMounts .Values.additionalSecrets $component_values.additionalSecrets }}
+            {{- range $collection := tuple (coalesce $component_values.secretMounts .Values.secretMounts .Values.additionalSecrets) $component_values.extraSecretMounts }}
             {{- range $key, $val := $collection }}
             - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }} 
               mountPath: {{ $val.mountPath }}

@@ -54,7 +54,7 @@ spec:
           secretName: {{ template "rucio.fullname" . }}-trace.config.yaml
       - name: httpdlog
         emptyDir: {}
-      {{- range $collection := tuple .Values.secretMounts .Values.additionalSecrets}}
+      {{- range $collection := tuple (coalesce .Values.secretMounts .Values.additionalSecrets)}}
       {{- range $key, $val := $collection }}
       - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }}
         secret:
@@ -144,7 +144,7 @@ spec:
               subPath: ca.pem
 {{- end }}
 {{- end }}
-            {{- range $collection := tuple .Values.secretMounts .Values.additionalSecrets}}
+            {{- range $collection := tuple (coalesce .Values.secretMounts .Values.additionalSecrets)}}
             {{- range $key, $val := $collection }}
             {{- /* TODO: depreacte and remove support for subPaths (at plural) case */}}
             {{-  if $val.subPaths }}

@@ -94,7 +94,9 @@ conveyorTransferSubmitter:
       cpu: "100m"
   config:
     a: b
-
+  extraSecretMounts:
+    - secretName: component-additional-secret
+      mountPath: /some/path.json
 
 conveyorPoller:
   activities: "'Activity 1'"
@@ -133,6 +135,9 @@ conveyorReceiver:
     requests:
       memory: "100Mi"
       cpu: "100m"
+  secretMounts:
+    - secretName: component-overriding-secret
+      mountPath: /some/path.json
 
 conveyorThrottler:
   threads: 1
