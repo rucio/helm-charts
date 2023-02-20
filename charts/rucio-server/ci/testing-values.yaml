@@ -1,0 +1,147 @@
+replicaCount: 1
+authReplicaCount: 1
+traceReplicaCount: 1
+
+image:
+  repository: rucio/rucio-server
+  tag: release-1.26.9
+  pullPolicy: IfNotPresent
+
+automaticRestart:
+  enabled: 1
+  image:
+    repository: bitnami/kubectl
+    tag: 1.18
+    pullPolicy: IfNotPresent
+  schedule: "5 1 * * *"
+
+service:
+  type: LoadBalancer
+  port: 80
+  targetPort: 80
+  protocol: TCP
+  name: http
+  externalTrafficPolicy: local
+  annotations:
+    service.beta.kubernetes.io/openstack-internal-load-balancer: "true"
+
+monitoring:
+  enabled: false
+  serviceMonitor:
+    relabelings:
+      - sourceLabels: [__meta_kubernetes_pod_node_name]
+        separator: ;
+        regex: ^(.*)$
+        targetLabel: nodename
+        replacement: $1
+        action: replace
+
+secretMounts:
+  - volumeName: gcsrucio
+    secretName: gcsrucio
+    mountPath: /opt/rucio/etc/
+    subPaths:
+      - gcs_rucio.json
+  - volumeName: rse-accounts
+    secretName: rse-accounts
+    mountPath: /opt/rucio/etc/rse-accounts.cfg
+    subPath: rse-accounts.cfg
+
+additionalSecrets:
+  - volumeName: mail-templates
+    secretName: mail-templates
+    mountPath: /opt/rucio/etc/mail_templates/
+    subPaths:
+      - rule_ok_notification.tmpl
+      - rule_approval_request.tmpl
+      - rule_approved_admin.tmpl
+      - rule_approved_user.tmpl
+      - rule_denied_admin.tmpl
+      - rule_denied_user.tmpl
+  - secretName: some-patch
+    mountPath: /patch/some.patch
+    subPath: some.patch
+
+wsgi:
+  daemonProcesses: "4"
+  daemonThreads: "8"
+
+httpd_config:
+  mpm_mode: "event"
+  timeout: "300"
+  enable_status: "True"
+  keep_alive: "On"
+  keep_alive_timeout: "5"
+  max_keep_alive_requests: "128"
+  server_limit: "10"
+  start_servers: "4"
+  thread_limit: "128"
+  threads_per_child: "128"
+  min_spare_threads: "256"
+  max_spare_threads: "512"
+  max_request_workers: "1280"
+  max_connections_per_child: "2048"
+
+serverType:
+  server: flask
+
+serverResources:
+  limits:
+    cpu: "100m"
+    memory: "100Mi"
+  requests:
+    cpu: "100m"
+    memory: "100Mi"
+
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    traefik.ingress.kubernetes.io/frontend-entry-points: http, https
+    traefik.ingress.kubernetes.io/redirect-entry-point: http
+  hosts:
+  - "a.b.c"
+  tls: []
+
+ftsRenewal:
+  enabled: 1
+  image:
+    repository: rucio/fts-cron
+    tag: java
+    pullPolicy: IfNotPresent
+  script: "cms"
+  vos:
+    - vo: "cms"
+      voms: "cms:/cms/Role=production"
+  servers: "https://d.f:8446,https://a.b.c:8446"
+  secretMounts:
+    - secretName: longproxy
+      mountPath: /opt/rucio/certs/
+  additionalEnvs:
+    - name: RUCIO_FTS_SECRETS
+      value: serverint-rucio-x509up
+    - name: RUCIO_LONG_PROXY
+      value: "latest_x509up.rfc.proxy"
+
+config:
+  core:
+    default_mail_from: "a@b.c"
+
+  monitor:
+    carbon_server: "a.b.c"
+    carbon_port: "8888"
+    user_scope: "rucio-scope"
+
+  policy:
+    permission: "cms"
+    schema: "cms"
+
+  credentials:
+    gcs: "/opt/rucio/etc/gcs_rucio.json"
+
+  api:
+    endpoints: "accountlimits, accounts, archives, config, credentials, dids, export, heartbeats, identities, import, lifetime_exceptions, locks, meta, ping, redirect, replicas, requests, rses, rules, scopes, subscriptions"
+
+  conveyor:
+    usercert: "/opt/proxy/x509up"
+    use_preparer: "True"
