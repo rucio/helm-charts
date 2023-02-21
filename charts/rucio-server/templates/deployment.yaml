@@ -32,24 +32,6 @@ spec:
       annotations:
         checksum/config: {{ $common_config | sha1sum }}
     spec:
-    {{- if eq (coalesce .Values.service.externalTrafficPolicy "Cluster" | lower) "local" }}
-      affinity:
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 100
-              podAffinityTerm:
-                topologyKey: "kubernetes.io/hostname"
-                labelSelector:
-                  matchExpressions:
-                    - key: app
-                      operator: In
-                      values:
-                        - {{ template "rucio.name" . }}
-                    - key: release
-                      operator: In
-                      values:
-                        - {{ .Release.Name }}
-    {{- end }}
     {{- if .Values.serviceAccountName }}
       serviceAccountName: {{ .Values.serviceAccountName }}
     {{- end }}
@@ -238,8 +220,25 @@ spec:
       nodeSelector:
 {{ toYaml . | indent 8 }}
     {{- end }}
-    {{- with .Values.affinity }}
       affinity:
+    {{- if eq (coalesce .Values.service.externalTrafficPolicy "Cluster" | lower) "local" }}
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                topologyKey: "kubernetes.io/hostname"
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - {{ template "rucio.name" . }}
+                    - key: release
+                      operator: In
+                      values:
+                        - {{ .Release.Name }}
+    {{- end }}
+    {{- with .Values.affinity }}
 {{ toYaml . | indent 8 }}
     {{- end }}
     {{- with .Values.tolerations }}
