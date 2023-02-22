@@ -72,9 +72,11 @@ spec:
       - name: config-component
         secret:
           secretName: {{ template "rucio.fullname" . }}.config.{{ $rucio_daemon }}
+      {{- if .Values.useDeprecatedImplicitSecrets }}
       - name: proxy-volume
         secret:
           secretName: {{ .Release.Name }}-rucio-x509up
+      {{- end}}
       {{- range $collection := tuple (coalesce $component_values.secretMounts .Values.secretMounts .Values.additionalSecrets) $component_values.extraSecretMounts }}
       {{- range $key, $val := $collection }}
       - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }} 
@@ -98,8 +100,10 @@ spec:
             - name: config-component
               mountPath: /opt/rucio/etc/conf.d/20_component.json
               subPath: component.json
+            {{- if .Values.useDeprecatedImplicitSecrets }}
             - name: proxy-volume
               mountPath: /opt/proxy
+            {{- end}}
             {{- range $collection := tuple (coalesce $component_values.secretMounts .Values.secretMounts .Values.additionalSecrets) $component_values.extraSecretMounts }}
             {{- range $key, $val := $collection }}
             - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }} 
