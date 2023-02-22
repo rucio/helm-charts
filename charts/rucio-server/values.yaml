@@ -83,6 +83,20 @@ minReadySeconds:
   authServer: 5
   traceServer: 5
 
+readinessProbe:
+  server:
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    timeoutSeconds: 5
+  authServer:
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    timeoutSeconds: 5
+  traceServer:
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    timeoutSeconds: 5
+
 livenessProbe:
   server:
     initialDelaySeconds: 10
