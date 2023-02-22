@@ -120,6 +120,18 @@ spec:
               containerPort: {{ .Values.monitoring.nativeMetricsPort }}
               protocol: TCP
 {{- end }}
+          readinessProbe:
+            httpGet:
+              path: /ping
+{{- if .Values.useSSL.server }}
+              scheme: HTTPS
+              port: 443
+{{- else }}
+              port: 80
+{{- end }}
+            initialDelaySeconds: {{ .Values.readinessProbe.authServer.initialDelaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.authServer.periodSeconds }}
+            timeoutSeconds: {{ .Values.readinessProbe.authServer.timeoutSeconds }}
           livenessProbe:
             httpGet:
               path: /ping
