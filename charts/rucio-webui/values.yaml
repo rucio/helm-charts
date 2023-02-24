@@ -25,12 +25,12 @@ service:
   type: NodePort
   # Run the webui server on port 443 instead of 80 and accept X509 certificates
   useSSL: true
-  # nodePort: 
+  # nodePort:
 
 ingress:
   enabled: false
+  # ingressClassName: traefik
   annotations:
-    kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/ssl-passthrough: "true"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
   path: /
@@ -65,14 +65,14 @@ config:
     # max_request_workers: "1280"
     # max_connections_per_child: "2048"
 
-  ## Rucio WebUI specific configuration for apache 
+  ## Rucio WebUI specific configuration for apache
   httpdWebui:
     hostname: kube-playground-7p7333rqr5xx-node-0.cern.ch
     # server_admin:
     logLevel: 'info'
 
   ## Configuration for OIDC providers
-  oidcProviders: #[]
+  oidcProviders:  # []
     - name: "CERN SSO"
       clientId: "rucio-webui"
       authorizationEndpoint: "https://login.cern.ch/adfs/oauth2/authorize"

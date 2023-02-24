@@ -254,8 +254,8 @@ httpd_config:
 
 ingress:
   enabled: false
+  # ingressClassName: traefik
   annotations: {}
-    # kubernetes.io/ingress.class: traefik
     # traefik.ingress.kubernetes.io/frontend-entry-points: http
     # traefik.ingress.kubernetes.io/redirect-entry-point: https
   path: /
@@ -283,8 +283,8 @@ ingress:
 
 authIngress:
   enabled: false
+  # ingressClassName: traefik
   annotations: {}
-    # kubernetes.io/ingress.class: traefik
     # traefik.ingress.kubernetes.io/frontend-entry-points: http
     # traefik.ingress.kubernetes.io/redirect-entry-point: https
   path: /auth
@@ -312,8 +312,8 @@ authIngress:
 
 traceIngress:
   enabled: false
+  # ingressClassName: traefik
   annotations: {}
-    # kubernetes.io/ingress.class: traefik
     # traefik.ingress.kubernetes.io/frontend-entry-points: http
     # traefik.ingress.kubernetes.io/redirect-entry-point: https
   path: /traces
