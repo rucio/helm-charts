@@ -4,17 +4,11 @@
 
 ## replicaCount gives the number of server pods to run
 replicaCount: 0
-## authReplicaCount gives the number of authentication server pods to run
-authReplicaCount: 0
-traceReplicaCount: 0
 
 useDeprecatedImplicitSecrets: true
 
 # When set, run extra busybox containers in the relevant pods to also expose the error logs
-exposeErrorLogs:
-  server: true
-  authServer: true
-  traceServer: true
+exposeErrorLogs: true
 
 errorLogsExporterResources:
   limits:
@@ -25,10 +19,7 @@ errorLogsExporterResources:
     memory: 20Mi
 
 # Set to true to enable SSL support for the different servers to be able accept X509 certificates and proxies.
-useSSL:
-  server: false
-  authServer: false
-  traceServer: false
+useSSL: false
 
 image:
   repository: rucio/rucio-server
@@ -50,76 +41,27 @@ service:
   externalTrafficPolicy: null
   allocateLoadBalancerNodePorts: true
 
-authService:
-  type: ClusterIP
-  port: 80
-  targetPort: 80
-  protocol: TCP
-  name: http
-  annotations: {}
-  loadBalancerIP: null
-  loadBalancerClass: null
-  allocateLoadBalancerNodePorts: true
-
-traceService:
-  type: ClusterIP
-  port: 80
-  targetPort: 80
-  protocol: TCP
-  name: http
-  annotations: {}
-  loadBalancerIP: null
-  loadBalancerClass: null
-  allocateLoadBalancerNodePorts: true
-
 strategy:
   type: RollingUpdate
   rollingUpdate:
     maxSurge: 1
     maxUnavailable: 1
 
-minReadySeconds:
-  server: 5
-  authServer: 5
-  traceServer: 5
+minReadySeconds: 5
 
 readinessProbe:
-  server:
-    initialDelaySeconds: 5
-    periodSeconds: 10
-    timeoutSeconds: 5
-  authServer:
-    initialDelaySeconds: 5
-    periodSeconds: 10
-    timeoutSeconds: 5
-  traceServer:
-    initialDelaySeconds: 5
-    periodSeconds: 10
-    timeoutSeconds: 5
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  timeoutSeconds: 5
 
 livenessProbe:
-  server:
-    initialDelaySeconds: 10
-    periodSeconds: 20
-    timeoutSeconds: 5
-  authServer:
-    initialDelaySeconds: 10
-    periodSeconds: 20
-    timeoutSeconds: 5
-  traceServer:
-    initialDelaySeconds: 10
-    periodSeconds: 20
-    timeoutSeconds: 5
+  initialDelaySeconds: 10
+  periodSeconds: 20
+  timeoutSeconds: 5
 
-serverType:
-  server: api
-  authServer: auth
-  traceServer: trace
+serverType: api
 
-logFormat:
-  server: '[%{%Y-%m-%d %H:%M:%S}t]\t%v\t%h\t%{X-Forwarded-For}i\t%{X-Rucio-RequestId}i\t%>s\t%I\t%B\t%D\t\"%r\"\t\"%{X-Rucio-Auth-Token}i\"\t\"%{User-Agent}i\"\t%{X-Rucio-Script}i'
-  authServer: '[%{%Y-%m-%d %H:%M:%S}t]\t%v\t%h\t%{X-Forwarded-For}i\t%{X-Rucio-RequestId}i\t%>s\t%I\t%B\t%D\t\"%r\"\t\"%{X-Rucio-Auth-Token}i\"\t\"%{User-Agent}i\"\t%{X-Rucio-Script}i'
-  traceServer: '[%{%Y-%m-%d %H:%M:%S}t]\t%v\t%h\t%{X-Forwarded-For}i\t%{X-Rucio-RequestId}i\t%>s\t%I\t%B\t%D\t\"%r\"\t\"%{X-Rucio-Auth-Token}i\"\t\"%{User-Agent}i\"\t%{X-Rucio-Script}i'
+logFormat: '[%{%Y-%m-%d %H:%M:%S}t]\t%v\t%h\t%{X-Forwarded-For}i\t%{X-Rucio-RequestId}i\t%>s\t%I\t%B\t%D\t\"%r\"\t\"%{X-Rucio-Auth-Token}i\"\t\"%{User-Agent}i\"\t%{X-Rucio-Script}i'
 
 monitoring:
   enabled: false
@@ -208,7 +150,7 @@ automaticRestart:
     tag: latest
     pullPolicy: IfNotPresent
   schedule: "0 0 * * *"
-  selectorLabel: "'app in (rucio-server,rucio-server-trace,rucio-server-auth)'"
+  selectorLabel: "'app in (rucio-server)'"
   resources:
     limits:
       cpu: 500m
@@ -281,64 +223,6 @@ ingress:
   ## It is also possible to create and manage the certificates outside of this helm chart
   ## Please see README.md for more information
   # - name: rucio-server.tls-secret
-  #   key: |+
-  #     -----BEGIN RSA PRIVATE KEY-----
-  #     -----END RSA PRIVATE KEY-----
-  #   certificate: |+
-  #     -----BEGIN CERTIFICATE-----
-  #     -----END CERTIFICATE-----
-
-authIngress:
-  enabled: false
-  # ingressClassName: traefik
-  annotations: {}
-    # traefik.ingress.kubernetes.io/frontend-entry-points: http
-    # traefik.ingress.kubernetes.io/redirect-entry-point: https
-  path: /auth
-  hosts: []
-  #   - my.rucio.test
-  # tls:
-  #   - secretName: rucio-auth.tls-secret
-  secrets:
-  ## If you're providing your own certificates, please use this to add the certificates as secrets
-  ## key and certificate should start with -----BEGIN CERTIFICATE----- or
-  ## -----BEGIN RSA PRIVATE KEY-----
-  ##
-  ## name should line up with a tlsSecret set further up
-  ## If you're using kube-lego, this is unneeded, as it will create the secret for you if it is not set
-  ##
-  ## It is also possible to create and manage the certificates outside of this helm chart
-  ## Please see README.md for more information
-  # - name: rucio-auth.tls-secret
-  #   key: |+
-  #     -----BEGIN RSA PRIVATE KEY-----
-  #     -----END RSA PRIVATE KEY-----
-  #   certificate: |+
-  #     -----BEGIN CERTIFICATE-----
-  #     -----END CERTIFICATE-----
-
-traceIngress:
-  enabled: false
-  # ingressClassName: traefik
-  annotations: {}
-    # traefik.ingress.kubernetes.io/frontend-entry-points: http
-    # traefik.ingress.kubernetes.io/redirect-entry-point: https
-  path: /traces
-  hosts: []
-  #   - my.rucio.test
-  # tls:
-  #   - secretName: rucio-auth.tls-secret
-  secrets:
-  ## If you're providing your own certificates, please use this to add the certificates as secrets
-  ## key and certificate should start with -----BEGIN CERTIFICATE----- or
-  ## -----BEGIN RSA PRIVATE KEY-----
-  ##
-  ## name should line up with a tlsSecret set further up
-  ## If you're using kube-lego, this is unneeded, as it will create the secret for you if it is not set
-  ##
-  ## It is also possible to create and manage the certificates outside of this helm chart
-  ## Please see README.md for more information
-  # - name: rucio-auth.tls-secret
   #   key: |+
   #     -----BEGIN RSA PRIVATE KEY-----
   #     -----END RSA PRIVATE KEY-----
@@ -419,8 +303,6 @@ config:
     # usercert: "/opt/rucio/etc/usercert_with_key.pem"
 
 serverResources: {}
-authServerResources: {}
-traceServerResources: {}
   # limits:
   #  cpu: 100m
   #  memory: 128Mi
