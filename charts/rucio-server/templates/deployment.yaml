@@ -23,7 +23,7 @@ spec:
 {{ toYaml . | trim | indent 6 }}
     {{- end }}
 {{- end }}
-  minReadySeconds: {{ .Values.minReadySeconds.server }}
+  minReadySeconds: {{ .Values.minReadySeconds }}
   template:
     metadata:
       labels:
@@ -74,7 +74,7 @@ spec:
       {{- end}}
       {{- end}}
 {{- if .Values.useDeprecatedImplicitSecrets }}
-{{- if .Values.useSSL.server }}
+{{- if .Values.useSSL }}
       - name: hostcert
         secret:
           secretName: {{ .Release.Name }}-server-hostcert
@@ -87,7 +87,7 @@ spec:
 {{- end }}
 {{- end }}
       containers:
-{{- if .Values.exposeErrorLogs.server }}
+{{- if .Values.exposeErrorLogs }}
         - name: httpd-error-log
           image: busybox
           args: [/bin/sh, -c, 'tail -n+1 -F /var/log/httpd/error_log']
@@ -100,7 +100,7 @@ spec:
 {{- if .Values.monitoring.enabled }}
         - name: apache-exporter
           image: rucio/apache_exporter
-{{- if .Values.useSSL.server }}
+{{- if .Values.useSSL }}
           args: ['--telemetry.address=:{{ .Values.monitoring.exporterPort }}', '--scrape_uri=https://localhost/server-status/?auto', '--insecure']
 {{ else }}
           args: ['--telemetry.address=:{{ .Values.monitoring.exporterPort }}']
@@ -159,7 +159,7 @@ spec:
           {{- end}}
           {{- end}}
 {{- if .Values.useDeprecatedImplicitSecrets }}
-{{- if .Values.useSSL.server }}
+{{- if .Values.useSSL }}
           - name: hostcert
             mountPath: /etc/grid-security/hostcert.pem
             subPath: hostcert.pem
@@ -186,27 +186,27 @@ spec:
           readinessProbe:
             httpGet:
               path: /ping
-{{- if .Values.useSSL.server }}
+{{- if .Values.useSSL }}
               scheme: HTTPS
               port: 443
 {{- else }}
               port: 80
 {{- end }}
-            initialDelaySeconds: {{ .Values.readinessProbe.server.initialDelaySeconds }}
-            periodSeconds: {{ .Values.readinessProbe.server.periodSeconds }}
-            timeoutSeconds: {{ .Values.readinessProbe.server.timeoutSeconds }}
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
           livenessProbe:
             httpGet:
               path: /ping
-{{- if .Values.useSSL.server }}
+{{- if .Values.useSSL }}
               scheme: HTTPS
               port: 443
 {{- else }}
               port: 80
 {{- end }}
-            initialDelaySeconds: {{ .Values.livenessProbe.server.initialDelaySeconds }}
-            periodSeconds: {{ .Values.livenessProbe.server.periodSeconds }}
-            timeoutSeconds: {{ .Values.livenessProbe.server.timeoutSeconds }}
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
           env:
             {{- range $key, $val := .Values.httpd_config }}
             - name: RUCIO_HTTPD_{{ $key | upper }}
@@ -219,7 +219,7 @@ spec:
             - name: {{ $key1 | upper }}
               value: "{{ $val1  }}"
             {{- end}}
-{{- if .Values.useSSL.server }}
+{{- if .Values.useSSL }}
             - name: RUCIO_ENABLE_SSL
               value: "True"
             - name: OPENSSL_ALLOW_PROXY_CERTS
@@ -233,11 +233,11 @@ spec:
               value: "{{ .Values.monitoring.nativeMetricsPort }}"
 {{- end }}
             - name: RUCIO_SERVER_TYPE
-              value: "{{ .Values.serverType.server }}"
+              value: "{{ .Values.serverType }}"
             - name: RUCIO_OVERRIDE_CONFIGS
               value: "/opt/rucio/etc/conf.d/"
             - name: RUCIO_LOG_FORMAT
-              value: '{{ .Values.logFormat.server }}'
+              value: '{{ .Values.logFormat }}'
             - name: RUCIO_WSGI_DAEMON_PROCESSES
               value: "{{ .Values.wsgi.daemonProcesses }}"
             - name: RUCIO_WSGI_DAEMON_THREADS

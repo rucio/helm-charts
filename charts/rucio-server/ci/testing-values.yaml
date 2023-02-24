@@ -1,6 +1,4 @@
 replicaCount: 1
-authReplicaCount: 1
-traceReplicaCount: 1
 
 image:
   repository: rucio/rucio-server
@@ -88,8 +86,7 @@ httpd_config:
   max_request_workers: "1280"
   max_connections_per_child: "2048"
 
-serverType:
-  server: flask
+serverType: flask
 
 serverResources:
   limits:
