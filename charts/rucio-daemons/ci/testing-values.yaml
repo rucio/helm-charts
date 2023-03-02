@@ -135,6 +135,8 @@ conveyorReceiver:
     requests:
       memory: "100Mi"
       cpu: "100m"
+  image:
+    tag: newertag
   secretMounts:
     - secretName: component-overriding-secret
       mountPath: /some/path.json
@@ -152,6 +154,8 @@ conveyorThrottler:
 darkReaper:
   workers: 1
   includeRses: "(type=CALIBDISK|type=DATADISK|type=GROUPDISK|type=LOCALGROUPDISK|type=SCRATCHDISK)"
+  image:
+    tag: newertag
   resources:
     limits:
       memory: "100Mi"
