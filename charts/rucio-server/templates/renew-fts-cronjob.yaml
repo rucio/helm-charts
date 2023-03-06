@@ -31,6 +31,16 @@
     persistentVolumeClaim:
       claimName: {{ $val.name }}
   {{- end}}
+  {{- range $collection := tuple (coalesce .Values.hostPathMounts .Values.ftsRenewal.hostPathMounts) .Values.ftsRenewal.extraHostPathMounts }}
+  {{- range $key, $val := $collection }}
+  - name: {{ $val.volumeName | default (printf "a%s" ($val.mountPath | sha1sum)) }}
+    hostPath:
+    {{- if $val.type }}
+      type: {{ $val.type }}
+    {{- end}}
+      path: {{ $val.hostPath }}
+  {{- end}}
+  {{- end}}
   containers:
     - name: renew-fts-cron
       image: "{{ .Values.ftsRenewal.image.repository }}:{{ .Values.ftsRenewal.image.tag }}"
@@ -73,6 +83,13 @@
   {{- range $key, $val := .Values.persistentVolumes }}
         - name: {{ $key }}
           mountPath: {{ $val.mountPath }}
+  {{- end}}
+  {{- range $collection := tuple (coalesce .Values.hostPathMounts .Values.ftsRenewal.hostPathMounts) .Values.ftsRenewal.extraHostPathMounts }}
+  {{- range $key, $val := $collection }}
+        - name: {{ $val.volumeName | default (printf "a%s" ($val.mountPath | sha1sum)) }}
+          mountPath: {{ $val.mountPath }}
+          readOnly: {{ $val.readOnly | default false }}
+  {{- end}}
   {{- end}}
       env:
         {{- range $key1, $val1 := .Values.optional_config }}

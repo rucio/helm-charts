@@ -223,6 +223,13 @@ secretMounts: []
   #   mountPath: /opt/rucio/etc/gcs_rucio.json
   #   subPath: gcs_rucio.json
 
+hostPathMounts: []
+  # - volumeName: igtf-ca
+  #   hostPath: /etc/grid-security/certificates/
+  #   mountPath: /etc/grid-security/certificates/
+  #   readOnly: true
+  #   type: DirectoryOrCreate
+
 additionalEnvs: []
   # - name: NODE_IP
   #   valueFrom:
