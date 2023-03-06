@@ -47,6 +47,12 @@ secretMounts:
     mountPath: /opt/rucio/etc/rse-accounts.cfg
     subPath: rse-accounts.cfg
 
+hostPathMounts:
+  - hostPath: /etc/grid-security/certificates/
+    mountPath: /etc/grid-security/certificates/
+    readOnly: true
+    type: DirectoryOrCreate
+
 additionalSecrets:
   - volumeName: mail-templates
     secretName: mail-templates
@@ -122,6 +128,9 @@ ftsRenewal:
       value: serverint-rucio-x509up
     - name: RUCIO_LONG_PROXY
       value: "latest_x509up.rfc.proxy"
+  extraHostPathMounts:
+    - hostPath: /etc/abc
+      mountPath: /etc/abc
 
 config:
   core:
