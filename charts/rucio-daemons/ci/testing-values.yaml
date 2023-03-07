@@ -77,6 +77,12 @@ secretMounts:
     mountPath: /patch/reaper_archive_bulk.patch
     subPath: reaper_archive_bulk.patch
 
+hostPathMounts:
+  - hostPath: /etc/grid-security/certificates/
+    mountPath: /etc/grid-security/certificates/
+    readOnly: true
+    type: DirectoryOrCreate
+
 conveyorTransferSubmitter:
   activities: "'Data Challenge'"
   sleepTime: 10
@@ -97,6 +103,9 @@ conveyorTransferSubmitter:
   extraSecretMounts:
     - secretName: component-additional-secret
       mountPath: /some/path.json
+  hostPathMounts:
+    - hostPath: /etc/grid-security/
+      mountPath: /etc/grid-security/
 
 conveyorPoller:
   activities: "'Activity 1'"
@@ -113,6 +122,9 @@ conveyorPoller:
     conveyor:
       scheme: "srm,gsiftp,root,http,https"
       transfertool: "fts3"
+  extraHostPathMounts:
+    - hostPath: /etc/abc/
+      mountPath: /etc/abc/
 
 conveyorFinisher:
   threads: 1
@@ -225,6 +237,9 @@ minos:
     requests:
       memory: "100Mi"
       cpu: "100m"
+  extraHostPathMounts:
+    - hostPath: /etc/abc/
+      mountPath: /etc/abc/
 
 minosTemporaryExpiration:
   threads: 1
@@ -267,6 +282,9 @@ reaper:
     requests:
       memory: "100Mi"
       cpu: "100m"
+  hostPathMounts:
+    - hostPath: /etc/abc/
+      mountPath: /etc/abc/
 
 transmogrifier:
   threads: 1
@@ -277,6 +295,7 @@ transmogrifier:
     requests:
       memory: "100Mi"
       cpu: "100m"
+  hostPathMounts: []
 
 tracerKronos:
   threads: 1
