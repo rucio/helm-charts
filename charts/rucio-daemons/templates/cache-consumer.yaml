@@ -84,6 +84,16 @@ spec:
         persistentVolumeClaim:
           claimName: {{ $val.name }}
       {{- end}}
+      {{- range $collection := tuple (hasKey $component_values "hostPathMounts" | ternary $component_values.hostPathMounts .Values.hostPathMounts) $component_values.extraHostPathMounts }}
+      {{- range $key, $val := $collection }}
+      - name: {{ $val.volumeName | default (printf "a%s" ($val.mountPath | sha1sum)) }}
+        hostPath:
+        {{- if $val.type }}
+          type: {{ $val.type }}
+        {{- end}}
+          path: {{ $val.hostPath }}
+      {{- end}}
+      {{- end}}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ coalesce ($component_values.image | default dict).tag .Values.image.tag }}"
@@ -107,6 +117,13 @@ spec:
           {{- range $key, $val := .Values.persistentVolumes }}
             - name: {{ $key }}
               mountPath: {{ $val.mountPath }}
+          {{- end}}
+          {{- range $collection := tuple (hasKey $component_values "hostPathMounts" | ternary $component_values.hostPathMounts .Values.hostPathMounts) $component_values.extraHostPathMounts }}
+          {{- range $key, $val := $collection }}
+            - name: {{ $val.volumeName | default (printf "a%s" ($val.mountPath | sha1sum)) }}
+              mountPath: {{ $val.mountPath }}
+              readOnly: {{ $val.readOnly | default false }}
+          {{- end}}
           {{- end}}
           ports:
             - name: metrics

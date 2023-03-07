@@ -1,4 +1,4 @@
-{{- define "rucio-daemons.conveyor-deployement" }}
+{{- define "rucio-daemons.abacus-deployement" }}
 {{- $app_label := printf "%s-%s" (include "rucio.name" .) .rucio_daemon }}
 ---
 apiVersion: v1
@@ -52,7 +52,7 @@ spec:
         {{- toYaml . | nindent 8 }}
     {{- end }}
       annotations:
-        checksum/config: {{ print "%s%s" $common_config $component_config | sha1sum }}
+        checksum/config: {{ print "%s%s" .common_config .component_config | sha1sum }}
     {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
     {{- end }}
@@ -170,87 +170,38 @@ spec:
 {{- end }}
 {{ end }}
 
-
-{{- define "rucio-daemons.conveyor-finisher-daemon-args" -}}
-{{- if .threads }} --total-threads {{ .threads }}{{ end }} {{- if .dbBulk }} --db-bulk {{ .dbBulk }}{{ end }} {{- if .bulk }} --bulk {{ .bulk }}{{ end }} {{- if .sleepTime }} --sleep-time {{ .sleepTime }}{{ end }} {{- if .activities }} --activities {{ .activities }}{{ end }}
+{{- define "rucio-daemons.abacus-account-daemon-args" -}}
+--threads {{ .threads }}
 {{- end }}
-{{- if gt .Values.conveyorFinisherCount 0.0 -}}
+{{- if gt .Values.abacusAccountCount 0.0 -}}
 {{- $args := dict "Values" .Values "Release" .Release "Chart" .Chart "Capabilities" .Capabilities }}
-{{- $args = set $args "rucio_daemon" "conveyor-finisher" }}
-{{- $args = set $args "component_values" .Values.conveyorFinisher }}
-{{- $args = set $args "component_count" .Values.conveyorFinisherCount }}
-{{- $args = set $args "daemon_args" (include "rucio-daemons.conveyor-finisher-daemon-args" .Values.conveyorFinisher) }}
-{{- include "rucio-daemons.conveyor-deployement" $args }}
+{{- $args = set $args "rucio_daemon" "abacus-account" }}
+{{- $args = set $args "component_values" .Values.abacusAccount }}
+{{- $args = set $args "component_count" .Values.abacusAccountCount }}
+{{- $args = set $args "daemon_args" (include "rucio-daemons.abacus-account-daemon-args" .Values.abacusAccount) }}
+{{- include "rucio-daemons.abacus-deployement" $args }}
 {{ end }}
 
-{{- define "rucio-daemons.conveyor-poller-daemon-args" -}}
-{{- if .threads }} --total-threads {{ .threads }}{{ end }} {{ if .dbBulk }} --db-bulk {{ .dbBulk }}{{ end }} {{- if .ftsBulk }} --fts-bulk {{ .ftsBulk }}{{ end }} {{- if .sleepTime }} --sleep-time {{ .sleepTime }}{{ end }} {{- if .activities }} --activities {{ .activities }}{{ end }} {{- if .olderThan }} --older-than {{ .olderThan }}{{ end }} {{- if .activitiesShare }} --activities-share {{ .activitiesShare }}{{ end }}
+{{- define "rucio-daemons.abacus-collection-replica-daemon-args" -}}
+--threads {{ .threads }}
 {{- end }}
-{{- if gt .Values.conveyorPollerCount 0.0 -}}
+{{- if gt .Values.abacusCollectionReplicaCount 0.0 -}}
 {{- $args := dict "Values" .Values "Release" .Release "Chart" .Chart "Capabilities" .Capabilities }}
-{{- $args = set $args "rucio_daemon" "conveyor-poller" }}
-{{- $args = set $args "component_values" .Values.conveyorPoller}}
-{{- $args = set $args "component_count" .Values.conveyorPollerCount }}
-{{- $args = set $args "daemon_args" (include "rucio-daemons.conveyor-poller-daemon-args" .Values.conveyorPoller) }}
-{{- include "rucio-daemons.conveyor-deployement" $args }}
+{{- $args = set $args "rucio_daemon" "abacus-collection-replica" }}
+{{- $args = set $args "component_values" .Values.abacusCollectionReplica }}
+{{- $args = set $args "component_count" .Values.abacusCollectionReplicaCount }}
+{{- $args = set $args "daemon_args" (include "rucio-daemons.abacus-collection-replica-daemon-args" .Values.abacusCollectionReplica) }}
+{{- include "rucio-daemons.abacus-deployement" $args }}
 {{ end }}
 
-{{- define "rucio-daemons.conveyor-preparer-daemon-args" -}}
-{{- if .threads }} --threads {{ .threads }}{{ end }} {{ if .bulk }} --bulk {{ .bulk }}{{ end }} {{- if .sleepTime }} --sleep-time {{ .sleepTime }}{{ end }}
+{{- define "rucio-daemons.abacus-rse-daemon-args" -}}
+{{- if .fillHistoryTable }}--enable-history {{ end }}--threads {{ .threads }}
 {{- end }}
-{{- if gt .Values.conveyorPreparerCount 0.0 -}}
+{{- if gt .Values.abacusRseCount 0.0 -}}
 {{- $args := dict "Values" .Values "Release" .Release "Chart" .Chart "Capabilities" .Capabilities }}
-{{- $args = set $args "rucio_daemon" "conveyor-preparer" }}
-{{- $args = set $args "component_values" .Values.conveyorPreparer}}
-{{- $args = set $args "component_count" .Values.conveyorPreparerCount }}
-{{- $args = set $args "daemon_args" (include "rucio-daemons.conveyor-preparer-daemon-args" .Values.conveyorPreparer) }}
-{{- include "rucio-daemons.conveyor-deployement" $args }}
-{{ end }}
-
-{{- define "rucio-daemons.conveyor-receiver-daemon-args" -}}
-{{- if .threads }} --total-threads {{ .threads }}{{ end }} {{- if .fullMode }} --full-mode{{ end }}
-{{- end }}
-{{- if gt .Values.conveyorReceiverCount 0.0 -}}
-{{- $args := dict "Values" .Values "Release" .Release "Chart" .Chart "Capabilities" .Capabilities }}
-{{- $args = set $args "rucio_daemon" "conveyor-receiver" }}
-{{- $args = set $args "component_values" .Values.conveyorReceiver}}
-{{- $args = set $args "component_count" .Values.conveyorReceiverCount }}
-{{- $args = set $args "daemon_args" (include "rucio-daemons.conveyor-receiver-daemon-args" .Values.conveyorReceiver) }}
-{{- include "rucio-daemons.conveyor-deployement" $args }}
-{{ end }}
-
-{{- define "rucio-daemons.conveyor-stager-daemon-args" -}}
-{{- if .threads }} --total-threads {{ .threads }}{{ end }} {{- if .bulk }} --bulk {{ .bulk }}{{ end }} {{- if .bulk }} --bulk {{ .bulk }}{{ end }} {{- if .sleepTime }} --sleep-time {{ .sleepTime }}{{ end }} {{- if .activities }} --activities {{ .activities }}{{ end }}
-{{- end }}
-{{- if gt .Values.conveyorStagerCount 0.0 -}}
-{{- $args := dict "Values" .Values "Release" .Release "Chart" .Chart "Capabilities" .Capabilities }}
-{{- $args = set $args "rucio_daemon" "conveyor-stager" }}
-{{- $args = set $args "component_values" .Values.conveyorStager}}
-{{- $args = set $args "component_count" .Values.conveyorStagerCount }}
-{{- $args = set $args "daemon_args" (include "rucio-daemons.conveyor-stager-daemon-args" .Values.conveyorStager) }}
-{{- include "rucio-daemons.conveyor-deployement" $args }}
-{{ end }}
-
-{{- define "rucio-daemons.conveyor-submitter-daemon-args" -}}
-{{- if .threads }} --total-threads {{ .threads }}{{ end }} {{- if .bulk }} --bulk {{ .bulk }}{{ end }} {{- if .groupBulk }} --group-bulk {{ .groupBulk }}{{ end}}{{- if .groupPolicy }} --group-policy {{ .groupPolicy }}{{ end }} {{- if .mock }} --mock {{ .mock }}{{ end }} {{- if .sourceStrategy }} --source-strategy {{ .sourceStrategy }}{{ end }} {{- if .excludeRses }} --exclude-rses {{ .excludeRses }}{{ end}} {{- if .includeRses }} --include-rses {{ .includeRses }}{{ end}} {{- if .rses }} --rses {{ .rses }}{{ end}} {{- if .sleepTime }} --sleep-time {{ .sleepTime }}{{ end}} {{- if .activities }} --activities {{ .activities }}{{ end}} {{- if .excludeActivities }} --exclude-activities {{ .excludeActivities }}{{ end}} {{- if .maxSources }} --max-sources {{ .maxSources }}{{end }} {{- if .ignoreAvailability }} --ignore-availability {{ end }} {{- if .retryOtherFts }} --retry-other-fts {{ end}} {{- if kindIs "float64" .archiveTimeout }}  --archive-timeout-override {{ .archiveTimeout }}{{ end}}
-{{- end }}
-{{- if gt .Values.conveyorTransferSubmitterCount 0.0 -}}
-{{- $args := dict "Values" .Values "Release" .Release "Chart" .Chart "Capabilities" .Capabilities }}
-{{- $args = set $args "rucio_daemon" "conveyor-submitter" }}
-{{- $args = set $args "component_values" .Values.conveyorTransferSubmitter}}
-{{- $args = set $args "component_count" .Values.conveyorTransferSubmitterCount }}
-{{- $args = set $args "daemon_args" (include "rucio-daemons.conveyor-submitter-daemon-args" .Values.conveyorTransferSubmitter) }}
-{{- include "rucio-daemons.conveyor-deployement" $args }}
-{{ end }}
-
-{{- define "rucio-daemons.conveyor-throttler-daemon-args" -}}
-{{- if .sleepTime }} --sleep-time {{ .sleepTime }}{{ end }}
-{{- end }}
-{{- if gt .Values.conveyorThrottlerCount 0.0 -}}
-{{- $args := dict "Values" .Values "Release" .Release "Chart" .Chart "Capabilities" .Capabilities }}
-{{- $args = set $args "rucio_daemon" "conveyor-throttler" }}
-{{- $args = set $args "component_values" .Values.conveyorThrottler}}
-{{- $args = set $args "component_count" .Values.conveyorThrottlerCount }}
-{{- $args = set $args "daemon_args" (include "rucio-daemons.conveyor-throttler-daemon-args" .Values.conveyorThrottler) }}
-{{- include "rucio-daemons.conveyor-deployement" $args }}
+{{- $args = set $args "rucio_daemon" "abacus-rse" }}
+{{- $args = set $args "component_values" .Values.abacusRse }}
+{{- $args = set $args "component_count" .Values.abacusRseCount }}
+{{- $args = set $args "daemon_args" (include "rucio-daemons.abacus-rse-daemon-args" .Values.abacusRse) }}
+{{- include "rucio-daemons.abacus-deployement" $args }}
 {{ end }}
