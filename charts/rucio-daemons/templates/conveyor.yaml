@@ -52,7 +52,7 @@ spec:
         {{- toYaml . | nindent 8 }}
     {{- end }}
       annotations:
-        checksum/config: {{ print "%s%s" .common_config .component_config | sha1sum }}
+        checksum/config: {{ print "%s%s" $common_config $component_config | sha1sum }}
     {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
     {{- end }}
