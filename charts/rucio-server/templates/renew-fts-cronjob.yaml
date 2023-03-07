@@ -31,7 +31,7 @@
     persistentVolumeClaim:
       claimName: {{ $val.name }}
   {{- end}}
-  {{- range $collection := tuple (coalesce .Values.hostPathMounts .Values.ftsRenewal.hostPathMounts) .Values.ftsRenewal.extraHostPathMounts }}
+  {{- range $collection := tuple (hasKey .Values.ftsRenewal "hostPathMounts" | ternary .Values.ftsRenewal.hostPathMounts .Values.hostPathMounts) .Values.ftsRenewal.extraHostPathMounts }}
   {{- range $key, $val := $collection }}
   - name: {{ $val.volumeName | default (printf "a%s" ($val.mountPath | sha1sum)) }}
     hostPath:
@@ -84,7 +84,7 @@
         - name: {{ $key }}
           mountPath: {{ $val.mountPath }}
   {{- end}}
-  {{- range $collection := tuple (coalesce .Values.hostPathMounts .Values.ftsRenewal.hostPathMounts) .Values.ftsRenewal.extraHostPathMounts }}
+  {{- range $collection := tuple (hasKey .Values.ftsRenewal "hostPathMounts" | ternary .Values.ftsRenewal.hostPathMounts .Values.hostPathMounts) .Values.ftsRenewal.extraHostPathMounts }}
   {{- range $key, $val := $collection }}
         - name: {{ $val.volumeName | default (printf "a%s" ($val.mountPath | sha1sum)) }}
           mountPath: {{ $val.mountPath }}
