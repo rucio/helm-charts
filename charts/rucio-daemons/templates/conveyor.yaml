@@ -154,7 +154,7 @@ spec:
 {{ end }}
 
 
-{{- define "rucio-daemons.conveyor-finisher-daemon-args" }}
+{{- define "rucio-daemons.conveyor-finisher-daemon-args" -}}
 {{- if .threads }} --total-threads {{ .threads }}{{ end }} {{- if .dbBulk }} --db-bulk {{ .dbBulk }}{{ end }} {{- if .bulk }} --bulk {{ .bulk }}{{ end }} {{- if .sleepTime }} --sleep-time {{ .sleepTime }}{{ end }} {{- if .activities }} --activities {{ .activities }}{{ end }}
 {{- end }}
 {{- if gt .Values.conveyorFinisherCount 0.0 -}}
@@ -166,7 +166,7 @@ spec:
 {{- include "rucio-daemons.conveyor-deployement" $args }}
 {{ end }}
 
-{{- define "rucio-daemons.conveyor-poller-daemon-args" }}
+{{- define "rucio-daemons.conveyor-poller-daemon-args" -}}
 {{- if .threads }} --total-threads {{ .threads }}{{ end }} {{ if .dbBulk }} --db-bulk {{ .dbBulk }}{{ end }} {{- if .ftsBulk }} --fts-bulk {{ .ftsBulk }}{{ end }} {{- if .sleepTime }} --sleep-time {{ .sleepTime }}{{ end }} {{- if .activities }} --activities {{ .activities }}{{ end }} {{- if .olderThan }} --older-than {{ .olderThan }}{{ end }} {{- if .activitiesShare }} --activities-share {{ .activitiesShare }}{{ end }}
 {{- end }}
 {{- if gt .Values.conveyorPollerCount 0.0 -}}
@@ -178,7 +178,7 @@ spec:
 {{- include "rucio-daemons.conveyor-deployement" $args }}
 {{ end }}
 
-{{- define "rucio-daemons.conveyor-preparer-daemon-args" }}
+{{- define "rucio-daemons.conveyor-preparer-daemon-args" -}}
 {{- if .threads }} --threads {{ .threads }}{{ end }} {{ if .bulk }} --bulk {{ .bulk }}{{ end }} {{- if .sleepTime }} --sleep-time {{ .sleepTime }}{{ end }}
 {{- end }}
 {{- if gt .Values.conveyorPreparerCount 0.0 -}}
@@ -190,7 +190,7 @@ spec:
 {{- include "rucio-daemons.conveyor-deployement" $args }}
 {{ end }}
 
-{{- define "rucio-daemons.conveyor-receiver-daemon-args" }}
+{{- define "rucio-daemons.conveyor-receiver-daemon-args" -}}
 {{- if .threads }} --total-threads {{ .threads }}{{ end }} {{- if .fullMode }} --full-mode{{ end }}
 {{- end }}
 {{- if gt .Values.conveyorReceiverCount 0.0 -}}
@@ -202,7 +202,7 @@ spec:
 {{- include "rucio-daemons.conveyor-deployement" $args }}
 {{ end }}
 
-{{- define "rucio-daemons.conveyor-stager-daemon-args" }}
+{{- define "rucio-daemons.conveyor-stager-daemon-args" -}}
 {{- if .threads }} --total-threads {{ .threads }}{{ end }} {{- if .bulk }} --bulk {{ .bulk }}{{ end }} {{- if .bulk }} --bulk {{ .bulk }}{{ end }} {{- if .sleepTime }} --sleep-time {{ .sleepTime }}{{ end }} {{- if .activities }} --activities {{ .activities }}{{ end }}
 {{- end }}
 {{- if gt .Values.conveyorStagerCount 0.0 -}}
@@ -214,7 +214,7 @@ spec:
 {{- include "rucio-daemons.conveyor-deployement" $args }}
 {{ end }}
 
-{{- define "rucio-daemons.conveyor-submitter-daemon-args" }}
+{{- define "rucio-daemons.conveyor-submitter-daemon-args" -}}
 {{- if .threads }} --total-threads {{ .threads }}{{ end }} {{- if .bulk }} --bulk {{ .bulk }}{{ end }} {{- if .groupBulk }} --group-bulk {{ .groupBulk }}{{ end}}{{- if .groupPolicy }} --group-policy {{ .groupPolicy }}{{ end }} {{- if .mock }} --mock {{ .mock }}{{ end }} {{- if .sourceStrategy }} --source-strategy {{ .sourceStrategy }}{{ end }} {{- if .excludeRses }} --exclude-rses {{ .excludeRses }}{{ end}} {{- if .includeRses }} --include-rses {{ .includeRses }}{{ end}} {{- if .rses }} --rses {{ .rses }}{{ end}} {{- if .sleepTime }} --sleep-time {{ .sleepTime }}{{ end}} {{- if .activities }} --activities {{ .activities }}{{ end}} {{- if .excludeActivities }} --exclude-activities {{ .excludeActivities }}{{ end}} {{- if .maxSources }} --max-sources {{ .maxSources }}{{end }} {{- if .ignoreAvailability }} --ignore-availability {{ end }} {{- if .retryOtherFts }} --retry-other-fts {{ end}} {{- if kindIs "float64" .archiveTimeout }}  --archive-timeout-override {{ .archiveTimeout }}{{ end}}
 {{- end }}
 {{- if gt .Values.conveyorTransferSubmitterCount 0.0 -}}
@@ -226,7 +226,7 @@ spec:
 {{- include "rucio-daemons.conveyor-deployement" $args }}
 {{ end }}
 
-{{- define "rucio-daemons.conveyor-throttler-daemon-args" }}
+{{- define "rucio-daemons.conveyor-throttler-daemon-args" -}}
 {{- if .sleepTime }} --sleep-time {{ .sleepTime }}{{ end }}
 {{- end }}
 {{- if gt .Values.conveyorThrottlerCount 0.0 -}}
