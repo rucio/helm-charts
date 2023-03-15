@@ -208,7 +208,7 @@ spec:
 {{ end }}
 
 {{- define "rucio-daemons.conveyor-receiver-daemon-args" -}}
-{{- if .threads }} --total-threads {{ .threads }}{{ end }} {{- if .fullMode }} --full-mode{{ end }}
+{{- if .threads }} --total-threads {{ .threads }}{{ end }}
 {{- end }}
 {{- if gt .Values.conveyorReceiverCount 0.0 -}}
 {{- $args := dict "Values" .Values "Release" .Release "Chart" .Chart "Capabilities" .Capabilities }}
