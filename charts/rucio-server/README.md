@@ -55,24 +55,29 @@ Some functions require certificates and CAs to work. They expect specific secret
 
 ### API calls to FTS
 
-To update rule priority in FTS, the API call must be authenticated. The configuration is identical to the one of the [conveyor](https://github.com/rucio/helm-charts/tree/master/rucio-daemons#conveyor) daemon. 
+To update rule priority in FTS, the API call must be authenticated. The
+configuration is identical to the one of the 
+[conveyor](https://github.com/rucio/helm-charts/tree/master/charts/rucio-daemons#conveyor) 
+daemon. 
 
 ## Service
 
-By default the servers pods are listening on port 80 using plain HTTP and the default services are of type `ClusterIP` on port 80. You can adapt this separately for the api, authentication and trace servers. To run the pods with HTTPS you will first have to install the necessary key, cert and CA files for the corresponding servers:
+By default the servers pods are listening on port 80 using plain HTTP and the 
+default services are of type `ClusterIP` on port 80. To run the pods with HTTPS
+you will first have to install the necessary key, cert and CA files for the 
+corresponding servers:
 
-- api servers: `<releasename>-server-hostcert`, `<releasename>-server-hostkey` and `<releasename>-server-cafile`.
-- authentication servers: `<releasename>-auth-hostcert`, `<releasename>-auth-hostkey` and `<releasename>-auth-cafile`.
-- trace servers: `<releasename>-trace-hostcert`, `<releasename>-trace-hostkey` and `<releasename>-trace-cafile`.
+First create the secrets:
+
+    kubectl create secret generic <releasename>-server-hostcert --from-file=hostcert.pem=/path/to/hostcert.pem   
+    kubectl create secret generic <releasename>-server-hostkey --from-file=hostkey.pem=/path/to/hostkey.pem
+    kubectl create secret generic <releasename>-server-cafile --from-file=ca.pem=/path/to/ca.pem
 
 Then you can use a switch in the config file to enable HTTPS per server type:
 
-    useSSL:
-      server: true
-      authServer: true
-      traceServer: true
+    useSSL: true
 
-You will then have to adapt the service for each server type to port 443:
+You will then have to adapt the service to port 443:
 
     service:
       type: ClusterIP
@@ -81,11 +86,15 @@ You will then have to adapt the service for each server type to port 443:
       protocol: TCP
       name: https
 
-You can do the same for the authentication and trace server using `authService` and `traceService` respectively. Furthermore, you can also change the service type depending on how you want to expose your service outside of the cluster. If you don't use an ingress controller you can also set it to `NodePort` or `LoadBalancer` (if available).
+Furthermore, you can also change the service type depending on how you want to 
+expose your service outside of the cluster. If you don't use an ingress
+controller you can also set it to `NodePort` or `LoadBalancer` (if available).
 
 ## Ingress
 
-If you want to use and ingress controller to expose the servers you will have to configure them separately. In this case the service type should stay as `ClusterIP`. A simple ingress for the api server would like this:
+If you want to use and ingress controller to expose the servers you will have to
+configure them separately. In this case the service type should stay as 
+`ClusterIP`. A simple ingress for the api server would like this:
 
     ingress:
       enabled: true
@@ -93,9 +102,13 @@ If you want to use and ingress controller to expose the servers you will have to
       hosts:
         - my.rucio.test
 
-In case you want to use HTTPS with an ingress you should not change the service as explained above but instead let the ingress controller handle the TLS connection and then pass the requests using plain HTTP inside the cluster. The exception being the authentication servers that will be explained below.
+In case you want to use HTTPS with an ingress you should not change the service
+as explained above but instead let the ingress controller handle the TLS 
+connection and then pass the requests using plain HTTP inside the cluster. 
+The exception being the authentication servers that will be explained below.
 
-You will have to install the valid certificate and key as a secret in the cluster that you can then configure in the ingress definition:
+You will have to install the valid certificate and key as a secret in the 
+cluster that you can then configure in the ingress definition:
 
     $ kubectl create secret tls rucio-server.tls-secret --key=tls.key --cert=tls.crt
 
@@ -109,11 +122,17 @@ You will have to install the valid certificate and key as a secret in the cluste
 
 ## Authentication Ingress
 
-For the authentication ingress the configuration is a bit different if you want to use the x509 certificate authentication in Rucio. In this case the TLS connection cannot be terminated by the ingress controller but instead it has to be forwarded to the pods so that they can verify the user certificate. You will need an ingress controller that supports TLS passthrough. This documentation will focus on the nginx ingress controller.
+For the authentication ingress the configuration is a bit different if you want
+to use the x509 certificate authentication in Rucio. In this case the TLS
+connection cannot be terminated by the ingress controller but instead it has to
+be forwarded to the pods so that they can verify the user certificate. You will
+need an ingress controller that supports TLS passthrough. This documentation
+will focus on the nginx ingress controller.
 
-First, the `authService` has to be configured using HTTPS as described above. Then, you can enable passthrough in the ingress definition:
+First, the `service` has to be configured using HTTPS as described above. 
+Then, you can enable passthrough in the ingress definition:
 
-    authIngress:
+    ingress:
       enabled: true
       annotations:
         kubernetes.io/ingress.class: nginx
@@ -129,13 +148,14 @@ The `httpd_config` can be used to configure the mpm mode and to enable the statu
 
 ### Additional Secrets
 
-In case you need any additional secrets, e.g., special cloud configurations, license keys, etc., you can use `additionalSecrets` in the configuration file. You can install arbitrary secrets in the cluster and this config then makes it available in the pods:
+In case you need any additional secrets, e.g., special cloud configurations, 
+license keys, etc., you can use `secretMounts` in the configuration file. You 
+can install arbitrary secrets in the cluster and this config then makes it available in the pods:
 
     $ kubectl create secret generic my-release-rse-accounts --from-file=rse-accounts.cfg
 
-    additionalSecrets
-      rse-accounts:
-        secretName: rse-accounts
+    secretMounts: 
+      - secretName: rse-accounts
         mountPath: /opt/rucio/etc/rse-accounts.cfg
         subPath: rse-accounts.cfg
 

@@ -99,9 +99,8 @@ In case you need any additional secrets, e.g., special cloud configurations, lic
 
     $ kubectl create secret generic my-release-automatix-input --from-file=automatix.json
 
-    additionalSecrets:
-      automatix-input:
-        secretName: automatix-input
+    secretMounts:
+      - secretName: automatix-input
         mountPath: /opt/rucio/etc/automatix.json
         subPath: automatix.json
 
