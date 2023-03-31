@@ -11,7 +11,7 @@ conveyorThrottlerCount: 1
 conveyorStagerCount: 1
 darkReaperCount: 1
 hermesLegacyCount: 1
-hermes2Count: 1
+hermesCount: 1
 judgeCleanerCount: 1
 judgeEvaluatorCount: 1
 judgeInjectorCount: 1
