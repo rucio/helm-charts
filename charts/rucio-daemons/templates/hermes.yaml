@@ -1,12 +1,12 @@
-{{- if gt .Values.hermes2Count 0.0 -}}
-{{- $rucio_daemon := "hermes2" }}
-{{- $component_values := .Values.hermes2 }}
-{{- $component_count := .Values.hermes2Count }}
+{{- if gt .Values.hermesCount 0.0 -}}
+{{- $rucio_daemon := "hermes" }}
+{{- $component_values := .Values.hermes }}
+{{- $component_count := .Values.hermesCount }}
 {{- $app_label := printf "%s-%s" (include "rucio.name" .) $rucio_daemon }}
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ template "rucio.fullname" . }}.config.hermes2.yaml
+  name: {{ template "rucio.fullname" . }}.config.{{ $rucio_daemon }}
   labels:
     app: {{ $app_label }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -75,10 +75,10 @@ spec:
 {{ if $component_values.useSSL }}
         - name: usercert
           secret:
-            secretName: {{ .Release.Name }}-hermes2-cert
+            secretName: {{ .Release.Name }}-hermes-cert
         - name: userkey
           secret:
-            secretName: {{ .Release.Name }}-hermes2-key
+            secretName: {{ .Release.Name }}-hermes-key
 {{ end }}
         {{- range $collection := tuple (coalesce $component_values.secretMounts .Values.secretMounts .Values.additionalSecrets) $component_values.extraSecretMounts }}
         {{- range $key, $val := $collection }}

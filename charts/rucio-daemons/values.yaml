@@ -17,7 +17,7 @@ conveyorThrottlerCount: 0
 conveyorPreparerCount: 0
 darkReaperCount: 0
 hermesLegacyCount: 0
-hermes2Count: 0
+hermesCount: 0
 judgeCleanerCount: 0
 judgeEvaluatorCount: 0
 judgeInjectorCount: 0
@@ -248,7 +248,7 @@ hermesLegacy:
       memory: "200Mi"
       cpu: "700m"
 
-hermes2:
+hermes:
   threads: 1
   podAnnotations: {}
   bulk: 1000
@@ -569,7 +569,7 @@ config:
     # email_from: "Rucio <atlas-adc-ddm-support@cern.ch"
     # email_test: ""
 
-  # messaging-hermes2:
+  # hermes:
     # elastic_endpoint:  # _bulk endpoint
     # influxdb_endpoint: # write endpoint
 
