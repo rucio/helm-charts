@@ -10,7 +10,7 @@ conveyorReceiverCount: 1
 conveyorThrottlerCount: 1
 conveyorStagerCount: 1
 darkReaperCount: 1
-hermesCount: 1
+hermesLegacyCount: 1
 hermes2Count: 1
 judgeCleanerCount: 1
 judgeEvaluatorCount: 1
@@ -176,7 +176,7 @@ darkReaper:
       memory: "100Mi"
       cpu: "100m"
 
-hermes:
+hermesLegacy:
   threads: 1
   bulk: 1000
   delay: 10

@@ -16,7 +16,7 @@ conveyorStagerCount: 0
 conveyorThrottlerCount: 0
 conveyorPreparerCount: 0
 darkReaperCount: 0
-hermesCount: 0
+hermesLegacyCount: 0
 hermes2Count: 0
 judgeCleanerCount: 0
 judgeEvaluatorCount: 0
@@ -234,7 +234,7 @@ darkReaper:
       memory: "200Mi"
       cpu: "700m"
 
-hermes:
+hermesLegacy:
   threads: 1
   podAnnotations: {}
   bulk: 100
