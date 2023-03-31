@@ -9,6 +9,9 @@ image:
   tag: latest
   pullPolicy: Always
 
+imagePullSecrets: []
+# - name: docker-regcreds
+
 #  Values needed for some of the probes
 probeSettings:
   # This is the secret for the X509 proxy for FTS. Needed for "check_fts_backlog"
@@ -165,7 +168,7 @@ probes:
     interval: 0
 
 voProbes: {}
-  # Here list other probes following the scheme above for the common probes. 
+  # Here list other probes following the scheme above for the common probes.
   # In addition to "interval" define which VO
   # These probes will be run from the /probes/someVO/ directory instead of probes/common
   # check_something:

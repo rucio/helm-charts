@@ -37,6 +37,9 @@ image:
   tag: latest
   pullPolicy: Always
 
+imagePullSecrets: []
+# - name: docker-regcreds
+
 strategy:
   type: RollingUpdate
   rollingUpdate:

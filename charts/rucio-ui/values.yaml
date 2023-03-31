@@ -21,6 +21,9 @@ image:
   tag: release-1.21.12
   pullPolicy: Always
 
+imagePullSecrets: []
+# - name: docker-regcreds
+
 strategy:
   type: RollingUpdate
   rollingUpdate:

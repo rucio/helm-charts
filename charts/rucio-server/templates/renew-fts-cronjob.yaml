@@ -130,6 +130,10 @@
   {{- end}}
   restartPolicy: OnFailure
 {{- end }}
+{{- with .Values.imagePullSecrets }}
+  imagePullSecrets:
+{{ toYaml . | indent 2 }}
+{{- end}}
 {{- end }}
 
 {{- if .Values.ftsRenewal.enabled -}}

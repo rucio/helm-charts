@@ -164,6 +164,10 @@ spec:
           resources:
 {{ toYaml . | trim | indent 12 }}
 {{ end }}
+{{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml . | indent 6 }}
+{{- end}}
 {{- with $component_values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
