@@ -149,6 +149,9 @@ spec:
               value: "{{ $rucio_daemon }}"
             - name: RUCIO_DAEMON_ARGS
               value: "{{- if $component_values.threads }} --total-workers {{ $component_values.threads }}{{end}} {{- if $component_values.chunkSize }} --chunk-size {{ $component_values.chunkSize }}{{ end }}"
+{{- with $component_values.additionalEnvs }}
+{{ toYaml . | indent 12 }}
+{{- end}}
 {{- with $component_values.resources }}
           resources:
 {{ toYaml . | trim | indent 12 }}

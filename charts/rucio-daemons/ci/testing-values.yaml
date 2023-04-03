@@ -285,6 +285,9 @@ reaper:
   hostPathMounts:
     - hostPath: /etc/abc/
       mountPath: /etc/abc/
+  additionalEnvs:
+    - name: X509_USER_PROXY
+      value: "/opt/proxy/x509up"
 
 transmogrifier:
   threads: 1
