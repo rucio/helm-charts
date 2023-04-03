@@ -103,6 +103,7 @@ conveyorTransferSubmitter:
   extraSecretMounts:
     - secretName: component-additional-secret
       mountPath: /some/path.json
+      defaultMode: 0600
   hostPathMounts:
     - hostPath: /etc/grid-security/
       mountPath: /etc/grid-security/
@@ -324,6 +325,7 @@ ftsRenewal:
   secretMounts:
     - secretName: longproxy
       mountPath: /opt/rucio/certs/
+      defaultMode: 0600
   additionalEnvs:
     - name: RUCIO_FTS_SECRETS
       value: daemonint-rucio-x509up

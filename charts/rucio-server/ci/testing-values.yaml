@@ -38,6 +38,7 @@ secretMounts:
   - volumeName: gcsrucio
     secretName: gcsrucio
     mountPath: /opt/rucio/etc/
+    defaultMode: 0600
     subPaths:
       - gcs_rucio.json
   - volumeName: rse-accounts
@@ -120,6 +121,7 @@ ftsRenewal:
   secretMounts:
     - secretName: longproxy
       mountPath: /opt/rucio/certs/
+      defaultMode: 0600
   additionalEnvs:
     - name: RUCIO_FTS_SECRETS
       value: serverint-rucio-x509up

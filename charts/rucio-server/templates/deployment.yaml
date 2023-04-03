@@ -56,6 +56,9 @@ spec:
       - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }}
         secret:
           secretName: {{ coalesce $val.secretFullName (printf "%s-%s" $.Release.Name $val.secretName) }}
+          {{- if $val.defaultMode }}
+          defaultMode: {{ $val.defaultMode }}
+          {{- end }}
       {{- end}}
       {{- end}}
       {{- range $key, $val := .Values.persistentVolumes }}
