@@ -153,6 +153,9 @@ spec:
             - name: RUCIO_DAEMON
               value: "{{ $rucio_daemon }}"
             - name: RUCIO_DAEMON_ARGS
+{{- with $component_values.additionalEnvs }}
+{{ toYaml . | indent 12 }}
+{{- end}}
               value: "{{- if $component_values.threads }} --threads {{ $component_values.threads }}{{ end }} {{- if $component_values.bulk }} --bulk {{ $component_values.bulk }}{{ end }} {{- if $component_values.sleepTime }} --sleep-time {{ $component_values.sleepTime }}{{ end }} {{- if $component_values.brokerTimeout }} --broker-timeout {{ $component_values.brokerTimeout }}{{ end }} {{- if $component_values.brokerRetry }} --broker-retry {{ $component_values.brokerRetry }}{{ end }}"
 {{- with $component_values.resources }}
           resources:
