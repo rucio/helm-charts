@@ -80,6 +80,10 @@ spec:
         - mountPath: /opt/proxy
           name: proxy-volume
 {{- end }}
+{{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml . | indent 6 }}
+{{- end}}
 {{- with .Values.resources }}
         resources:
 {{ toYaml . | trim | indent 12 }}

@@ -26,6 +26,9 @@ image:
   tag: release-1.24.3
   pullPolicy: Always
 
+imagePullSecrets: []
+# - name: docker-regcreds
+
 service:
   type: ClusterIP
   port: 80

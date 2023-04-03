@@ -18,4 +18,8 @@ spec:
               resources:
 {{ toYaml .Values.automaticRestart.resources | indent 16 }}
           restartPolicy: OnFailure
+{{- with .Values.imagePullSecrets }}
+          imagePullSecrets:
+{{ toYaml . | indent 10 }}
+{{- end}}
 {{ end }}
