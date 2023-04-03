@@ -159,8 +159,10 @@ spec:
               value: "{{ $rucio_daemon }}"
             - name: RUCIO_DAEMON_ARGS
               value: "{{- if $component_values.threads }} --threads-per-process {{ $component_values.threads }}{{ end }} {{- if $component_values.inputFile }} --input-file {{ $component_values.inputFile }}{{ end }} {{- if $component_values.sleepTime }} --sleep-time {{ $component_values.sleepTime }}{{ end }}"
+            {{- if .Values.useDeprecatedImplicitSecrets }}
             - name: X509_USER_PROXY
               value: "/opt/proxy/x509up"
+            {{- end }}
 {{- with $component_values.resources }}
           resources:
 {{ toYaml . | trim | indent 12 }}

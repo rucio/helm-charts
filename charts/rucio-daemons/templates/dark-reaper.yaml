@@ -158,8 +158,10 @@ spec:
               value: "pthread"
             - name: RUCIO_HOME
               value: "/opt/rucio/reaper"
+            {{- if .Values.useDeprecatedImplicitSecrets }}
             - name: X509_USER_PROXY
               value: "/opt/proxy/x509up"
+            {{- end }}
 {{- with $component_values.resources }}
           resources:
 {{ toYaml . | trim | indent 12 }}
