@@ -66,7 +66,7 @@ spec:
       containers:
       - env:
         - name: RUCIO_OVERRIDE_CONFIGS
-          value: "/opt/rucio/etc/common.json"
+          value: "/opt/rucio/etc/conf.d/"
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         name: {{ .Chart.Name }}
