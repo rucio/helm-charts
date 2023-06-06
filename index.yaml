@@ -1279,6 +1279,15 @@ entries:
   rucio-probes:
   - apiVersion: v1
     appVersion: "1.0"
+    created: "2023-06-06T06:42:29.698038852Z"
+    description: Helm chart for probe cron jobs needed in Rucio
+    digest: d4ac7cd8a1527577fff2f5b2e20fe5444283625b186354c869e05debaba6c9b3
+    name: rucio-probes
+    urls:
+    - https://github.com/rucio/helm-charts/releases/download/rucio-probes-1.31.1/rucio-probes-1.31.1.tgz
+    version: 1.31.1
+  - apiVersion: v1
+    appVersion: "1.0"
     created: "2023-04-03T14:32:04.661851619Z"
     description: Helm chart for probe cron jobs needed in Rucio
     digest: bc9598ff1d84165761a24109daf0cff0a54865eb1b65d99b1675d16f94c4bd34
@@ -2788,4 +2797,4 @@ entries:
     urls:
     - https://github.com/rucio/helm-charts/releases/download/rucio-webui-1.30.0/rucio-webui-1.30.0.tgz
     version: 1.30.0
-generated: "2023-04-03T14:32:05.341283203Z"
+generated: "2023-06-06T06:42:29.699978569Z"
