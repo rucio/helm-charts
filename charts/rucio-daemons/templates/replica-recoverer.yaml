@@ -157,7 +157,7 @@ spec:
             - name: RUCIO_DAEMON
               value: "{{ $rucio_daemon }}"
             - name: RUCIO_DAEMON_ARGS
-              value: "{{- if $component_values.sleepTime }} --sleep-time {{ $component_values.sleepTime }}{{ end }}"
+              value: "{{- if $component_values.sleepTime }} --sleep-time {{ $component_values.sleepTime }}{{ end }} {{- if $component_values.inputFile }} --json-file-name {{ $component_values.inputFile }}{{ end }} {{- if $component_values.activeMode }} --activemode {{ end }}"
 {{- with $component_values.additionalEnvs }}
 {{ toYaml . | indent 12 }}
 {{- end}}
