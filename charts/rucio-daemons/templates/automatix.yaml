@@ -83,9 +83,9 @@ spec:
         secret:
           secretName: {{ .Release.Name }}-rucio-ca-bundle-reaper
     {{- end }}
-      {{- range $collection := tuple (coalesce $component_values.secretMounts .Values.secretMounts .Values.additionalSecrets) $component_values.extraSecretMounts }}
+      {{- range $collection := tuple (coalesce $component_values.secretMounts .Values.secretMounts) $component_values.extraSecretMounts }}
       {{- range $key, $val := $collection }}
-      - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }} 
+      - name: {{ coalesce $val.volumeName $val.secretName $val.secretFullName }}
         secret:
           secretName: {{ coalesce $val.secretFullName (printf "%s-%s" $.Release.Name $val.secretName) }}
           {{- if $val.defaultMode }}
@@ -127,9 +127,9 @@ spec:
             - name: config-component
               mountPath: /opt/rucio/etc/conf.d/20_component.json
               subPath: component.json
-            {{- range $collection := tuple (coalesce $component_values.secretMounts .Values.secretMounts .Values.additionalSecrets) $component_values.extraSecretMounts }}
+            {{- range $collection := tuple (coalesce $component_values.secretMounts .Values.secretMounts) $component_values.extraSecretMounts }}
             {{- range $key, $val := $collection }}
-            - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }} 
+            - name: {{ coalesce $val.volumeName $val.secretName $val.secretFullName }}
               mountPath: {{ $val.mountPath }}
               {{- if $val.subPath }}
               subPath: "{{ $val.subPath }}"

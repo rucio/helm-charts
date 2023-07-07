@@ -59,12 +59,6 @@ monitoring:
         replacement: $1
         action: replace
 
-additionalSecrets:
-  rse-accounts:
-    secretName: rse-accounts
-    mountPath: /opt/rucio/etc/rse-accounts.cfg
-    subPath: rse-accounts.cfg
-
 secretMounts:
   - secretName: suffix-of-the-secret-name
     mountPath: /some/path.json
@@ -76,6 +70,9 @@ secretMounts:
     secretName: reaper-archive-bulk-patch
     mountPath: /patch/reaper_archive_bulk.patch
     subPath: reaper_archive_bulk.patch
+  - secretName: rse-accounts
+    mountPath: /opt/rucio/etc/rse-accounts.cfg
+    subPath: rse-accounts.cfg
 
 hostPathMounts:
   - hostPath: /etc/grid-security/certificates/

@@ -46,7 +46,7 @@ ingress:
   hosts: []
   #   - my.rucio.test
 
-additionalSecrets: {}
+secretMounts: {}
 # - volumeName: gcssecret
 #   secretName: gcssecret
 #   mountPath: /opt/rucio/etc/gcs_rucio.json
