@@ -67,8 +67,8 @@ spec:
         secret:
           secretName: {{ .Release.Name }}-cafile
       {{- end }}
-      {{- range $key, $val := .Values.additionalSecrets }}
-      - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }}
+      {{- range $key, $val := .Values.secretMounts }}
+      - name: {{ coalesce $val.volumeName $val.secretName $val.secretFullName }}
         secret:
           secretName: {{ coalesce $val.secretFullName (printf "%s-%s" $.Release.Name $val.secretName) }}
       {{- end}}
@@ -118,8 +118,8 @@ spec:
               mountPath: /etc/grid-security/ca.pem
               subPath: ca.pem
             {{- end}}
-            {{- range $key, $val := .Values.additionalSecrets }}
-            - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }} 
+            {{- range $key, $val := .Values.secretMounts }}
+            - name: {{ coalesce $val.volumeName $val.secretName $val.secretFullName }}
               mountPath: {{ $val.mountPath }}
               subPath: {{ $val.subPath }}
             {{- end}}

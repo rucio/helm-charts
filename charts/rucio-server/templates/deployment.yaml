@@ -51,15 +51,13 @@ spec:
       {{- end }}
       - name: httpdlog
         emptyDir: {}
-      {{- range $collection := tuple (coalesce .Values.secretMounts .Values.additionalSecrets)}}
-      {{- range $key, $val := $collection }}
-      - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }}
+      {{- range $key, $val := .Values.secretMounts }}
+      - name: {{ coalesce $val.volumeName $val.secretName $val.secretFullName }}
         secret:
           secretName: {{ coalesce $val.secretFullName (printf "%s-%s" $.Release.Name $val.secretName) }}
           {{- if $val.defaultMode }}
           defaultMode: {{ $val.defaultMode }}
           {{- end }}
-      {{- end}}
       {{- end}}
       {{- range $key, $val := .Values.persistentVolumes }}
       - name: {{ $key }}
@@ -134,21 +132,19 @@ spec:
           {{- end }}
           - name: httpdlog
             mountPath: /var/log/httpd
-          {{- range $collection := tuple (coalesce .Values.secretMounts .Values.additionalSecrets)}}
-          {{- range $key, $val := $collection }}
+          {{- range $key, $val := .Values.secretMounts }}
           {{- /* TODO: depreacte and remove support for subPaths (at plural) case */}}
           {{-  if $val.subPaths }}
           {{-   range $val.subPaths }}
-          - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }} 
+          - name: {{ coalesce $val.volumeName $val.secretName $val.secretFullName }}
             mountPath: {{ $val.mountPath }}{{ . }}
             subPath: {{ . }}
           {{-   end}}
           {{-  else }}
-          - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }} 
+          - name: {{ coalesce $val.volumeName $val.secretName $val.secretFullName }}
             mountPath: {{ $val.mountPath }}
             subPath: {{ $val.subPath }}
           {{-  end}}
-          {{- end}}
           {{- end}}
           {{- range $key, $val := .Values.persistentVolumes }}
           - name: {{ $key }}

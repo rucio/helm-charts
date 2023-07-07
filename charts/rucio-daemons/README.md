@@ -95,7 +95,9 @@ The reaper uses the same x509 proxy as the conveyor. So there is no additional w
 
 ### Additional Secrets
 
-In case you need any additional secrets, e.g., special cloud configurations, license keys, etc., you can use `additionalSecrets` in the configuration file. You can install arbitrary secrets in the cluster and this config then makes it available in the pods:
+In case you need any additional secrets, e.g., special cloud configurations, license keys, etc., you can use
+`secretMounts` in the configuration file. You can install arbitrary secrets in the cluster and this config 
+then makes it available in the pods:
 
     $ kubectl create secret generic my-release-automatix-input --from-file=automatix.json
 

@@ -5,9 +5,9 @@
   - name: config-common
     secret:
       secretName: {{ template "rucio.fullname" . }}.config.common
-  {{- range $collection := tuple (coalesce .Values.ftsRenewal.secretMounts .Values.secretMounts .Values.additionalSecrets) .Values.ftsRenewal.extraSecretMounts }}
+  {{- range $collection := tuple (coalesce .Values.ftsRenewal.secretMounts .Values.secretMounts) .Values.ftsRenewal.extraSecretMounts }}
   {{- range $key, $val := $collection }}
-  - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }}
+  - name: {{ coalesce $val.volumeName $val.secretName $val.secretFullName }}
     secret:
       secretName: {{ coalesce $val.secretFullName (printf "%s-%s" $.Release.Name $val.secretName) }}
       {{- if $val.defaultMode }}
@@ -65,17 +65,17 @@
           mountPath: /opt/rucio/keys/
   {{- end }}
   {{- end }}
-  {{- range $collection := tuple (coalesce .Values.ftsRenewal.secretMounts .Values.secretMounts .Values.additionalSecrets) .Values.ftsRenewal.extraSecretMounts }}
+  {{- range $collection := tuple (coalesce .Values.ftsRenewal.secretMounts .Values.secretMounts) .Values.ftsRenewal.extraSecretMounts }}
   {{- range $key, $val := $collection }}
       {{- /* TODO: depreacte and remove support for subPaths (at plural) case */}}
       {{-  if $val.subPaths }}
       {{-   range $val.subPaths }}
-        - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }}
+        - name: {{ coalesce $val.volumeName $val.secretName $val.secretFullName }}
           mountPath: {{ $val.mountPath }}{{ . }}
           subPath: {{ . }}
       {{-   end}}
       {{-  else }}
-        - name: {{ kindIs "int" $key | ternary (coalesce $val.volumeName $val.secretName $val.secretFullName) $key }}
+        - name: {{ coalesce $val.volumeName $val.secretName $val.secretFullName }}
           mountPath: {{ $val.mountPath }}
           {{- if $val.subPath }}
           subPath: "{{ $val.subPath }}"

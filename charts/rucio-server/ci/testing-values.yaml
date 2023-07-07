@@ -45,14 +45,6 @@ secretMounts:
     secretName: rse-accounts
     mountPath: /opt/rucio/etc/rse-accounts.cfg
     subPath: rse-accounts.cfg
-
-hostPathMounts:
-  - hostPath: /etc/grid-security/certificates/
-    mountPath: /etc/grid-security/certificates/
-    readOnly: true
-    type: DirectoryOrCreate
-
-additionalSecrets:
   - volumeName: mail-templates
     secretName: mail-templates
     mountPath: /opt/rucio/etc/mail_templates/
@@ -66,6 +58,12 @@ additionalSecrets:
   - secretName: some-patch
     mountPath: /patch/some.patch
     subPath: some.patch
+
+hostPathMounts:
+  - hostPath: /etc/grid-security/certificates/
+    mountPath: /etc/grid-security/certificates/
+    readOnly: true
+    type: DirectoryOrCreate
 
 wsgi:
   daemonProcesses: "4"
