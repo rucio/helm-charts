@@ -103,6 +103,7 @@ conveyorTransferSubmitter:
   extraSecretMounts:
     - secretName: component-additional-secret
       mountPath: /some/path.json
+      defaultMode: 0600
   hostPathMounts:
     - hostPath: /etc/grid-security/
       mountPath: /etc/grid-security/
