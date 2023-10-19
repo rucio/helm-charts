@@ -8,7 +8,7 @@ replicaCount: 1
 useDeprecatedImplicitSecrets: true
 
 # When set, run extra busybox containers in the relevant pods to also expose the error logs
-exposeErrorLogs: True
+exposeErrorLogs: true
 
 service:
   type: NodePort
