@@ -1479,6 +1479,23 @@ entries:
     version: 0.1.0
   rucio-server:
   - apiVersion: v1
+    created: "2023-11-29T12:06:30.961659143Z"
+    description: A Helm chart to deploy servers for Rucio
+    digest: 4fe634fac1aafd9028fc647555319e8df959c8def9c0271fa5b17210acc2321d
+    home: https://rucio.cern.ch/
+    keywords:
+    - data-management
+    - science
+    maintainers:
+    - email: rucio-dev@cern.ch
+      name: Rucio development team
+    name: rucio-server
+    sources:
+    - https://github.com/rucio/rucio
+    urls:
+    - https://github.com/rucio/helm-charts/releases/download/rucio-server-33.0.0/rucio-server-33.0.0.tgz
+    version: 33.0.0
+  - apiVersion: v1
     created: "2023-07-21T07:00:21.441956299Z"
     description: A Helm chart to deploy servers for Rucio
     digest: 814545f4fcced65a0bd7f27eab14c33e0ca903ab934be48b1af09bc02c361824
@@ -2993,4 +3010,4 @@ entries:
     urls:
     - https://github.com/rucio/helm-charts/releases/download/rucio-webui-1.30.0/rucio-webui-1.30.0.tgz
     version: 1.30.0
-generated: "2023-10-20T00:44:26.892274954Z"
+generated: "2023-11-29T12:06:30.962773242Z"
