@@ -177,6 +177,15 @@ spec:
             - name: https
               containerPort: 443
               protocol: TCP
+{{- if .Values.useSSL }}
+            - name: health
+              containerPort: 444
+              protocol: TCP
+{{- else }}
+            - name: health
+              containerPort: 81
+              protocol: TCP
+{{- end }}
 {{- if .Values.monitoring.enabled }}
             - name: metrics
               containerPort: {{ .Values.monitoring.nativeMetricsPort }}
@@ -185,11 +194,9 @@ spec:
           readinessProbe:
             httpGet:
               path: /ping
+              port: health
 {{- if .Values.useSSL }}
               scheme: HTTPS
-              port: 443
-{{- else }}
-              port: 80
 {{- end }}
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
@@ -197,11 +204,9 @@ spec:
           livenessProbe:
             httpGet:
               path: /ping
+              port: health
 {{- if .Values.useSSL }}
               scheme: HTTPS
-              port: 443
-{{- else }}
-              port: 80
 {{- end }}
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
@@ -221,11 +226,15 @@ spec:
 {{- if .Values.useSSL }}
             - name: RUCIO_ENABLE_SSL
               value: "True"
+            - name: RUCIO_HEALTH_CHECK_PORT
+              value: "444"
             - name: OPENSSL_ALLOW_PROXY_CERTS
               value: "1"
 {{- else }}
             - name: RUCIO_ENABLE_SSL
               value: "False"
+            - name: RUCIO_HEALTH_CHECK_PORT
+              value: "81"
 {{- end }}
 {{- if .Values.monitoring.enabled }}
             - name: RUCIO_METRICS_PORT
