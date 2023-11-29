@@ -194,9 +194,11 @@ spec:
           readinessProbe:
             httpGet:
               path: /ping
-              port: health
 {{- if .Values.useSSL }}
+              port: 444
               scheme: HTTPS
+{{- else }}
+              port: 81
 {{- end }}
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
@@ -206,7 +208,10 @@ spec:
               path: /ping
               port: health
 {{- if .Values.useSSL }}
+              port: 444
               scheme: HTTPS
+{{- else }}
+              port: 81
 {{- end }}
             initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
