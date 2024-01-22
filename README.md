@@ -40,5 +40,4 @@ For details on installing a particular chart, see the README.md in that portion 
 
 ## Getting Support
 
-If you are looking for support, please contact our mailing list rucio-users@googlegroups.com
-or join us on our [slack support](<https://rucio.slack.com/messages/#support>) channel.
+If you are looking for support, please contact us via one of our [official channels](https://rucio.cern.ch/documentation/contact_us/).
