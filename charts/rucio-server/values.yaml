@@ -68,6 +68,8 @@ logFormat: '[%{%Y-%m-%d %H:%M:%S}t]\t%v\t%h\t%{X-Forwarded-For}i\t%{X-Rucio-Requ
 
 monitoring:
   enabled: false
+  # default to true to preserve chart behavior
+  serviceMonitorEnabled: true
   exporterPort: 8080
   targetPort: 8080
   nativeMetricsPort: 8081

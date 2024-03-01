@@ -1,5 +1,5 @@
 {{- if gt .Values.replicaCount 0.0 -}}
-{{- if .Values.monitoring.enabled }}
+{{- if and .Values.monitoring.enabled .Values.monitoring.serviceMonitorEnabled }}
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
