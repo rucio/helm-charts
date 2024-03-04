@@ -50,6 +50,7 @@ spec:
           secretName: {{ template "rucio.fullname" . }}.config.yaml
       - name: httpdlog
         emptyDir: {}
+      {{- if .Values.useDeprecatedImplicitSecrets }}
       {{- if eq .Values.service.useSSL true }}
       - name: hostcert
         secret:
@@ -60,6 +61,7 @@ spec:
       - name: cafile
         secret:
           secretName: {{ .Release.Name }}-cafile
+      {{- end }}
       {{- end }}
       {{- range $key, $val := .Values.secretMounts }}
       - name: {{ coalesce $val.volumeName $val.secretName $val.secretFullName }}
@@ -98,6 +100,7 @@ spec:
               subPath: common.json
             - name: httpdlog
               mountPath: /var/log/httpd
+            {{- if .Values.useDeprecatedImplicitSecrets }}
             {{- if .Values.service.useSSL }}
             - name: hostcert
               mountPath: /etc/grid-security/hostcert.pem
@@ -108,6 +111,7 @@ spec:
             - name: cafile
               mountPath: /etc/grid-security/ca.pem
               subPath: ca.pem
+            {{- end}}
             {{- end}}
             {{- range $key, $val := .Values.secretMounts }}
             - name: {{ coalesce $val.volumeName $val.secretName $val.secretFullName }}
