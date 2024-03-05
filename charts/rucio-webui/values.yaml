@@ -29,6 +29,9 @@ service:
   # Run the webui server on port 443 instead of 80 and accept X509 certificates
   useSSL: true
   # nodePort:
+  port: 443
+
+useDeprecatedImplicitSecrets: false
 
 ingress:
   enabled: false
@@ -39,6 +42,8 @@ ingress:
   path: /
   hosts: []
   #   - my.rucio.test
+  tls:
+    - secretName: rucio-webui.tls-secret
 
 secretMounts: []
 # - volumeName: gcssecret
