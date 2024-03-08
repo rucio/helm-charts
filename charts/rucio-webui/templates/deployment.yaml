@@ -50,7 +50,7 @@ spec:
           secretName: {{ template "rucio.fullname" . }}.config.yaml
       - name: httpdlog
         emptyDir: {}
-      {{- if eq .Values.service.useSSL true }}
+      {{- if eq .Values.useSSL true }}
       - name: hostcert
         secret:
           secretName: {{ .Release.Name }}-hostcert
@@ -87,18 +87,15 @@ spec:
             - name: http
               containerPort: 80
               protocol: TCP
-            {{- if .Values.service.useSSL }}
+            {{- if .Values.useSSL }}
             - name: https
               containerPort: 443
               protocol: TCP
             {{- end }}
           volumeMounts:
-            - name: config
-              mountPath: /opt/rucio/etc/conf.d/10_common.json
-              subPath: common.json
             - name: httpdlog
               mountPath: /var/log/httpd
-            {{- if .Values.service.useSSL }}
+            {{- if .Values.useSSL }}
             - name: hostcert
               mountPath: /etc/grid-security/hostcert.pem
               subPath: hostcert.pem
@@ -123,19 +120,19 @@ spec:
             - name: RUCIO_HTTPD_{{ $key | snakecase | upper }}
               value: {{ $val | quote }}
             {{- end }}
-            {{- range $key, $val := .Values.config.httpdWebui }}
-            - name: RUCIO_{{ $key | snakecase | upper }}
+            {{- range $key, $val := .Values.config.webui }}
+            - name: RUCIO_WEBUI_{{ $key | snakecase | upper }}
               value: {{ $val | quote }}
             {{- end }}
-            {{ range $i, $provider := .Values.config.oidcProviders }}
-            {{- range $key, $val := $provider }}
-            - name: RUCIO_CFG_OIDC_REACT_APP_{{ $key | snakecase | upper }}_{{ $i }}
+            {{ range $provider, $data := .Values.config.oidc_providers }}
+            {{- range $key, $val := $data }}
+            - name: RUCIO_WEBUI_OIDC_PROVIDER_{{ $provider | snakecase | upper }}_{{ $key | snakecase | upper}}
               value: {{ $val | quote }}
             {{- end }}
             {{- end }}
-            {{- range $key, $val := .Values.config.react }}
-            {{- if and (ne $key "rucioHost") (ne $key "rucioAuthHost") }}
-            - name: {{ $key | upper }}
+            {{ range $vo, $data := .Values.config.vo }}
+            {{- range $key, $val := $data }}
+            - name: RUCIO_WEBUI_VO_{{ $vo | snakecase | upper }}_{{ $key | snakecase | upper}}
               value: {{ $val | quote }}
             {{- end }}
             {{- end }}
@@ -143,19 +140,21 @@ spec:
             - name: {{ $key1 | upper }}
               value: "{{ $val1  }}"
             {{- end}}
-            - name: RUCIO_HOST
-              value: {{ required "A valid rucioHost value pointing to the rucio server is required" .Values.config.react.rucioHost }}
-            - name: RUCIO_AUTH_HOST
-              value: {{ required "A valid rucioAuthHost value pointing to the rucio auth server is required" .Values.config.react.rucioAuthHost }}
-            - name: RUCIO_OVERRIDE_CONFIGS
-              value: "/opt/rucio/etc/conf.d/"
+            - name: RUCIO_WEBUI_RUCIO_HOST
+              value: {{ required "A valid rucioHost value pointing to the rucio server is required" .Values.config.webui.rucio_host }}
+            - name: RUCIO_WEBUI_RUCIO_AUTH_HOST
+              value: {{ required "A valid rucioAuthHost value pointing to the rucio auth server is required" .Values.config.webui.rucio_auth_host }}
+            - name: RUCIO_LOG_LEVEL
+              value: "INFO"
+            - name: RUCIO_ENABLE_LOGS
+              value: "True"
             - name: RUCIO_LOG_FORMAT
               value: '[%{%Y-%m-%d %H:%M:%S}t]\t%v\t%h\t%{X-Forwarded-For}i\t%{X-Rucio-RequestId}i\t%>s\t%I\t%B\t%D\t\"%r\"\t\"%{X-Rucio-Auth-Token}i\"\t\"%{User-Agent}i\"\t%{X-Rucio-Script}i'
-          {{- if not .Values.service.useSSL }}
-            - name: RUCIO_ENABLE_SSL
+          {{- if not .Values.useSSL }}
+            - name: RUCIO_WEBUI_ENABLE_SSL
               value: "False"
           {{- else }}
-            - name: RUCIO_ENABLE_SSL
+            - name: RUCIO_WEBUI_ENABLE_SSL
               value: "True"
           {{- end }}
           resources:
@@ -164,7 +163,7 @@ spec:
       imagePullSecrets:
 {{ toYaml . | indent 6 }}
 {{- end}}
-    {{- with .Values.nodeSelector }}
+{{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
     {{- end }}

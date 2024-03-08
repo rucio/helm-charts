@@ -1,7 +1,7 @@
 name: rucio-webui
 version: 34.0.0
 apiVersion: v1
-description: A Helm chart to deploy the new webui (2.0) servers for Rucio
+description: A Helm chart to deploy the new Rucio Webui 
 keywords:
   - data-management
   - science
