@@ -13,14 +13,14 @@ exposeErrorLogs: true
 service:
   type: NodePort
   # Run the webui server on port 443 instead of 80 and accept X509 certificates and proxies
-  useSSL: false
-  port: 80
-  targetPort: http
-  nodePort: 30734
+  useSSL: true
+  port: 443
+  targetPort: https
+  nodePort: 30734 # for example
   annotations: []
 
 image:
-  repository: maany/rucio-ui
+  repository: rucio/rucio-ui
   tag: release-33.6.1
   pullPolicy: Always
 
@@ -36,9 +36,9 @@ strategy:
 minReadySeconds: 5
 
 proxy:
-  rucioProxy: "rucio-lb-prod.cern.ch"
+  rucioProxy: "<rucio-server-host>"
   rucioProxyScheme: "https"
-  rucioAuthProxy: "rucio-auth-prod.cern.ch"
+  rucioAuthProxy: "<rucio-auth-server-host>"
   rucioAuthProxyScheme: "https"
 
 ingress:
@@ -84,6 +84,7 @@ secretMounts:
 ## values used to configure apache
 httpd_config:
   legacy_dn: "False"
+  rucio_hostname: "my-rucio-ui.example.com"
   # mpm_mode: "event"
   # start_servers: "1"
   # min_spare_threads: "1"
