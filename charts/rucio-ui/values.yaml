@@ -13,14 +13,15 @@ exposeErrorLogs: true
 service:
   type: NodePort
   # Run the webui server on port 443 instead of 80 and accept X509 certificates and proxies
-  useSSL: true
-  port: 443
-  targetPort: https
-  portName: https
+  useSSL: false
+  port: 80
+  targetPort: http
+  nodePort: 30734
+  annotations: []
 
 image:
-  repository: rucio/rucio-ui
-  tag: release-1.21.12
+  repository: maany/rucio-ui
+  tag: release-33.6.1
   pullPolicy: Always
 
 imagePullSecrets: []
@@ -35,20 +36,46 @@ strategy:
 minReadySeconds: 5
 
 proxy:
-  rucioProxy: ""
-  # rucioProxyScheme: "https"
-  rucioAuthProxy: ""
-  # rucioAuthProxyScheme: "https"
+  rucioProxy: "rucio-lb-prod.cern.ch"
+  rucioProxyScheme: "https"
+  rucioAuthProxy: "rucio-auth-prod.cern.ch"
+  rucioAuthProxyScheme: "https"
 
 ingress:
   enabled: false
   # ingressClassName: traefik
   annotations: {}
+    # traefik.ingress.kubernetes.io/frontend-entry-points: http
+    # traefik.ingress.kubernetes.io/redirect-entry-point: https
   path: /
   hosts: []
   #   - my.rucio.test
+  tls:
+    - secretName: rucio-server.tls-secret
+  secrets:
+  ## If you're providing your own certificates, please use this to add the certificates as secrets
+  ## key and certificate should start with -----BEGIN CERTIFICATE----- or
+  ## -----BEGIN RSA PRIVATE KEY-----
+  ##
+  ## name should line up with a tlsSecret set further up
+  ## If you're using kube-lego, this is unneeded, as it will create the secret for you if it is not set
+  ##
+  ## It is also possible to create and manage the certificates outside of this helm chart
+  ## Please see README.md for more information
+  # - name: rucio-server.tls-secret
+  #   key: |+
+  #     -----BEGIN RSA PRIVATE KEY-----
+  #     -----END RSA PRIVATE KEY-----
+  #   certificate: |+
+  #     -----BEGIN CERTIFICATE-----
+  #     -----END CERTIFICATE-----
 
-secretMounts: {}
+
+## Additional secrets to be mounted as files in the ui container.
+## Use this to mount certificates, ca-files for httpd.
+## You can also use this to mount sections of rucio.cfg file. In this case, the mount path
+## should be in the /opt/rucio/etc/conf.d/<file_name>.cfg format.
+secretMounts:
 # - volumeName: gcssecret
 #   secretName: gcssecret
 #   mountPath: /opt/rucio/etc/gcs_rucio.json
@@ -109,10 +136,9 @@ config:
     ## config.permission.support_rucio: (default "https://github.com/rucio/rucio/issues/")
     # support_rucio: "https://github.com/rucio/rucio/issues/"
 
-  ## Only necessary for webui deployments
-  # webui:
-    ## config.webui.usercert:  (default "/opt/rucio/etc/usercert_with_key.pem")
-    # usercert: "/opt/rucio/etc/usercert_with_key.pem"
+# Additional environment variables to be set in the container.
+# For a list, please see: https://github.com/rucio/containers/blob/master/ui/README.md 
+optional_config: {}
 
 resources: {}
   # limits:
