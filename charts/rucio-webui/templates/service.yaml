@@ -22,6 +22,9 @@ spec:
   selector:
     app: {{ template "rucio.name" . }}
     release: {{ .Release.Name }}
+{{- if .Values.service.nodePort }}
+  nodePort: {{ .Values.service.nodePort }}
+{{- end }}
 {{- if .Values.service.loadBalancerIP }}
   loadBalancerIP: {{ .Values.service.loadBalancerIP }}
 {{- end }}
