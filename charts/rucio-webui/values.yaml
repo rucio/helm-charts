@@ -29,7 +29,8 @@ service:
   targetPort: 80
   protocol: TCP
   name: http
-  annotations: {}
+  annotations:
+    {}
     # loadbalancer.openstack.org/network-id: "<id>"
     # service.beta.kubernetes.io/openstack-internal-load-balancer: "true"
     # loadbalancer.openstack.org/cascade-delete: "false"
@@ -81,13 +82,13 @@ config:
     hostname: "webui-host"
     project_url: "https://rucio.cern.ch"
     multivo_enabled: "False"
-    # A csv string of vos
+    # A csv string of vos containing their short names. For example: "def,atl,cms"
     vo_list: "def"
     vo_default: "def"
     oidc_enabled: "False"
-    # A csv string of oidc providers
+    # A csv string of names of supported oidc providers that will be configured in the webui. For example: "cern,indico"
     oidc_providers: ""
-  
+
   oidc_providers:
     cern:
       client_id: ""
@@ -103,6 +104,15 @@ config:
       name: "default"
       oidc_enabled: "False"
       oidc_providers: ""
+    # Example of a second VO
+    # atl:
+    #   name: "atlas"
+    #   oidc_enabled: "False"
+    #   oidc_providers: ""
+
+  logs:
+    exposeHttpdLogs: true
+    exposeWebuiLogs: true
 
 # additional environment variables to set in the webui container
 optionalConfig: {}

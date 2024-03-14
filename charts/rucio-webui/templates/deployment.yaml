@@ -50,6 +50,8 @@ spec:
           secretName: {{ template "rucio.fullname" . }}.config.yaml
       - name: httpdlog
         emptyDir: {}
+      - name: webui-log
+        emptyDir: {}
       {{- if eq .Values.useSSL true }}
       - name: hostcert
         secret:
@@ -72,13 +74,21 @@ spec:
           claimName: {{ $val.name }}
       {{- end}}
       containers:
-      {{- if .Values.exposeErrorLogs }}
+      {{- if .Values.config.logs.exposeHttpdLogs }}
         - name: httpd-error-log
           image: busybox
           args: [/bin/sh, -c, 'tail -n+1 -F /var/log/httpd/error_log']
           volumeMounts:
           - name: httpdlog
             mountPath: /var/log/httpd
+      {{- end }}
+      {{- if .Values.config.logs.exposeWebuiLogs }}
+        - name: webui-log
+          image: busybox
+          args: [/bin/sh, -c, 'tail -n+1 -F /var/log/webui/rucio-webui-out.log /var/log/webui/rucio-webui-error.log']
+          volumeMounts:
+          - name: webui-log
+            mountPath: /var/log/webui/
       {{- end }}
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -93,8 +103,14 @@ spec:
               protocol: TCP
             {{- end }}
           volumeMounts:
+            {{- if .Values.config.logs.exposeHttpdLogs }}
             - name: httpdlog
               mountPath: /var/log/httpd
+            {{- end }}
+            {{- if .Values.config.logs.exposeWebuiLogs }}
+            - name: webui-log
+              mountPath: /root/.pm2/logs/
+            {{- end }}
             {{- if .Values.useSSL }}
             - name: hostcert
               mountPath: /etc/grid-security/hostcert.pem
