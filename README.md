@@ -28,13 +28,13 @@ Add the Rucio Helm repository to your local Helm installation then you can insta
 ## Chart Versioning
 
 The latest chart version is always recommended for use with the latest Rucio version. 
-The Rucio Helm Chart versions are correlated with Rucio versions at the minor verion level; each product follows it's own patch versioning.
-I. e., Helm Chart 1.27.1 contains Helm improvements over chart 1.27.0 and both are compatible with any Rucio 1.27.Z release.
+The Rucio Helm Chart versions are correlated with Rucio versions at the major verion level; each product follows it's own patch versioning.
+I. e., Helm Chart 34.0.3 contains Helm improvements over chart 34.0.2 and both are compatible with any Rucio 34.Y.Z release.
 
 Developers: Please make pull requests for charts for the current Rucio version against the `main` or `master` branch. 
-Fixes which are relevant to previous versions may also have pull requests made against the relevant release-X.Y (e.g. release-1.26) branch.
+Fixes which are relevant to previous versions may also have pull requests made against the relevant release-X (e.g. release-34) branch.
 Patches against old, non-LTS Rucio releases will be accepted, but no effort will be made to make sure all fixes are made.
-For LTS releases (currently 1.23.Z and 1.26.Z), the charts for those releases should be kept up to date.
+For LTS releases (currently 1.29 and 32), the charts for those releases should be kept up to date.
 
 For details on installing a particular chart, see the README.md in that portion of this repository.
 
