@@ -21,7 +21,7 @@ service:
 
 image:
   repository: rucio/rucio-ui
-  tag: release-33.6.1
+  tag: release-34.0.0
   pullPolicy: Always
 
 imagePullSecrets: []
