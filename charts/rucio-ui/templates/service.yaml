@@ -34,7 +34,7 @@ spec:
 {{- if .Values.service.externalTrafficPolicy }}
   externalTrafficPolicy: {{ .Values.service.externalTrafficPolicy }}
 {{- end }}
-{{- if not .Values.service.allocateLoadBalancerNodePorts }}
+{{- if .Values.service.allocateLoadBalancerNodePorts }}
   allocateLoadBalancerNodePorts: {{ .Values.service.allocateLoadBalancerNodePorts }}
 {{- end }}
 {{- end }}
