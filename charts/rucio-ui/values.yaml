@@ -11,13 +11,22 @@ useDeprecatedImplicitSecrets: true
 exposeErrorLogs: true
 
 service:
-  type: NodePort
-  # Run the webui server on port 443 instead of 80 and accept X509 certificates and proxies
-  useSSL: true
-  port: 443
-  targetPort: https
-  nodePort: 30734
-  annotations: []
+  useSSL: false # Run the webui server on port 443 instead of 80 and accept X509 certificates and proxies
+  type: ClusterIP # type of service to create, supports NodePort, LoadBalancer, and ClusterIP
+  port: 80
+  targetPort: 80
+  protocol: TCP
+  name: http
+  # nodePort: 30734 # if service type is NodePort, set the nodePort value
+  annotations:
+    {}
+    # loadbalancer.openstack.org/network-id: "<id>"
+    # service.beta.kubernetes.io/openstack-internal-load-balancer: "true"
+    # loadbalancer.openstack.org/cascade-delete: "false"
+  loadBalancerIP: null
+  loadBalancerClass: null
+  externalTrafficPolicy: null
+  allocateLoadBalancerNodePorts: true
 
 image:
   repository: rucio/rucio-ui
