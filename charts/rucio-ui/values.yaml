@@ -11,13 +11,16 @@ useDeprecatedImplicitSecrets: true
 exposeErrorLogs: true
 
 service:
-  useSSL: false # Run the webui server on port 443 instead of 80 and accept X509 certificates and proxies
-  type: ClusterIP # type of service to create, supports NodePort, LoadBalancer, and ClusterIP
+  # Run the webui server on port 443 instead of 80 and accept X509 certificates and proxies
+  useSSL: false
+  # Type of service to create, supports NodePort, LoadBalancer, and ClusterIP
+  type: ClusterIP
   port: 80
   targetPort: 80
   protocol: TCP
   name: http
-  # nodePort: 30734 # if service type is NodePort, set the nodePort value
+  # if service type is NodePort, set the nodePort value
+  # nodePort: 30734
   annotations:
     {}
     # loadbalancer.openstack.org/network-id: "<id>"
