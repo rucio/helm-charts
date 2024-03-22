@@ -13,13 +13,28 @@ metadata:
 {{ toYaml . | indent 4 }}
 {{- end }}
 spec:
-  type: {{ $.Values.service.type }}
+  type: {{ .Values.service.type }}
   ports:
-    - port: {{ $.Values.service.port }}
-      targetPort: {{ $.Values.service.targetPort }}
-      protocol: TCP
-      name: {{ $.Values.service.portName }}
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}
+      protocol: {{ .Values.service.protocol }}
+      name: {{ .Values.service.name }}
+{{- if .Values.service.nodePort }}
+      nodePort: {{ .Values.service.nodePort }}
+{{- end }}
   selector:
     app: {{ template "rucio.name" . }}
     release: {{ .Release.Name }}
+{{- if .Values.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.service.loadBalancerIP }}
+{{- end }}
+{{- if .Values.service.loadBalancerClass }}
+  loadBalancerClass: {{ .Values.service.loadBalancerClass }}
+{{- end }}
+{{- if .Values.service.externalTrafficPolicy }}
+  externalTrafficPolicy: {{ .Values.service.externalTrafficPolicy }}
+{{- end }}
+{{- if .Values.service.allocateLoadBalancerNodePorts }}
+  allocateLoadBalancerNodePorts: {{ .Values.service.allocateLoadBalancerNodePorts }}
+{{- end }}
 {{- end }}

@@ -1,9 +1,6 @@
-# Default values for rucio.
+# Default values for rucio webui.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-
-# When set, run extra busybox containers in the relevant pods to also expose the error logs
-exposeErrorLogs: True
 
 # replicaCount gives the number of server pods to run
 replicaCount: 1
@@ -18,17 +15,29 @@ minReadySeconds: 5
 
 image:
   repository: rucio/rucio-webui
-  tag: release-1.30.0
+  tag: release-33.0.0
   pullPolicy: Always
 
 imagePullSecrets: []
 # - name: docker-regcreds
 
+useSSL: true
+
 service:
-  type: NodePort
-  # Run the webui server on port 443 instead of 80 and accept X509 certificates
-  useSSL: true
-  # nodePort:
+  type: ClusterIP
+  port: 80
+  targetPort: 80
+  protocol: TCP
+  name: http
+  annotations:
+    {}
+    # loadbalancer.openstack.org/network-id: "<id>"
+    # service.beta.kubernetes.io/openstack-internal-load-balancer: "true"
+    # loadbalancer.openstack.org/cascade-delete: "false"
+  loadBalancerIP: null
+  loadBalancerClass: null
+  externalTrafficPolicy: null
+  allocateLoadBalancerNodePorts: true
 
 ingress:
   enabled: false
@@ -38,7 +47,6 @@ ingress:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
   path: /
   hosts: []
-  #   - my.rucio.test
 
 secretMounts: []
 # - volumeName: gcssecret
@@ -49,53 +57,69 @@ secretMounts: []
 config:
   ## values used to configure apache, sets environment variables in the webui container that begin with RUCIO_HTTPD_
   httpd:
-    legacy_dn: "False"
-    # mpm_mode: "event"
-    # start_servers: "1"
-    # min_spare_threads: "1"
-    # max_spare_threads: "20"
-    # threads_per_child: "5"
-    # max_clients: "20"
-    # max_requests_per_child: "8192"
-    # timeout: 300
-    # min_spare_servers: "1"
-    # max_spare_servers: "5"
-    # server_limit: "10"
-    # keep_alive: "On"
-    # keep_alive_timeout: "5"
-    # max_keep_alive_requests: "128"
-    # threads_limit: "128"
-    # max_request_workers: "1280"
-    # max_connections_per_child: "2048"
+    mpm_mode: "event"
+    start_servers: "1"
+    min_spare_threads: "1"
+    max_spare_threads: "20"
+    threads_per_child: "5"
+    max_clients: "20"
+    max_requests_per_child: "8192"
+    timeout: 300
+    min_spare_servers: "1"
+    max_spare_servers: "5"
+    server_limit: "10"
+    keep_alive: "On"
+    keep_alive_timeout: "5"
+    max_keep_alive_requests: "128"
+    threads_limit: "128"
+    max_request_workers: "1280"
+    max_connections_per_child: "2048"
 
   ## Rucio WebUI specific configuration for apache
-  httpdWebui:
-    hostname: kube-playground-7p7333rqr5xx-node-0.cern.ch
-    # server_admin:
-    logLevel: 'info'
+  webui:
+    rucio_host: "rucio-server"
+    rucio_auth_host: "rucio-server"
+    hostname: "webui-host"
+    project_url: "https://rucio.cern.ch"
+    multivo_enabled: "False"
+    # A csv string of vos containing their short names. For example: "def,atl,cms"
+    vo_list: "def"
+    vo_default: "def"
+    oidc_enabled: "False"
+    # A csv string of names of supported oidc providers that will be configured in the webui. For example: "cern,indico"
+    oidc_providers: ""
 
-  ## Configuration for OIDC providers
-  oidcProviders:  # []
-    - name: "CERN SSO"
-      clientId: "rucio-webui"
-      authorizationEndpoint: "https://login.cern.ch/adfs/oauth2/authorize"
-      tokenEndpoint: "https://login.cern.ch/adfs/oauth2/token"
-      redirectUri: "https://rucio-webui.cern.ch/auth/oidc/callback"
-      scopes: "openid profile email"
+  oidc_providers:
+    cern:
+      client_id: ""
+      client_secret: ""
+      authorization_url: ""
+      token_url: ""
+      refresh_token_url: ""
+      userinfo_url: ""
+      redirect_url: ""
 
-  ## Configuration for the WebUI React App
-  react:
-    rucioHost:
-    rucioAuthHost:
-    # webui_login_page_image_primary: "" Mount the image as secret and set the path here
-    # webui_login_page_image_secondary: "" Mount the image as secret and set the path here
+  vo:
+    def:
+      name: "default"
+      oidc_enabled: "False"
+      oidc_providers: ""
+    # Example of a second VO
+    # atl:
+    #   name: "atlas"
+    #   oidc_enabled: "False"
+    #   oidc_providers: ""
 
+  logs:
+    exposeHttpdLogs: true
+    exposeWebuiLogs: true
 
 # additional environment variables to set in the webui container
 optionalConfig: {}
 
+persistentVolumes: {}
 
-resources: {}
+resources:
   # limits:
   #  cpu: 100m
   #  memory: 128Mi
