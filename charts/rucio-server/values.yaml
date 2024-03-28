@@ -33,6 +33,7 @@ service:
   type: ClusterIP
   port: 80
   targetPort: 80
+  nodePort: null
   protocol: TCP
   name: http
   annotations: {}
