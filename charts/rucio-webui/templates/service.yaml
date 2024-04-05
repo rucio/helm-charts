@@ -19,12 +19,12 @@ spec:
       targetPort: {{ .Values.service.targetPort }}
       protocol: {{ .Values.service.protocol }}
       name: {{ .Values.service.name }}
+{{- if .Values.service.nodePort }}
+      nodePort: {{ .Values.service.nodePort }}
+{{- end }}
   selector:
     app: {{ template "rucio.name" . }}
     release: {{ .Release.Name }}
-{{- if .Values.service.nodePort }}
-  nodePort: {{ .Values.service.nodePort }}
-{{- end }}
 {{- if .Values.service.loadBalancerIP }}
   loadBalancerIP: {{ .Values.service.loadBalancerIP }}
 {{- end }}
