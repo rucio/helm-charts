@@ -155,7 +155,7 @@ automaticRestart:
     tag: latest
     pullPolicy: IfNotPresent
   schedule: "0 0 * * *"
-  selectorLabel: "'app in (rucio-server)'"
+  selectorLabel: "app=rucio-server"
   resources:
     limits:
       cpu: 500m
