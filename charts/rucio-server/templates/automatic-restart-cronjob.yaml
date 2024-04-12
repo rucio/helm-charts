@@ -19,7 +19,7 @@ spec:
                 - restart
                 - deployment
                 - --selector
-                - "'release in ({{ .Release.Name }}),'{{ .Values.automaticRestart.selectorLabel }}"
+                - "{{ .Values.automaticRestart.selectorLabel }}"
               resources:
 {{ toYaml .Values.automaticRestart.resources | indent 16 }}
           restartPolicy: OnFailure
