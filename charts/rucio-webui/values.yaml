@@ -39,6 +39,8 @@ service:
   externalTrafficPolicy: null
   allocateLoadBalancerNodePorts: true
 
+useDeprecatedImplicitSecrets: false
+
 ingress:
   enabled: false
   # ingressClassName: traefik
@@ -47,6 +49,8 @@ ingress:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
   path: /
   hosts: []
+  tls:
+    - secretName: rucio-webui.tls-secret
 
 secretMounts: []
 # - volumeName: gcssecret
