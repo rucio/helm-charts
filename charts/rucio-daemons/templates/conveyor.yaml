@@ -1,4 +1,4 @@
-{{- define "rucio-daemons.conveyor-deployement" }}
+{{- define "rucio-daemons.conveyor-deployment" }}
 {{- $app_label := printf "%s-%s" (include "rucio.name" .) .rucio_daemon }}
 ---
 apiVersion: v1
@@ -190,7 +190,7 @@ spec:
 {{- $args = set $args "component_values" .Values.conveyorFinisher }}
 {{- $args = set $args "component_count" .Values.conveyorFinisherCount }}
 {{- $args = set $args "daemon_args" (include "rucio-daemons.conveyor-finisher-daemon-args" .Values.conveyorFinisher) }}
-{{- include "rucio-daemons.conveyor-deployement" $args }}
+{{- include "rucio-daemons.conveyor-deployment" $args }}
 {{ end }}
 
 {{- define "rucio-daemons.conveyor-poller-daemon-args" -}}
@@ -202,7 +202,7 @@ spec:
 {{- $args = set $args "component_values" .Values.conveyorPoller}}
 {{- $args = set $args "component_count" .Values.conveyorPollerCount }}
 {{- $args = set $args "daemon_args" (include "rucio-daemons.conveyor-poller-daemon-args" .Values.conveyorPoller) }}
-{{- include "rucio-daemons.conveyor-deployement" $args }}
+{{- include "rucio-daemons.conveyor-deployment" $args }}
 {{ end }}
 
 {{- define "rucio-daemons.conveyor-preparer-daemon-args" -}}
@@ -214,7 +214,7 @@ spec:
 {{- $args = set $args "component_values" .Values.conveyorPreparer}}
 {{- $args = set $args "component_count" .Values.conveyorPreparerCount }}
 {{- $args = set $args "daemon_args" (include "rucio-daemons.conveyor-preparer-daemon-args" .Values.conveyorPreparer) }}
-{{- include "rucio-daemons.conveyor-deployement" $args }}
+{{- include "rucio-daemons.conveyor-deployment" $args }}
 {{ end }}
 
 {{- define "rucio-daemons.conveyor-receiver-daemon-args" -}}
@@ -226,7 +226,7 @@ spec:
 {{- $args = set $args "component_values" .Values.conveyorReceiver}}
 {{- $args = set $args "component_count" .Values.conveyorReceiverCount }}
 {{- $args = set $args "daemon_args" (include "rucio-daemons.conveyor-receiver-daemon-args" .Values.conveyorReceiver) }}
-{{- include "rucio-daemons.conveyor-deployement" $args }}
+{{- include "rucio-daemons.conveyor-deployment" $args }}
 {{ end }}
 
 {{- define "rucio-daemons.conveyor-stager-daemon-args" -}}
@@ -238,7 +238,7 @@ spec:
 {{- $args = set $args "component_values" .Values.conveyorStager}}
 {{- $args = set $args "component_count" .Values.conveyorStagerCount }}
 {{- $args = set $args "daemon_args" (include "rucio-daemons.conveyor-stager-daemon-args" .Values.conveyorStager) }}
-{{- include "rucio-daemons.conveyor-deployement" $args }}
+{{- include "rucio-daemons.conveyor-deployment" $args }}
 {{ end }}
 
 {{- define "rucio-daemons.conveyor-submitter-daemon-args" -}}
@@ -250,7 +250,7 @@ spec:
 {{- $args = set $args "component_values" .Values.conveyorTransferSubmitter}}
 {{- $args = set $args "component_count" .Values.conveyorTransferSubmitterCount }}
 {{- $args = set $args "daemon_args" (include "rucio-daemons.conveyor-submitter-daemon-args" .Values.conveyorTransferSubmitter) }}
-{{- include "rucio-daemons.conveyor-deployement" $args }}
+{{- include "rucio-daemons.conveyor-deployment" $args }}
 {{ end }}
 
 {{- define "rucio-daemons.conveyor-throttler-daemon-args" -}}
@@ -262,5 +262,5 @@ spec:
 {{- $args = set $args "component_values" .Values.conveyorThrottler}}
 {{- $args = set $args "component_count" .Values.conveyorThrottlerCount }}
 {{- $args = set $args "daemon_args" (include "rucio-daemons.conveyor-throttler-daemon-args" .Values.conveyorThrottler) }}
-{{- include "rucio-daemons.conveyor-deployement" $args }}
+{{- include "rucio-daemons.conveyor-deployment" $args }}
 {{ end }}

@@ -1,4 +1,4 @@
-{{- define "rucio-daemons.abacus-deployement" }}
+{{- define "rucio-daemons.abacus-deployment" }}
 {{- $app_label := printf "%s-%s" (include "rucio.name" .) .rucio_daemon }}
 ---
 apiVersion: v1
@@ -189,7 +189,7 @@ spec:
 {{- $args = set $args "component_values" .Values.abacusAccount }}
 {{- $args = set $args "component_count" .Values.abacusAccountCount }}
 {{- $args = set $args "daemon_args" (include "rucio-daemons.abacus-account-daemon-args" .Values.abacusAccount) }}
-{{- include "rucio-daemons.abacus-deployement" $args }}
+{{- include "rucio-daemons.abacus-deployment" $args }}
 {{ end }}
 
 {{- define "rucio-daemons.abacus-collection-replica-daemon-args" -}}
@@ -201,7 +201,7 @@ spec:
 {{- $args = set $args "component_values" .Values.abacusCollectionReplica }}
 {{- $args = set $args "component_count" .Values.abacusCollectionReplicaCount }}
 {{- $args = set $args "daemon_args" (include "rucio-daemons.abacus-collection-replica-daemon-args" .Values.abacusCollectionReplica) }}
-{{- include "rucio-daemons.abacus-deployement" $args }}
+{{- include "rucio-daemons.abacus-deployment" $args }}
 {{ end }}
 
 {{- define "rucio-daemons.abacus-rse-daemon-args" -}}
@@ -213,5 +213,5 @@ spec:
 {{- $args = set $args "component_values" .Values.abacusRse }}
 {{- $args = set $args "component_count" .Values.abacusRseCount }}
 {{- $args = set $args "daemon_args" (include "rucio-daemons.abacus-rse-daemon-args" .Values.abacusRse) }}
-{{- include "rucio-daemons.abacus-deployement" $args }}
+{{- include "rucio-daemons.abacus-deployment" $args }}
 {{ end }}

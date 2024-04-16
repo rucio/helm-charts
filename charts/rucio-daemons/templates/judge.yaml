@@ -1,4 +1,4 @@
-{{- define "rucio-daemons.judge-deployement" }}
+{{- define "rucio-daemons.judge-deployment" }}
 {{- $app_label := printf "%s-%s" (include "rucio.name" .) .rucio_daemon }}
 ---
 apiVersion: v1
@@ -190,7 +190,7 @@ spec:
 {{- $args = set $args "component_values" .Values.judgeCleaner }}
 {{- $args = set $args "component_count" .Values.judgeCleanerCount }}
 {{- $args = set $args "daemon_args" (include "rucio-daemons.judge-cleaner-daemon-args" .Values.judgeCleaner) }}
-{{- include "rucio-daemons.judge-deployement" $args }}
+{{- include "rucio-daemons.judge-deployment" $args }}
 {{ end }}
 
 {{- define "rucio-daemons.judge-evaluator-daemon-args" -}}
@@ -202,7 +202,7 @@ spec:
 {{- $args = set $args "component_values" .Values.judgeEvaluator }}
 {{- $args = set $args "component_count" .Values.judgeEvaluatorCount }}
 {{- $args = set $args "daemon_args" (include "rucio-daemons.judge-evaluator-daemon-args" .Values.judgeEvaluator) }}
-{{- include "rucio-daemons.judge-deployement" $args }}
+{{- include "rucio-daemons.judge-deployment" $args }}
 {{ end }}
 
 {{- define "rucio-daemons.judge-injector-daemon-args" -}}
@@ -214,7 +214,7 @@ spec:
 {{- $args = set $args "component_values" .Values.judgeInjector }}
 {{- $args = set $args "component_count" .Values.judgeInjectorCount }}
 {{- $args = set $args "daemon_args" (include "rucio-daemons.judge-injector-daemon-args" .Values.judgeInjector) }}
-{{- include "rucio-daemons.judge-deployement" $args }}
+{{- include "rucio-daemons.judge-deployment" $args }}
 {{ end }}
 
 {{- define "rucio-daemons.judge-repairer-daemon-args" -}}
@@ -226,5 +226,5 @@ spec:
 {{- $args = set $args "component_values" .Values.judgeRepairer }}
 {{- $args = set $args "component_count" .Values.judgeRepairerCount }}
 {{- $args = set $args "daemon_args" (include "rucio-daemons.judge-repairer-daemon-args" .Values.judgeRepairer) }}
-{{- include "rucio-daemons.judge-deployement" $args }}
+{{- include "rucio-daemons.judge-deployment" $args }}
 {{ end }}
