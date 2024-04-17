@@ -1,4 +1,4 @@
-{{- define "rucio-daemons.minos-deployement" }}
+{{- define "rucio-daemons.minos-deployment" }}
 {{- $app_label := printf "%s-%s" (include "rucio.name" .) .rucio_daemon }}
 ---
 apiVersion: v1
@@ -190,7 +190,7 @@ spec:
 {{- $args = set $args "component_values" .Values.minos }}
 {{- $args = set $args "component_count" .Values.minosCount }}
 {{- $args = set $args "daemon_args" (include "rucio-daemons.minos-daemon-args" .Values.minos) }}
-{{- include "rucio-daemons.minos-deployement" $args }}
+{{- include "rucio-daemons.minos-deployment" $args }}
 {{ end }}
 
 {{- define "rucio-daemons.minos-temporary-expiration-daemon-args" -}}
@@ -202,5 +202,5 @@ spec:
 {{- $args = set $args "component_values" .Values.minosTemporaryExpiration }}
 {{- $args = set $args "component_count" .Values.minosTemporaryExpirationCount }}
 {{- $args = set $args "daemon_args" (include "rucio-daemons.minos-temporary-expiration-daemon-args" .Values.minosTemporaryExpiration) }}
-{{- include "rucio-daemons.minos-deployement" $args }}
+{{- include "rucio-daemons.minos-deployment" $args }}
 {{ end }}
