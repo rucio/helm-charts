@@ -23,7 +23,7 @@ useSSL: false
 
 image:
   repository: rucio/rucio-server
-  tag: release-1.24.3
+  tag: release-34.2.0
   pullPolicy: Always
 
 imagePullSecrets: []
@@ -109,7 +109,7 @@ ftsRenewal:
   schedule: "42 */6 * * *"
   image:
     repository: rucio/fts-cron
-    tag: latest
+    tag: 34.2.0
     pullPolicy: Always
   servers: "https://fts3-devel.cern.ch:8446,https://cmsfts3.fnal.gov:8446,https://fts3.cern.ch:8446,https://lcgfts3.gridpp.rl.ac.uk:8446,https://fts3-pilot.cern.ch:8446"
   script: 'default'  # one of: 'default', 'atlas', 'dteam', 'multi_vo', 'tutorial', 'escape'. The associated scripts can be found here: https://github.com/rucio/containers/tree/master/fts-cron
@@ -152,7 +152,7 @@ automaticRestart:
   enabled: 0
   image:
     repository: bitnami/kubectl
-    tag: latest
+    tag: 1.29.4
     pullPolicy: IfNotPresent
   schedule: "0 0 * * *"
   selectorLabel: "app=rucio-server"
