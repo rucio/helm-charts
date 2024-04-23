@@ -114,10 +114,6 @@ In case you want to add regular restarts for your pods there a is a cronjob avai
 
     automaticRestart:
       enabled: 1
-      image:
-        repository: bitnami/kubectl
-        tag: 1.18
-        pullPolicy: IfNotPresent
       schedule: "15 1 * * *"
 
 This will run according to the given schedule and do a `kubectl rollout restart deployment` for all daemons.
