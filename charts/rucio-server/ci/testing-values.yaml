@@ -7,10 +7,6 @@ image:
 
 automaticRestart:
   enabled: 1
-  image:
-    repository: bitnami/kubectl
-    tag: 1.18
-    pullPolicy: IfNotPresent
   schedule: "5 1 * * *"
 
 service:
