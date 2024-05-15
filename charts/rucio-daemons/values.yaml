@@ -459,7 +459,7 @@ automaticRestart:
     tag: 1.29.4
     pullPolicy: IfNotPresent
   schedule: "0 0 * * *"
-  selectorLabel: "app-group=rucio-daemons"
+  selectorLabel: app-group=rucio-daemons
   resources:
     limits:
       cpu: 500m
