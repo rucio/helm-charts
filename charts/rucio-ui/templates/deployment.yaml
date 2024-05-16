@@ -156,6 +156,8 @@ spec:
             - name: RUCIO_AUTH_PROXY_SCHEME
               value: {{ .Values.proxy.rucioAuthProxyScheme }}
 {{- end }}
+            - name: RUCIO_DEFINE_ALIASES
+              value: "True"
             - name: RUCIO_HOSTNAME
               value: {{ .Values.httpd_config.rucio_hostname }}
             - name: RUCIO_OVERRIDE_CONFIGS
