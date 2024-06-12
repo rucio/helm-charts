@@ -155,6 +155,14 @@ config:
 # For a list, please see: https://github.com/rucio/containers/blob/master/ui/README.md
 optional_config: {}
 
+# Additional environment, copy-pasted as-is, which, for example, allows environment variables to refer to secrets
+additionalEnvs: []
+# - name: RUCIO_CFG_DATABASE_DEFAULT
+#   valueFrom:
+#     secretKeyRef:
+#       name: rucio-server
+#       key: RUCIO_CFG_DATABASE_DEFAULT
+
 resources:
   {}
   # limits:
