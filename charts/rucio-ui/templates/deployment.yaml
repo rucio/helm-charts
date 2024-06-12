@@ -169,6 +169,9 @@ spec:
             - name: RUCIO_ENABLE_SSL
               value: "True"
 {{- end }}
+{{- with .Values.additionalEnvs }}
+{{ toYaml . | indent 12 }}
+{{- end}}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
 {{- with .Values.imagePullSecrets }}
