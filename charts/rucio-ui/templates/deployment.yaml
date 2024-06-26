@@ -79,6 +79,16 @@ spec:
         persistentVolumeClaim:
           claimName: {{ $val.name }}
       {{- end}}
+      {{- range $collection := tuple .Values.hostPathMounts }}
+      {{- range $key, $val := $collection }}
+      - name: {{ $val.volumeName | default (printf "a%s" ($val.mountPath | sha1sum)) }}
+        hostPath:
+          {{- if $val.type }}
+          type: {{ $val.type }}
+          {{- end}}
+          path: {{ $val.hostPath }}
+      {{- end}}
+      {{- end}}
       containers:
 {{- if .Values.exposeErrorLogs }}
         - name: httpd-error-log
