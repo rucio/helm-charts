@@ -132,6 +132,13 @@ spec:
               subPath: ca.pem
             {{- end}}
             {{- end}}
+            {{- range $collection := tuple .Values.hostPathMounts }}
+            {{- range $key, $val := $collection }}
+            - name: {{ $val.volumeName | default (printf "a%s" ($val.mountPath | sha1sum)) }}
+              mountPath: {{ $val.mountPath }}
+              readOnly: {{ $val.readOnly | default false }}
+            {{- end}}
+            {{- end}}
             {{- range $key, $val := .Values.secretMounts }}
             - name: {{ coalesce $val.volumeName $val.secretName $val.secretFullName }}
               mountPath: {{ $val.mountPath }}
