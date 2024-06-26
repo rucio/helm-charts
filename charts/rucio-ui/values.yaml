@@ -94,6 +94,12 @@ secretMounts:
 #   mountPath: /opt/rucio/etc/gcs_rucio.json
 #   subPath: gcs_rucio.json
 
+# hostPathMounts: []
+  # - volumeName: igtf-ca
+  #   hostPath: /etc/grid-security/certificates/
+  #   mountPath: /etc/grid-security/certificates/
+  #   readOnly: true
+  #   type: DirectoryOrCreate
 ## values used to configure apache
 httpd_config:
   legacy_dn: "False"
