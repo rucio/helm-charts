@@ -75,6 +75,16 @@ spec:
         persistentVolumeClaim:
           claimName: {{ $val.name }}
       {{- end}}
+      {{- range $collection := tuple .Values.hostPathMounts }}
+      {{- range $key, $val := $collection }}
+      - name: {{ $val.volumeName | default (printf "a%s" ($val.mountPath | sha1sum)) }}
+        hostPath:
+          {{- if $val.type }}
+          type: {{ $val.type }}
+          {{- end}}
+          path: {{ $val.hostPath }}
+      {{- end}}
+      {{- end}}
       containers:
       {{- if .Values.config.logs.exposeHttpdLogs }}
         - name: httpd-error-log
@@ -131,6 +141,13 @@ spec:
               mountPath: {{ $val.mountPath }}
               subPath: {{ $val.subPath }}
             {{- end}}
+            {{- range $collection := tuple .Values.hostPathMounts }}
+            {{- range $key, $val := $collection }}
+            - name: {{ $val.volumeName | default (printf "a%s" ($val.mountPath | sha1sum)) }}
+              mountPath: {{ $val.mountPath }}
+              readOnly: {{ $val.readOnly | default false }}
+            {{- end}}
+            {{- end}}
             {{- range $key, $val := .Values.persistentVolumes }}
             - name: {{ $key }}
               mountPath: {{ $val.mountPath }}
@@ -177,6 +194,9 @@ spec:
             - name: RUCIO_WEBUI_ENABLE_SSL
               value: "True"
           {{- end }}
+{{- with .Values.additionalEnvs }}
+{{ toYaml . | indent 12 }}
+{{- end}}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
 {{- with .Values.imagePullSecrets }}
