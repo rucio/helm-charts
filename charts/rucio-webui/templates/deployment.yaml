@@ -177,10 +177,6 @@ spec:
             - name: {{ $key1 | upper }}
               value: "{{ $val1  }}"
             {{- end}}
-            - name: RUCIO_WEBUI_RUCIO_HOST
-              value: {{ required "A valid rucioHost value pointing to the rucio server is required" .Values.config.webui.rucio_host }}
-            - name: RUCIO_WEBUI_RUCIO_AUTH_HOST
-              value: {{ required "A valid rucioAuthHost value pointing to the rucio auth server is required" .Values.config.webui.rucio_auth_host }}
             - name: RUCIO_LOG_LEVEL
               value: "INFO"
             - name: RUCIO_ENABLE_LOGS
