@@ -61,6 +61,7 @@ secretMounts: []
 config:
   ## values used to configure apache, sets environment variables in the webui container that begin with RUCIO_HTTPD_
   httpd:
+    # server_admin: "webmaster@localhost" 
     mpm_mode: "event"
     start_servers: "1"
     min_spare_threads: "1"
@@ -81,9 +82,9 @@ config:
 
   ## Rucio WebUI specific configuration for apache
   webui:
-    rucio_host: "rucio-server"
-    rucio_auth_host: "rucio-server"
-    hostname: "webui-host"
+    rucio_host: "rucio-server" # hostname of the rucio server, include http:// or https://
+    rucio_auth_host: "rucio-server" # hostname of the rucio-auth server, include http:// or https://
+    hostname: "webui-host" # hostname of the webui ( without http:// or https://, just the hostname, no port or scheme required)
     project_url: "https://rucio.cern.ch"
     multivo_enabled: "False"
     # A csv string of vos containing their short names. For example: "def,atl,cms"
@@ -118,8 +119,26 @@ config:
     exposeHttpdLogs: true
     exposeWebuiLogs: true
 
-# additional environment variables to set in the webui container
+# additional environment variables to set in the webui container as hardcoded key value pairs
 optionalConfig: {}
+#  MY_ENV: "my_value"
+
+
+# hostPathMounts is a list of hostPath mounts to be mounted in the webui container
+hostPathMounts: []
+# - mountPath: /opt/rucio/etc/aliases.conf
+#   hostPath: /etc/rucio/aliases.conf
+#   type: DirectoryOrCreate
+
+# additional volumes to be mounted in the webui container from config maps, secrets, etc.
+additionalEnvs: []
+# - name: MY_ENV
+#   value: "my_value"
+#   valueFrom:
+#     secretKeyRef:
+#       name: my-secret
+#       key: my-key
+
 
 persistentVolumes: {}
 
