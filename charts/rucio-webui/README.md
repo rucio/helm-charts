@@ -132,7 +132,7 @@ There are two types of CA bundles that are used by the WebUI:
 ##### Multiple CA files
 For x509 based authentication, if you have multiple pem encoded CA files, you must mount them at the path specified by the `RUCIO_CA_PATH` environment variable.
 
-You must also set the `RUCIO_CA_PATH` environment variable using the `addtionalEnvs` section to point to the directory where the CA files are mounted. For example, to mount the CA files at `/etc/grid-security/certificates/` and set the `RUCIO_CA_PATH` environment variable to `/etc/grid-security/certificates`, you would set the following in the `values.yaml` file:
+You must also set the `RUCIO_CA_PATH` environment variable using the `additionalEnvs` section to point to the directory where the CA files are mounted. For example, to mount the CA files at `/etc/grid-security/certificates/` and set the `RUCIO_CA_PATH` environment variable to `/etc/grid-security/certificates`, you would set the following in the `values.yaml` file:
 
 ```yaml
 hostPathMounts:
