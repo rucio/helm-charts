@@ -152,7 +152,7 @@ The hostPathMounts is just one way to provide the CA files when you have the CA 
 
 If you wish to use a single CA file for x509 authentication, you can provide the CA file as a secret in the same namespace as the WebUI pod, you must mount the file at the path specified by the `RUCIO_CA_FILE` environment variable.
 
-You must also set the `RUCIO_CA_FILE` environment variable using the `addtionalEnvs` section to point to the directory where the CA file is mounted. For example, to mount the CA file at `/etc/grid-security/certificates/ca.pem` and set the `RUCIO_CA_FILE` environment variable to `/etc/grid-security/certificates/ca.pem`, you would set the following in the `values.yaml` file:
+You must also set the `RUCIO_CA_FILE` environment variable using the `additionalEnvs` section to point to the directory where the CA file is mounted. For example, to mount the CA file at `/etc/grid-security/certificates/ca.pem` and set the `RUCIO_CA_FILE` environment variable to `/etc/grid-security/certificates/ca.pem`, you would set the following in the `values.yaml` file:
 
 ```yaml
 hostPathMounts:
