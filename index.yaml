@@ -3293,6 +3293,23 @@ entries:
     version: 0.1.0
   rucio-webui:
   - apiVersion: v1
+    created: "2024-07-18T14:52:20.412545081Z"
+    description: A Helm chart to deploy the new Rucio Webui
+    digest: 896a6d04aeac3ddcd4689c579901794388932624de4784e81a88b183dd3d66ee
+    home: https://rucio.cern.ch/
+    keywords:
+    - data-management
+    - science
+    maintainers:
+    - email: rucio-dev@cern.ch
+      name: Rucio development team
+    name: rucio-webui
+    sources:
+    - https://github.com/rucio/webui
+    urls:
+    - https://github.com/rucio/helm-charts/releases/download/rucio-webui-34.0.7/rucio-webui-34.0.7.tgz
+    version: 34.0.7
+  - apiVersion: v1
     created: "2024-07-03T15:23:11.345729114Z"
     description: A Helm chart to deploy the new Rucio Webui
     digest: 51255c5b7fe026601dac21d873fa7cb8d879ce29ca1e07f607db3af9837d159c
@@ -3496,4 +3513,4 @@ entries:
     urls:
     - https://github.com/rucio/helm-charts/releases/download/rucio-webui-1.30.0/rucio-webui-1.30.0.tgz
     version: 1.30.0
-generated: "2024-07-03T15:23:11.346813637Z"
+generated: "2024-07-18T14:52:20.413786549Z"
