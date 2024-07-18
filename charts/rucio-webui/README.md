@@ -146,7 +146,7 @@ additionalEnvs:
     value: "/etc/grid-security/certificates"
 ```
 
-The hostPathMounts is just one way to provide the CA files when you have the CA files locally available on your kubernetes nodes. You can also use other methods like `configmaps` or `secrets` to provide the CA files. Please make sure that the CA files are mounted at the path specified by the `RUCIO_CA_PATH` environment variable.
+The `hostPathMounts` is just one way to provide the CA files when you have the CA files locally available on your kubernetes nodes. You can also use other methods like `configmaps` or `secrets` to provide the CA files. Please make sure that the CA files are mounted at the path specified by the `RUCIO_CA_PATH` environment variable.
 
 ##### Single CA file
 
