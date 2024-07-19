@@ -232,8 +232,6 @@ spec:
               value: "True"
             - name: RUCIO_HEALTH_CHECK_PORT
               value: "444"
-            - name: OPENSSL_ALLOW_PROXY_CERTS
-              value: "1"
 {{- else }}
             - name: RUCIO_ENABLE_SSL
               value: "False"
