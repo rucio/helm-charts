@@ -206,7 +206,7 @@ spec:
 {{ end }}
 
 {{- define "rucio-daemons.conveyor-preparer-daemon-args" -}}
-{{- if .threads }} --threads {{ .threads }}{{ end }} {{ if .bulk }} --bulk {{ .bulk }}{{ end }} {{- if .sleepTime }} --sleep-time {{ .sleepTime }}{{ end }}
+{{- if .threads }} --threads {{ .threads }}{{ end }} {{ if .bulk }} --bulk {{ .bulk }}{{ end }} {{- if .sleepTime }} --sleep-time {{ .sleepTime }}{{ end }} {{- if .ignoreAvailability }} --ignore-availability {{ end }} {{- if .runOnce }} --run-once {{ end }}
 {{- end }}
 {{- if gt .Values.conveyorPreparerCount 0.0 -}}
 {{- $args := dict "Values" .Values "Release" .Release "Chart" .Chart "Capabilities" .Capabilities }}
