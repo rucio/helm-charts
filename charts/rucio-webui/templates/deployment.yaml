@@ -44,6 +44,9 @@ spec:
       annotations:
         checksum/config: {{ $common_config | sha1sum }}
     spec:
+    {{- if .Values.serviceAccountName }}
+      serviceAccountName: {{ .Values.serviceAccountName }}
+    {{- end }}
       volumes:
       - name: config
         secret:
