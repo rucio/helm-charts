@@ -89,7 +89,7 @@ config:
     # hostname of the webui ( without http:// or https://, just the hostname, no port or scheme required)
     hostname: "webui-host"
     project_url: "https://rucio.cern.ch"
-    # if you DID schema in your policy uses special characters like + or /, set this to true
+    # if your DID schema in your policy uses special characters like + or /, set this to true
     params_encoding_enabled: "False"
     multivo_enabled: "False"
     # A csv string of vos containing their short names. For example: "def,atl,cms"
