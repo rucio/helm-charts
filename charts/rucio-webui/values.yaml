@@ -91,6 +91,12 @@ config:
     project_url: "https://rucio.cern.ch"
     # if your DID schema in your policy uses special characters like + or /, set this to true
     params_encoding_enabled: "False"
+    # if you want to disable userpass authentication, set this to False
+    enable_userpass_login: "True"
+    # if you want to add your own custom logo to the webui's login page, set this to the url of the logo
+    community_logo_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxnHbkErtMHdMn2FXvsMrkyk55SPeqh4bkB8X4uvAQE2HHNmFznf46Zkr96kN_5EbmFfc&usqp=CAU"
+    # to associate a custom Activity to the rules created with the webui, set this to the name of the activity
+    rule_activity: "User Subscriptions"
     multivo_enabled: "False"
     # A csv string of vos containing their short names. For example: "def,atl,cms"
     vo_list: "def"
