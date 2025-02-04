@@ -51,6 +51,11 @@ spec:
       {{- end }}
       - name: httpdlog
         emptyDir: {}
+      {{- if .Values.policyPackages.enabled }}
+      - name: policy-package-volume
+        persistentVolumeClaim:
+          claimName: policy-package-volume
+      {{- end }}
       {{- range $key, $val := .Values.secretMounts }}
       - name: {{ coalesce $val.volumeName $val.secretName $val.secretFullName }}
         secret:
@@ -86,6 +91,32 @@ spec:
         secret:
           secretName: {{ .Release.Name }}-server-cafile
 {{- end }}
+{{- end }}
+{{- if .Values.policyPackages.enabled }}
+      initContainers:
+      - name: install-policy-packages
+        # A slim Python image could be used instead, but using the same image as the base image for the main container ensures that the same Python version is used
+        image: almalinux:9
+        command:
+          - /bin/bash
+          - -e
+          - -c
+          - |
+            export PYTHONPATH={{ .Values.policyPackages.mountPath }}:$PYTHONPATH
+            {{- range .Values.policyPackages.packages }}
+            if python3 -c "from importlib.metadata import version; assert version({{ .moduleName | squote }}) == {{ .version | squote }}"; then
+                echo "module {{ .moduleName }} version {{ .version }} is already installed"
+            else
+                if [[ {{ .requirement | squote }} == git+* ]]; then
+                    dnf install --assumeyes git-all
+                fi
+                dnf install --assumeyes python-pip
+                pip install {{ .requirement }} --target {{ $.Values.policyPackages.mountPath }}
+            fi
+            {{- end }}
+          volumeMounts:
+          - name: policy-package-volume
+            mountPath: {{ .Values.policyPackages.mountPath }}
 {{- end }}
       containers:
 {{- if .Values.exposeErrorLogs }}
@@ -129,6 +160,10 @@ spec:
           - name: ca-volume
             mountPath: /opt/certs
           {{- end }}
+          {{- end }}
+          {{- if .Values.policyPackages.enabled }}
+          - name: policy-package-volume
+            mountPath: {{ .Values.policyPackages.mountPath }}
           {{- end }}
           - name: httpdlog
             mountPath: /var/log/httpd
@@ -226,6 +261,10 @@ spec:
             {{- range $key1, $val1 := .Values.optional_config }}
             - name: {{ $key1 | upper }}
               value: "{{ $val1  }}"
+            {{- end}}
+            {{- if .Values.policyPackages.enabled}}
+            - name: PYTHONPATH
+              value: {{.Values.policyPackages.mountPath}}:${PYTHONPATH}
             {{- end}}
 {{- if .Values.useSSL }}
             - name: RUCIO_ENABLE_SSL
