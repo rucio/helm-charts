@@ -1,0 +1,21 @@
+{{- if .Values.policyPackages.enabled }}
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+    name: {{ .Values.policyPackages.storageClass.name }}
+provisioner: {{ .Values.policyPackages.storageClass.provisioner }}
+reclaimPolicy: {{ .Values.policyPackages.storageClass.reclaimPolicy }}
+allowVolumeExpansion: true
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: policy-package-volume
+spec:
+  storageClassName: {{ .Values.policyPackages.storageClass.name }}
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.policyPackages.resources.requests.storage }}
+{{- end }}
