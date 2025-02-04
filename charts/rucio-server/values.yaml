@@ -23,7 +23,7 @@ useSSL: false
 
 image:
   repository: rucio/rucio-server
-  tag: release-34.2.0
+  tag: release-36.2.0
   pullPolicy: Always
 
 imagePullSecrets: []
