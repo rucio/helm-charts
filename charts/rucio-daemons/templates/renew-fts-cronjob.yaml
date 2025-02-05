@@ -90,10 +90,14 @@
         - name: {{ $key1 | upper }}
           value: "{{ $val1  }}"
         {{- end}}
+        {{- if ne (coalesce .Values.ftsRenewal.vo (first .Values.ftsRenewal.vos).vo) "none" }}
         - name: RUCIO_VO
           value: {{ coalesce .Values.ftsRenewal.vo (first .Values.ftsRenewal.vos).vo | quote }}
+        {{- end }}
+        {{- if ne (coalesce .Values.ftsRenewal.voms (first .Values.ftsRenewal.vos).voms) "none" }}
         - name: RUCIO_FTS_VOMS
           value: {{ coalesce .Values.ftsRenewal.voms (first .Values.ftsRenewal.vos).voms | quote }}
+        {{- end }}
   {{- if not .Values.ftsRenewal.vo}}
         - name: RUCIO_FTS_SCRIPT
           value: "{{ .Values.ftsRenewal.script }}"
