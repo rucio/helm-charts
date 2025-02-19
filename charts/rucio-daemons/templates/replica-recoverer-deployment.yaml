@@ -22,7 +22,7 @@ data:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-{{ $rucio_daemon }}
+  name: {{ template "rucio.fullname" . }}-{{ $rucio_daemon }}
   labels:
     app: {{ $app_label }}
     app-group: {{ template "rucio.name" . }}
