@@ -1,6 +1,6 @@
 {{- define "rucio-server.renew-fts-proxy-jobspec" }}
 {{- if .Values.ftsRenewal.enabled }}
-  serviceAccountName: {{ .Release.Name }}-rucio-edit
+  serviceAccountName: {{ template "rucio.fullname" . }}-rucio-edit
   volumes:
   - name: config-common
     secret:
