@@ -136,7 +136,7 @@
 apiVersion: {{ template "rucio.kubeApiVersion.cronjob" . }}
 kind: CronJob
 metadata:
-  name: {{ .Release.Name }}-renew-fts-proxy
+  name: {{ template "rucio.fullname" . }}-renew-fts-proxy
 spec:
   schedule: "{{ .Values.ftsRenewal.schedule }}"
   jobTemplate:
@@ -149,7 +149,7 @@ spec:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ .Release.Name }}-renew-fts-proxy-on-helm-install
+  name: {{ template "rucio.fullname" . }}-renew-fts-proxy-on-helm-install
   annotations:
     helm.sh/hook: post-install  # Relies on rucio service account, created by this helm chart
     helm.sh/hook-delete-policy: hook-succeeded
