@@ -1,0 +1,5 @@
+# Chart dependencies
+**/charts/*.tgz
+
+# macOS
+.DS_Store
