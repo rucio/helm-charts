@@ -2,14 +2,14 @@
 apiVersion: {{ template "rucio.kubeApiVersion.cronjob" . }}
 kind: CronJob
 metadata:
-  name: {{ .Release.Name }}-{{ template "rucio.name" . }}-automatic-restart
+  name: {{ template "rucio.fullname" . }}-automatic-restart
 spec:
   schedule: "{{ .Values.automaticRestart.schedule }}"
   jobTemplate:
     spec:
       template:
         spec:
-          serviceAccountName: {{ .Release.Name }}-{{ template "rucio.name" . }}-rucio-restart
+          serviceAccountName: {{ template "rucio.fullname" . }}-rucio-restart
           containers:
             - name: restart-pods
               image: "{{ .Values.automaticRestart.image.repository }}:{{ .Values.automaticRestart.image.tag }}"
