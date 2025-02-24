@@ -104,7 +104,7 @@ spec:
       {{- end}}
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ coalesce ($component_values.image | default dict).tag .Values.image.tag }}"
+          image: "{{ include "rucio.image.registry" . }}{{ .Values.image.repository }}:{{ coalesce ($component_values.image | default dict).tag .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           volumeMounts:
           {{- if .Values.useDeprecatedImplicitSecrets }}
