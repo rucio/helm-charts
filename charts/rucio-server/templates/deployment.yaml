@@ -114,9 +114,9 @@ spec:
                 pip install {{ .requirement }} --target {{ $.Values.policyPackages.mountPath }}
             fi
             {{- end }}
-          volumeMounts:
-          - name: policy-package-volume
-            mountPath: {{ .Values.policyPackages.mountPath }}
+        volumeMounts:
+        - name: policy-package-volume
+          mountPath: {{ .Values.policyPackages.mountPath }}
 {{- end }}
       containers:
 {{- if .Values.exposeErrorLogs }}
