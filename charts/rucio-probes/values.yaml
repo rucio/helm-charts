@@ -12,6 +12,9 @@ image:
 imagePullSecrets: []
 # - name: docker-regcreds
 
+imageRegistry: ""
+# imageRegistry: registry.cern.ch/docker.io
+
 #  Values needed for some of the probes
 probeSettings:
   # This is the secret for the X509 proxy for FTS. Needed for "check_fts_backlog"

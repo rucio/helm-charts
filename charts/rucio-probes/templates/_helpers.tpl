@@ -30,3 +30,13 @@ Create chart name and version as used by the chart label.
 {{- define "rucio-probes.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/*
+Image Registry
+Ensures the registry ends with a `/` if set.
+*/}}
+{{- define "rucio.image.registry" -}}
+  {{- if .Values.imageRegistry -}}
+    {{- trimSuffix "/" .Values.imageRegistry }}/
+  {{- end -}}
+{{- end -}}
