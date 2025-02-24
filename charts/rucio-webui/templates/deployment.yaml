@@ -91,7 +91,7 @@ spec:
       containers:
       {{- if .Values.config.logs.exposeHttpdLogs }}
         - name: httpd-error-log
-          image: busybox
+          image: "{{ include "rucio.image.registry" . }}busybox"
           args: [/bin/sh, -c, 'tail -n+1 -F /var/log/httpd/error_log']
           volumeMounts:
           - name: httpdlog
@@ -99,14 +99,14 @@ spec:
       {{- end }}
       {{- if .Values.config.logs.exposeWebuiLogs }}
         - name: webui-log
-          image: busybox
+          image: "{{ include "rucio.image.registry" . }}busybox"
           args: [/bin/sh, -c, 'tail -n+1 -F /var/log/webui/rucio-webui-out.log /var/log/webui/rucio-webui-error.log']
           volumeMounts:
           - name: webui-log
             mountPath: /var/log/webui/
       {{- end }}
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: "{{ include "rucio.image.registry" . }}{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
