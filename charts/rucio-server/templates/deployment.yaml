@@ -121,7 +121,7 @@ spec:
       containers:
 {{- if .Values.exposeErrorLogs }}
         - name: httpd-error-log
-          image: busybox
+          image: "{{ include "rucio.image.registry" . }}busybox"
           args: [/bin/sh, -c, 'tail -n+1 -F /var/log/httpd/error_log']
           volumeMounts:
           - name: httpdlog
@@ -131,7 +131,7 @@ spec:
 {{- end }}
 {{- if .Values.monitoring.enabled }}
         - name: apache-exporter
-          image: rucio/apache_exporter
+          image: "{{ include "rucio.image.registry" . }}rucio/apache_exporter"
 {{- if .Values.useSSL }}
           args: ['--telemetry.address=:{{ .Values.monitoring.exporterPort }}', '--scrape_uri=https://localhost/server-status/?auto', '--insecure']
 {{ else }}
@@ -145,7 +145,7 @@ spec:
 {{ toYaml .Values.metricsExporterResources | indent 12 }}
 {{- end }}
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: "{{ include "rucio.image.registry" . }}{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           resources:
 {{ toYaml .Values.serverResources | indent 12 }}

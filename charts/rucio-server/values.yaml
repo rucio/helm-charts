@@ -29,6 +29,9 @@ image:
 imagePullSecrets: []
 # - name: docker-regcreds
 
+imageRegistry: ""
+# imageRegistry: registry.cern.ch/docker.io
+
 service:
   type: ClusterIP
   port: 80
