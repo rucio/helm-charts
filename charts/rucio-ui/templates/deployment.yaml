@@ -92,14 +92,14 @@ spec:
       containers:
 {{- if .Values.exposeErrorLogs }}
         - name: httpd-error-log
-          image: busybox
+          image: "{{ include "rucio.image.registry" . }}busybox"
           args: [/bin/sh, -c, 'tail -n+1 -F /var/log/httpd/error_log']
           volumeMounts:
           - name: httpdlog
             mountPath: /var/log/httpd
 {{- end }}
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: "{{ include "rucio.image.registry" . }}{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
