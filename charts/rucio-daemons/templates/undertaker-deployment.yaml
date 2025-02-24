@@ -76,6 +76,11 @@ spec:
       - name: config-component
         secret:
           secretName: {{ template "rucio.fullname" . }}.config.{{ $rucio_daemon }}
+      {{- if .Values.policyPackages.enabled }}
+      - name: policy-package-volume
+        persistentVolumeClaim:
+          claimName: {{ include "rucio.pvc.claimName" . }}
+      {{- end }}
       {{- if .Values.useDeprecatedImplicitSecrets }}
       - name: proxy-volume
         secret:
@@ -106,6 +111,9 @@ spec:
           path: {{ $val.hostPath }}
       {{- end}}
       {{- end}}
+{{- if .Values.policyPackages.enabled }}
+      {{ include "rucio-daemons.policy-package-init-container" . | indent 6 }}
+{{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ include "rucio.image.registry" . }}{{ .Values.image.repository }}:{{ coalesce ($component_values.image | default dict).tag .Values.image.tag }}"
@@ -117,6 +125,10 @@ spec:
             - name: config-component
               mountPath: /opt/rucio/etc/conf.d/20_component.json
               subPath: component.json
+          {{- if .Values.policyPackages.enabled }}
+            - name: policy-package-volume
+              mountPath: {{ .Values.policyPackages.mountPath }}
+          {{- end }}
             {{- if .Values.useDeprecatedImplicitSecrets }}
             - name: proxy-volume
               mountPath: /opt/proxy
@@ -156,6 +168,10 @@ spec:
               value: "{{ $rucio_daemon }}"
             - name: RUCIO_DAEMON_ARGS
               value: "{{- if $component_values.threads }} --total-workers {{ $component_values.threads }}{{end}} {{- if $component_values.chunkSize }} --chunk-size {{ $component_values.chunkSize }}{{ end }}"
+          {{- if .Values.policyPackages.enabled}}
+            - name: PYTHONPATH
+              value: {{.Values.policyPackages.mountPath}}:${PYTHONPATH}
+          {{- end}}
 {{- with .Values.additionalEnvs }}
 {{ toYaml . | indent 12 }}
 {{- end}}
