@@ -41,3 +41,13 @@ Get Ingress Kube API Version
     {{- print "extensions/v1beta1" -}}
   {{- end -}}
 {{- end -}}
+
+{{/*
+Image Registry
+Ensures the registry ends with a `/` if set.
+*/}}
+{{- define "rucio.image.registry" -}}
+  {{- if .Values.imageRegistry -}}
+    {{- trimSuffix "/" .Values.imageRegistry }}/
+  {{- end -}}
+{{- end -}}
