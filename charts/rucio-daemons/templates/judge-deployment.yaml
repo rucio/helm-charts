@@ -70,6 +70,11 @@ spec:
       - name: config-component
         secret:
           secretName: {{ template "rucio.fullname" . }}.config.{{ .rucio_daemon }}
+      {{- if .Values.policyPackages.enabled }}
+      - name: policy-package-volume
+        persistentVolumeClaim:
+          claimName: policy-package-volume
+      {{- end }}
     {{- if .Values.useDeprecatedImplicitSecrets }}
       - name: proxy-volume
         secret:
@@ -103,6 +108,9 @@ spec:
           path: {{ $val.hostPath }}
       {{- end}}
       {{- end}}
+{{- if .Values.policyPackages.enabled }}
+      {{ include "rucio-daemons.policy-package-init-container" . | indent 6 }}
+{{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ include "rucio.image.registry" . }}{{ .Values.image.repository }}:{{ coalesce (.component_values.image | default dict).tag .Values.image.tag }}"
@@ -120,6 +128,10 @@ spec:
             - name: config-component
               mountPath: /opt/rucio/etc/conf.d/20_component.json
               subPath: component.json
+          {{- if .Values.policyPackages.enabled }}
+            - name: policy-package-volume
+              mountPath: {{ .Values.policyPackages.mountPath }}
+          {{- end }}
           {{- range $collection := tuple (coalesce .component_values.secretMounts .Values.secretMounts) .component_values.extraSecretMounts }}
           {{- range $key, $val := $collection }}
             - name: {{ coalesce $val.volumeName $val.secretName $val.secretFullName }}
@@ -155,6 +167,10 @@ spec:
               value: "{{ .rucio_daemon }}"
             - name: RUCIO_DAEMON_ARGS
               value: "{{ .daemon_args }}"
+          {{- if .Values.policyPackages.enabled}}
+            - name: PYTHONPATH
+              value: {{.Values.policyPackages.mountPath}}:${PYTHONPATH}
+          {{- end}}
 {{- with .component_values.additionalEnvs }}
 {{ toYaml . | indent 12 }}
 {{- end}}
