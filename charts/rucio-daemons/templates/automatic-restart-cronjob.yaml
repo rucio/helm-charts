@@ -12,7 +12,7 @@ spec:
           serviceAccountName: {{ template "rucio.fullname" . }}-rucio-restart
           containers:
             - name: restart-pods
-              image: "{{ .Values.automaticRestart.image.repository }}:{{ .Values.automaticRestart.image.tag }}"
+              image: "{{ include "rucio.image.registry" . }}{{ .Values.automaticRestart.image.repository }}:{{ .Values.automaticRestart.image.tag }}"
               imagePullPolicy: {{ .Values.automaticRestart.image.pullPolicy }}
               args:
                 - rollout

@@ -46,7 +46,7 @@
   {{- end}}
   containers:
     - name: renew-fts-cron
-      image: "{{ .Values.ftsRenewal.image.repository }}:{{ .Values.ftsRenewal.image.tag }}"
+      image: "{{ include "rucio.image.registry" . }}{{ .Values.ftsRenewal.image.repository }}:{{ .Values.ftsRenewal.image.tag }}"
       imagePullPolicy: {{ .Values.ftsRenewal.image.pullPolicy }}
       resources:
 {{ toYaml .Values.ftsRenewal.resources | indent 8 }}

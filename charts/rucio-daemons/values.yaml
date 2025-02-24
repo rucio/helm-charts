@@ -40,6 +40,9 @@ image:
 imagePullSecrets: []
 # - name: docker-regcreds
 
+imageRegistry: ""
+# imageRegistry: registry.cern.ch/docker.io
+
 strategy:
   type: RollingUpdate
   rollingUpdate:
