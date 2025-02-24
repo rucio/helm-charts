@@ -56,6 +56,11 @@ spec:
           name: {{ template "rucio.fullname" . }}-aliases
       - name: httpdlog
         emptyDir: {}
+      {{- if .Values.policyPackages.enabled }}
+      - name: policy-package-volume
+        persistentVolumeClaim:
+          claimName: {{ include "rucio.pvc.claimName" . }}
+      {{- end }}
       {{- if .Values.useDeprecatedImplicitSecrets }}
       {{- if eq .Values.service.useSSL true }}
       - name: hostcert
@@ -89,6 +94,32 @@ spec:
           path: {{ $val.hostPath }}
       {{- end}}
       {{- end}}
+{{- if .Values.policyPackages.enabled }}
+      initContainers:
+      - name: install-policy-packages
+        # A slim Python image could be used instead, but using the same image as the base image for the main container ensures that the same Python version is used
+        image: "{{ include "rucio.image.registry" . }}almalinux:9"
+        command:
+          - /bin/bash
+          - -e
+          - -c
+          - |
+            export PYTHONPATH={{ .Values.policyPackages.mountPath }}:$PYTHONPATH
+            {{- range .Values.policyPackages.packages }}
+            if python3 -c "from importlib.metadata import version; assert version({{ .moduleName | squote }}) == {{ .version | squote }}"; then
+                echo "module {{ .moduleName }} version {{ .version }} is already installed"
+            else
+                if [[ {{ .requirement | squote }} == git+* ]]; then
+                    dnf install --assumeyes git-all
+                fi
+                dnf install --assumeyes python-pip
+                pip install {{ .requirement }} --target {{ $.Values.policyPackages.mountPath }}
+            fi
+            {{- end }}
+        volumeMounts:
+        - name: policy-package-volume
+          mountPath: {{ .Values.policyPackages.mountPath }}
+{{- end }}
       containers:
 {{- if .Values.exposeErrorLogs }}
         - name: httpd-error-log
@@ -119,6 +150,10 @@ spec:
             - name: aliases
               mountPath: /opt/rucio/etc/aliases.conf
               subPath: aliases.conf
+            {{- if .Values.policyPackages.enabled }}
+            - name: policy-package-volume
+              mountPath: {{ .Values.policyPackages.mountPath }}
+            {{- end }}
             {{- if .Values.useDeprecatedImplicitSecrets }}
             {{- if .Values.service.useSSL }}
             - name: hostcert
@@ -186,6 +221,10 @@ spec:
             - name: RUCIO_ENABLE_SSL
               value: "True"
 {{- end }}
+{{- if .Values.policyPackages.enabled}}
+            - name: PYTHONPATH
+              value: {{.Values.policyPackages.mountPath}}:${PYTHONPATH}
+{{- end}}
 {{- with .Values.additionalEnvs }}
 {{ toYaml . | indent 12 }}
 {{- end}}

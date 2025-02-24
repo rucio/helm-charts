@@ -1,0 +1,13 @@
+{{- if .Values.policyPackages.pvc.createPvc }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "rucio.pvc.claimName" . }}
+spec:
+  storageClassName: {{ .Values.policyPackages.storageClass.name }}
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .Values.policyPackages.resources.requests.storage }}
+{{- end }}
