@@ -1,0 +1,13 @@
+{{- if .Values.policyPackages.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: policy-package-volume
+spec:
+  storageClassName: {{ .Values.policyPackages.storageClass.name }}
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.policyPackages.resources.requests.storage }}
+{{- end }}
