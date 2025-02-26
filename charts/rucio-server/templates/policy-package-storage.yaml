@@ -6,7 +6,7 @@ metadata:
 spec:
   storageClassName: {{ .Values.policyPackages.storageClass.name }}
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   resources:
     requests:
       storage: {{ .Values.policyPackages.resources.requests.storage }}
