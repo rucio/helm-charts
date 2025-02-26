@@ -178,6 +178,12 @@ policyPackages:
     # - moduleName: vo_2_policy_package
     #   requirement: git+https://github.com/vo-2/vo-2-policy-package@v0.1.0
     #   version: 0.1.0
+  pvc:
+    # Set true to create a PVC for the policy packages; leave false if providing it separately.
+    createPvc: false
+    name: policy-package-volume
+    # Whether to prepend the release name to the PVC name provided.
+    prependReleaseName: true
   resources:
     requests:
       # Storage required by the policy packages - resize if needed
