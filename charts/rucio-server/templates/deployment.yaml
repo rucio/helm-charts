@@ -54,7 +54,7 @@ spec:
       {{- if .Values.policyPackages.enabled }}
       - name: policy-package-volume
         persistentVolumeClaim:
-          claimName: policy-package-volume
+          claimName: {{ .Values.policyPackages.pvcName }}
       {{- end }}
       {{- range $key, $val := .Values.secretMounts }}
       - name: {{ coalesce $val.volumeName $val.secretName $val.secretFullName }}
