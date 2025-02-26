@@ -160,9 +160,15 @@ spec:
             - name: RUCIO_HTTPD_{{ $key | snakecase | upper }}
               value: {{ $val | quote }}
             {{- end }}
+            {{- $explicitEnvMap := dict }}
+            {{- range .Values.additionalEnvs }}
+            {{- $explicitEnvMap = merge $explicitEnvMap (dict (index . "name") (index . "valueFrom")) }}
+            {{- end }}
             {{- range $key, $val := .Values.config.webui }}
+            {{- if not (hasKey $explicitEnvMap (printf "RUCIO_WEBUI_%s" $key | upper)) }}
             - name: RUCIO_WEBUI_{{ $key | snakecase | upper }}
               value: {{ $val | quote }}
+            {{- end }}
             {{- end }}
             {{ range $provider, $data := .Values.config.oidc_providers }}
             {{- range $key, $val := $data }}
