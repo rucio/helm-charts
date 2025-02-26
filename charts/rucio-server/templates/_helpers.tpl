@@ -62,3 +62,15 @@ Ensures the registry ends with a `/` if set.
     {{- trimSuffix "/" .Values.imageRegistry }}/
   {{- end -}}
 {{- end -}}
+
+{{/*
+Generate policy package PVC Name
+Prepends the release name to the policy package PVC name if specified in values.
+*/}}
+{{- define "rucio.pvc.claimName" -}}
+  {{- if and .Values.policyPackages.enabled .Values.policyPackages.pvc.prependReleaseName -}}
+    {{ .Release.Name }}-{{ .Values.policyPackages.pvc.name }}
+  {{- else -}}
+    {{ .Values.policyPackages.pvc.name }}
+  {{- end -}}
+{{- end -}}
