@@ -8,9 +8,16 @@ metadata:
     chart: {{ template "rucio.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-{{- with .Values.service.annotations }}
+{{- $annotations := merge (dict) .Values.service.annotations }}
+{{- if .Values.service.useExternalDNS }}
+  {{- if not .Values.hostname }}
+    {{- fail "Error: 'hostname' must be defined when 'useExternalDNS' is enabled." }}
+  {{- end }}
+  {{- $_ := set $annotations "external-dns.alpha.kubernetes.io/hostname" .Values.hostname }}
+{{- end }}
+{{- if $annotations }}
   annotations:
-{{ toYaml . | indent 4 }}
+{{ toYaml $annotations | indent 4 }}
 {{- end }}
 spec:
   type: {{ .Values.service.type }}

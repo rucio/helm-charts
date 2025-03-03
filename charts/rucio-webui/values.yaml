@@ -26,6 +26,8 @@ imageRegistry: ""
 
 useSSL: true
 
+hostname: null
+
 service:
   type: ClusterIP
   port: 80
@@ -41,6 +43,7 @@ service:
   loadBalancerClass: null
   externalTrafficPolicy: null
   allocateLoadBalancerNodePorts: true
+  useExternalDNS: false
 
 useDeprecatedImplicitSecrets: false
 

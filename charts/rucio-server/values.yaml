@@ -21,6 +21,8 @@ errorLogsExporterResources:
 # Set to true to enable SSL support for the different servers to be able accept X509 certificates and proxies.
 useSSL: false
 
+hostname: null
+
 image:
   repository: rucio/rucio-server
   tag: release-36.2.0
@@ -46,6 +48,7 @@ service:
   loadBalancerClass: null
   externalTrafficPolicy: null
   allocateLoadBalancerNodePorts: true
+  useExternalDNS: false
 
 strategy:
   type: RollingUpdate
