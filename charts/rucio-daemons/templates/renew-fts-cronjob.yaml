@@ -15,6 +15,16 @@
       {{- end }}
   {{- end}}
   {{- end}}
+  {{- if .Values.ftsRenewal.tlsSecretName }}
+  - name: tls-secret-volume
+    secret:
+      secretName: {{ .Values.ftsRenewal.tlsSecretName }}
+      items:
+        - key: tls.crt
+          path: usercert.pem
+        - key: tls.key
+          path: userkey.pem
+  {{- end }}
   {{- if .Values.useDeprecatedImplicitSecrets }}
   {{- if or (eq .Values.ftsRenewal.vo "atlas") (eq .Values.ftsRenewal.vo "dteam") }}
   - name: longproxy
@@ -54,6 +64,16 @@
         - name: config-common
           mountPath: /opt/rucio/etc/conf.d/10_common.json
           subPath: common.json
+  {{- if .Values.ftsRenewal.tlsSecretName }}
+        - name: tls-secret-volume
+          mountPath: /opt/rucio/certs/usercert.pem
+          subPath: usercert.pem
+          readOnly: true
+        - name: tls-secret-volume
+          mountPath: /opt/rucio/keys/userkey.pem
+          subPath: userkey.pem
+          readOnly: true
+  {{- end }}
   {{- if .Values.useDeprecatedImplicitSecrets }}
   {{- if or (eq .Values.ftsRenewal.vo "atlas") (eq .Values.ftsRenewal.vo "dteam") }}
         - name: longproxy

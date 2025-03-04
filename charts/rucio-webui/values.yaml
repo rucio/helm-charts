@@ -28,6 +28,8 @@ useSSL: true
 
 hostname: null
 
+tlsSecretName: null
+
 service:
   type: ClusterIP
   port: 80
