@@ -23,6 +23,8 @@ useSSL: false
 
 hostname: null
 
+tlsSecretName: null
+
 image:
   repository: rucio/rucio-server
   tag: release-36.2.0

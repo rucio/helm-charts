@@ -53,6 +53,16 @@ spec:
           secretName: {{ template "rucio.fullname" . }}.config.yaml
       - name: httpdlog
         emptyDir: {}
+      {{- if .Values.tlsSecretName }}
+      - name: tls-secret-volume
+        secret:
+          secretName: {{ .Values.tlsSecretName }}
+          items:
+            - key: tls.crt
+              path: hostcert.pem
+            - key: tls.key
+              path: hostkey.pem
+      {{- end }}
       - name: webui-log
         emptyDir: {}
       {{- if .Values.useDeprecatedImplicitSecrets }}
@@ -139,6 +149,16 @@ spec:
               subPath: ca.pem
             {{- end}}
             {{- end}}
+            {{- if .Values.tlsSecretName }}
+            - name: tls-secret-volume
+              mountPath: /etc/grid-security/hostcert.pem
+              subPath: hostcert.pem
+              readOnly: true
+            - name: tls-secret-volume
+              mountPath: /etc/grid-security/hostkey.pem
+              subPath: hostkey.pem
+              readOnly: true
+            {{- end }}
             {{- range $key, $val := .Values.secretMounts }}
             - name: {{ coalesce $val.volumeName $val.secretName $val.secretFullName }}
               mountPath: {{ $val.mountPath }}

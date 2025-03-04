@@ -420,6 +420,7 @@ ftsRenewal:
     pullPolicy: Always
   servers: "https://fts3-devel.cern.ch:8446,https://cmsfts3.fnal.gov:8446,https://fts3.cern.ch:8446,https://lcgfts3.gridpp.rl.ac.uk:8446,https://fts3-pilot.cern.ch:8446"
   script: 'default'  # one of: 'default', 'atlas', 'dteam', 'multi_vo', 'tutorial', 'escape'. The associated scripts can be found here: https://github.com/rucio/containers/tree/master/fts-cron
+  tlsSecretName: null
   vos:
     - vo: "none"
       voms: "none"
