@@ -143,6 +143,9 @@ spec:
               value: "{{ $rucio_daemon }}"
             - name: RUCIO_DAEMON_ARGS
               value: "{{- if $component_values.threads }} --num-thread {{ $component_values.threads }} {{ end }}"
+{{- with .Values.additionalEnvs }}
+{{ toYaml . | indent 12 }}
+{{- end}}
 {{- with $component_values.additionalEnvs }}
 {{ toYaml . | indent 12 }}
 {{- end}}

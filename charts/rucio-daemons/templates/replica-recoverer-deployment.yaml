@@ -158,6 +158,9 @@ spec:
               value: "{{ $rucio_daemon }}"
             - name: RUCIO_DAEMON_ARGS
               value: "{{- if $component_values.sleepTime }} --sleep-time {{ $component_values.sleepTime }}{{ end }} {{- if $component_values.inputFile }} --json-file-name {{ $component_values.inputFile }}{{ end }} {{- if $component_values.activeMode }} --active-mode {{ end }} {{- if $component_values.limitSuspiciousFilesOnRse }} --limit-suspicious-files-on-rse {{ $component_values.limitSuspiciousFilesOnRse }}{{ end }} {{- if $component_values.youngerThan }} --younger-than {{ $component_values.youngerThan }}{{ end }}  {{- if $component_values.nAttempts }} --nattempts {{ $component_values.nAttempts }}{{ end }}"
+{{- with .Values.additionalEnvs }}
+{{ toYaml . | indent 12 }}
+{{- end}}
 {{- with $component_values.additionalEnvs }}
 {{ toYaml . | indent 12 }}
 {{- end}}

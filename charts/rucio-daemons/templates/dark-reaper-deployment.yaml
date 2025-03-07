@@ -165,6 +165,9 @@ spec:
             - name: X509_USER_PROXY
               value: "/opt/proxy/x509up"
             {{- end }}
+{{- with .Values.additionalEnvs }}
+{{ toYaml . | indent 12 }}
+{{- end}}
 {{- with $component_values.additionalEnvs }}
 {{ toYaml . | indent 12 }}
 {{- end}}
