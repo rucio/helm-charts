@@ -43,6 +43,9 @@ imagePullSecrets: []
 imageRegistry: ""
 # imageRegistry: registry.cern.ch/docker.io
 
+# env variables common to all daemons
+additionalEnvs: []
+
 strategy:
   type: RollingUpdate
   rollingUpdate:

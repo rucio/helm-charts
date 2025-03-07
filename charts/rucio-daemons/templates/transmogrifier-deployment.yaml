@@ -157,6 +157,9 @@ spec:
               value: "{{ $rucio_daemon }}"
             - name: RUCIO_DAEMON_ARGS
               value: "{{- if $component_values.threads }} --threads {{ $component_values.threads }}{{end}} {{- if $component_values.bulk }} --bulk {{ $component_values.bulk }}{{ end }}{{- if $component_values.sleepTime }} --sleep-time {{ $component_values.sleepTime }}{{ end }}"
+{{- with .Values.additionalEnvs }}
+{{ toYaml . | indent 12 }}
+{{- end}}
 {{- with $component_values.additionalEnvs }}
 {{ toYaml . | indent 12 }}
 {{- end}}

@@ -134,6 +134,9 @@ spec:
               value: "kronos"
             - name: RUCIO_DAEMON_ARGS
               value: "{{- if $component_values.threads }} --threads {{ $component_values.threads }}{{end}} {{- if $component_values.sleepTimeFiles }} --sleep-time-files {{ $component_values.sleepTimeFiles }}{{ end }}{{- if $component_values.sleepTimeDatasets }} --sleep-time-datasets {{ $component_values.sleepTimeDatasets }}{{ end }}"
+{{- with .Values.additionalEnvs }}
+{{ toYaml . | indent 12 }}
+{{- end}}
 {{- with $component_values.additionalEnvs }}
 {{ toYaml . | indent 12 }}
 {{- end}}
