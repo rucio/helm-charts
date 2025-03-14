@@ -24,6 +24,9 @@ imagePullSecrets: []
 imageRegistry: ""
 # imageRegistry: registry.cern.ch/docker.io
 
+# Additional annotations to be added to the deployment
+deploymentAnnotations: {}
+
 useSSL: true
 
 hostname: null
