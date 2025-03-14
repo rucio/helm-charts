@@ -47,6 +47,10 @@ imageRegistry: ""
 additionalEnvs: []
 
 # Additional annotations to be added to the deployment
+# Example usage:
+# deploymentAnnotations:
+#   reloader.stakater.com/auto: "true"
+#   foo: "bar"
 deploymentAnnotations: {}
 
 strategy:
