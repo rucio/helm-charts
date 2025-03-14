@@ -46,6 +46,9 @@ imageRegistry: ""
 # env variables common to all daemons
 additionalEnvs: []
 
+# Additional annotations to be added to the deployment
+deploymentAnnotations: {}
+
 strategy:
   type: RollingUpdate
   rollingUpdate:
