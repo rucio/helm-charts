@@ -111,7 +111,7 @@ spec:
       initContainers:
       - name: install-policy-packages
         # A slim Python image could be used instead, but using the same image as the base image for the main container ensures that the same Python version is used
-        image: almalinux:9
+        image: "{{ include "rucio.image.registry" . }}almalinux:9"
         command:
           - /bin/bash
           - -e
