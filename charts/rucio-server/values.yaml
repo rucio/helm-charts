@@ -183,7 +183,7 @@ policyPackages:
     createPvc: false
     name: policy-package-volume
     # Whether to prepend the release name to the PVC name provided.
-    prependReleaseName: true
+    prependReleaseName: false
   resources:
     requests:
       # Storage required by the policy packages - resize if needed
