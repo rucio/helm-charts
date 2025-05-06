@@ -165,6 +165,11 @@ ftsRenewal:
 
 policyPackages:
   enabled: false
+
+  # Use an ephemeral volume to install the policy package.
+  # This means that the policy package will need to be installed on every pod restart but no PV/PVC are needed
+  ephemeralVolume: false
+
   # Make sure the trailing slash is present
   mountPath: /opt/policy_packages/
   # Use underscores instead of hyphens for module names
