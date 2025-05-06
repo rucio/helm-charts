@@ -10,6 +10,8 @@ useDeprecatedImplicitSecrets: true
 # When set, run extra busybox containers in the relevant pods to also expose the error logs
 exposeErrorLogs: true
 
+hostname: null
+
 service:
   # Enable useSSL and run the webui server on port 443 instead of 80 in order to
   # accept X509 certificates and proxies for authentication
@@ -31,6 +33,7 @@ service:
   loadBalancerClass: null
   externalTrafficPolicy: null
   allocateLoadBalancerNodePorts: true
+  useExternalDNS: false
 
 image:
   repository: rucio/rucio-ui
