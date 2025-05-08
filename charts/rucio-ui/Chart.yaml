@@ -1,5 +1,5 @@
 name: rucio-ui
-version: 37.0.2
+version: 37.0.3
 apiVersion: v1
 description: A Helm chart to deploy webui servers for Rucio
 keywords:

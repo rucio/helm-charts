@@ -61,6 +61,8 @@ proxy:
   rucioProxyScheme: "https"
   rucioAuthProxy: "<rucio-auth-server-host>"
   rucioAuthProxyScheme: "https"
+  # If this flag is set to true, use environment variables (RUCIO_PROXY, RUCIO_AUTH_PROXY, RUCIO_HOSTNAME) instead
+  configurationFromEnv: false
 
 policyPackages:
   enabled: false
