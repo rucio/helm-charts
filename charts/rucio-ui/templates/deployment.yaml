@@ -56,6 +56,16 @@ spec:
           name: {{ template "rucio.fullname" . }}-aliases
       - name: httpdlog
         emptyDir: {}
+      {{- if .Values.tlsSecretName }}
+      - name: tls-secret-volume
+        secret:
+          secretName: {{ .Values.tlsSecretName }}
+          items:
+            - key: tls.crt
+              path: hostcert.pem
+            - key: tls.key
+              path: hostkey.pem
+      {{- end }}
       {{- if .Values.policyPackages.enabled }}
       - name: policy-package-volume
         persistentVolumeClaim:
@@ -150,6 +160,16 @@ spec:
             - name: aliases
               mountPath: /opt/rucio/etc/aliases.conf
               subPath: aliases.conf
+            {{- if .Values.tlsSecretName }}
+            - name: tls-secret-volume
+              mountPath: /etc/grid-security/hostcert.pem
+              subPath: hostcert.pem
+              readOnly: true
+            - name: tls-secret-volume
+              mountPath: /etc/grid-security/hostkey.pem
+              subPath: hostkey.pem
+              readOnly: true
+            {{- end }}
             {{- if .Values.policyPackages.enabled }}
             - name: policy-package-volume
               mountPath: {{ .Values.policyPackages.mountPath }}

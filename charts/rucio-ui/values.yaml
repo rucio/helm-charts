@@ -12,6 +12,8 @@ exposeErrorLogs: true
 
 hostname: null
 
+tlsSecretName: null
+
 service:
   # Enable useSSL and run the webui server on port 443 instead of 80 in order to
   # accept X509 certificates and proxies for authentication
