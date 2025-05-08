@@ -68,8 +68,12 @@ spec:
       {{- end }}
       {{- if .Values.policyPackages.enabled }}
       - name: policy-package-volume
+      {{- if .Values.policyPackages.ephemeralVolume }}
+        emptyDir: {}
+      {{- else }}
         persistentVolumeClaim:
           claimName: {{ include "rucio.pvc.claimName" . }}
+      {{- end }}
       {{- end }}
       {{- range $key, $val := .Values.secretMounts }}
       - name: {{ coalesce $val.volumeName $val.secretName $val.secretFullName }}
