@@ -78,8 +78,12 @@ spec:
           secretName: {{ template "rucio.fullname" . }}.config.{{ $rucio_daemon }}
       {{- if .Values.policyPackages.enabled }}
       - name: policy-package-volume
+      {{- if .Values.policyPackages.ephemeralVolume }}
+        emptyDir: {}
+      {{- else }}
         persistentVolumeClaim:
           claimName: {{ include "rucio.pvc.claimName" . }}
+      {{- end }}
       {{- end }}
       {{- if .Values.useDeprecatedImplicitSecrets }}
       - name: proxy-volume
