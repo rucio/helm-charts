@@ -215,11 +215,14 @@ spec:
             - name: {{ $key1 | upper }}
               value: "{{ $val1  }}"
             {{- end}}
-
+{{- if not .Values.proxy.configurationFromEnv }}
             - name: RUCIO_PROXY
               value: {{ .Values.proxy.rucioProxy }}
             - name: RUCIO_AUTH_PROXY
               value: {{ .Values.proxy.rucioAuthProxy }}
+            - name: RUCIO_HOSTNAME
+              value: {{ .Values.httpd_config.rucio_hostname }}
+{{- end }}
 {{- if .Values.proxy.rucioProxyScheme }}
             - name: RUCIO_PROXY_SCHEME
               value: {{ .Values.proxy.rucioProxyScheme }}
@@ -228,8 +231,6 @@ spec:
             - name: RUCIO_AUTH_PROXY_SCHEME
               value: {{ .Values.proxy.rucioAuthProxyScheme }}
 {{- end }}
-            - name: RUCIO_HOSTNAME
-              value: {{ .Values.httpd_config.rucio_hostname }}
             - name: RUCIO_OVERRIDE_CONFIGS
               value: "/opt/rucio/etc/conf.d/"
             - name: RUCIO_LOG_FORMAT
