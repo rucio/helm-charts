@@ -129,16 +129,18 @@ config:
     rucio_host: "rucio-server"
     # hostname of the rucio-auth server, include http:// or https://
     rucio_auth_host: "rucio-server"
-    # hostname of the webui ( without http:// or https://, just the hostname, no port or scheme required)
+    # hostname of the webui (without http:// or https://, just the hostname, no port or scheme required)
     hostname: "webui-host"
     project_url: "https://rucio.cern.ch"
     # if your DID schema in your policy uses special characters like + or /, set this to true
     params_encoding_enabled: "False"
     # if you want to disable userpass authentication, set this to False
     enable_userpass_login: "True"
+    # configures the placeholder scope and name in the DIDs list page (e.g., scope:name, scope:*)
+    list_dids_initial_pattern: ""
     # if you want to add your own custom logo to the webui's login page, set this to the url of the logo
     community_logo_url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxnHbkErtMHdMn2FXvsMrkyk55SPeqh4bkB8X4uvAQE2HHNmFznf46Zkr96kN_5EbmFfc&usqp=CAU"
-    # to associate a custom Activity to the rules created with the webui, set this to the name of the activity
+    # to associate a custom Activity with the rules created with the webui, set this to the name of the activity
     rule_activity: "User Subscriptions"
     multivo_enabled: "False"
     # A csv string of vos containing their short names. For example: "def,atl,cms"
