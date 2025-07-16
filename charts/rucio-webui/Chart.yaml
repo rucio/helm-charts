@@ -1,5 +1,5 @@
 name: rucio-webui
-version: 35.1.0
+version: 35.1.1
 apiVersion: v1
 description: A Helm chart to deploy the new Rucio Webui
 keywords:
