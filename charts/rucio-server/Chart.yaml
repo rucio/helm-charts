@@ -1,5 +1,5 @@
 name: rucio-server
-version: 37.0.1
+version: 37.0.2
 apiVersion: v1
 description: A Helm chart to deploy servers for Rucio
 keywords:
