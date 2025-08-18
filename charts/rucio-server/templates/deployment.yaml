@@ -130,6 +130,7 @@ spec:
                     dnf install --assumeyes git-all
                 fi
                 dnf install --assumeyes python-pip
+                pip uninstall --yes {{ .moduleName }}
                 pip install {{ .requirement }} --target {{ $.Values.policyPackages.mountPath }}
             fi
             {{- end }}
