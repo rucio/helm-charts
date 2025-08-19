@@ -293,7 +293,7 @@ spec:
             {{- end}}
             {{- if .Values.policyPackages.enabled}}
             - name: PYTHONPATH
-              value: {{.Values.policyPackages.mountPath}}:${PYTHONPATH}
+              value: {{.Values.policyPackages.mountPath}}
             {{- end}}
 {{- if .Values.useSSL }}
             - name: RUCIO_ENABLE_SSL
