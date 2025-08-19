@@ -179,7 +179,7 @@ spec:
               value: "{{- if $component_values.threads }} --threads {{ $component_values.threads }}{{ end }} {{- if $component_values.bulk }} --bulk {{ $component_values.bulk }}{{ end }} {{- if $component_values.sleepTime }} --sleep-time {{ $component_values.sleepTime }}{{ end }} {{- if $component_values.brokerTimeout }} --broker-timeout {{ $component_values.brokerTimeout }}{{ end }} {{- if $component_values.brokerRetry }} --broker-retry {{ $component_values.brokerRetry }}{{ end }}"
           {{- if .Values.policyPackages.enabled}}
             - name: PYTHONPATH
-              value: {{.Values.policyPackages.mountPath}}:${PYTHONPATH}
+              value: {{.Values.policyPackages.mountPath}}
           {{- end}}
 {{- with .Values.additionalEnvs }}
 {{ toYaml . | indent 12 }}
