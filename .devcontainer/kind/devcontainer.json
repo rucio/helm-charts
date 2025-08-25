@@ -1,0 +1,16 @@
+{
+    "name": "Rucio Kind Setup",
+    "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
+    "features": {
+      "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+      "ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {},
+      "ghcr.io/devcontainers/features/python:1": {}
+    },
+    "postCreateCommand": "bash .devcontainer/kind/setup.sh",
+    "remoteUser": "root",
+    "privileged": true,
+    "mounts": [
+        "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
+    ],
+     "runArgs": ["--network=host"]
+}
