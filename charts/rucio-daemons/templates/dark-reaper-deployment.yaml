@@ -92,6 +92,10 @@ spec:
       - name: ca-volume
         secret:
           secretName: {{ .Release.Name }}-rucio-ca-bundle-reaper
+    {{- else if .Values.proxyCertificateSecret.name }}
+      - name: proxy-certificate-volume
+        secret:
+          secretName: {{ .Values.proxyCertificateSecret.name }}
     {{- end }}
       {{- range $collection := tuple (coalesce $component_values.secretMounts .Values.secretMounts) $component_values.extraSecretMounts }}
       {{- range $key, $val := $collection }}
@@ -131,6 +135,10 @@ spec:
               mountPath: /opt/proxy
             - name: ca-volume
               mountPath: /etc/grid-security/certificates
+          {{- else if .Values.proxyCertificateSecret.name }}
+            - name: proxy-certificate-volume
+              mountPath: {{ .Values.proxyCertificateSecret.mountPath }}
+              subPath: {{ .Values.proxyCertificateSecret.subPath }}
           {{- end }}
             - name: config-common
               mountPath: /opt/rucio/etc/conf.d/10_common.json

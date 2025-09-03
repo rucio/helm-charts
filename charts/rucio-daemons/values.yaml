@@ -521,6 +521,15 @@ secretMounts: []
   #   mountPath: /opt/rucio/etc/gcs_rucio.json
   #   subPath: gcs_rucio.json
 
+
+# The recommended way to configure the x509 proxy certificate
+# Instead of mounting it as a secret in all daemons, if you set it here, it will only be mounted on the daemons that need it
+# If this is enabled, do not mount the x509 proxy secret manually
+proxyCertificateSecret:
+  name: null
+  subPath: x509up
+  mountPath: /opt/proxy/x509up
+
 ## common config values used to configure the Rucio daemons
 config:
   # accounts:

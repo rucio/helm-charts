@@ -90,6 +90,10 @@ spec:
       - name: ca-volume
         secret:
           secretName: {{ .Release.Name }}-rucio-ca-bundle
+    {{- else if and .includeProxyCert .Values.proxyCertificateSecret.name }}
+      - name: proxy-certificate-volume
+        secret:
+          secretName: {{ .Values.proxyCertificateSecret.name }}
     {{- end }}
       {{- range $collection := tuple (coalesce .component_values.secretMounts .Values.secretMounts) .component_values.extraSecretMounts }}
       {{- range $key, $val := $collection }}
@@ -129,6 +133,10 @@ spec:
               mountPath: /opt/proxy
             - name: ca-volume
               mountPath: /opt/certs
+          {{- else if and .includeProxyCert .Values.proxyCertificateSecret.name }}
+            - name: proxy-certificate-volume
+              mountPath: {{ .Values.proxyCertificateSecret.mountPath }}
+              subPath: {{ .Values.proxyCertificateSecret.subPath }}
           {{- end }}
             - name: config-common
               mountPath: /opt/rucio/etc/conf.d/10_common.json
@@ -217,6 +225,7 @@ spec:
 {{- $args = set $args "component_values" .Values.judgeCleaner }}
 {{- $args = set $args "component_count" .Values.judgeCleanerCount }}
 {{- $args = set $args "daemon_args" (include "rucio-daemons.judge-cleaner-daemon-args" .Values.judgeCleaner) }}
+{{- $args = set $args "includeProxyCert" true }}
 {{- include "rucio-daemons.judge-deployment" $args }}
 {{ end }}
 
@@ -229,6 +238,7 @@ spec:
 {{- $args = set $args "component_values" .Values.judgeEvaluator }}
 {{- $args = set $args "component_count" .Values.judgeEvaluatorCount }}
 {{- $args = set $args "daemon_args" (include "rucio-daemons.judge-evaluator-daemon-args" .Values.judgeEvaluator) }}
+{{- $args = set $args "includeProxyCert" false }}
 {{- include "rucio-daemons.judge-deployment" $args }}
 {{ end }}
 
@@ -241,6 +251,7 @@ spec:
 {{- $args = set $args "component_values" .Values.judgeInjector }}
 {{- $args = set $args "component_count" .Values.judgeInjectorCount }}
 {{- $args = set $args "daemon_args" (include "rucio-daemons.judge-injector-daemon-args" .Values.judgeInjector) }}
+{{- $args = set $args "includeProxyCert" false }}
 {{- include "rucio-daemons.judge-deployment" $args }}
 {{ end }}
 
@@ -253,5 +264,6 @@ spec:
 {{- $args = set $args "component_values" .Values.judgeRepairer }}
 {{- $args = set $args "component_count" .Values.judgeRepairerCount }}
 {{- $args = set $args "daemon_args" (include "rucio-daemons.judge-repairer-daemon-args" .Values.judgeRepairer) }}
+{{- $args = set $args "includeProxyCert" false }}
 {{- include "rucio-daemons.judge-deployment" $args }}
 {{ end }}

@@ -135,10 +135,13 @@
   {{- if .Values.useDeprecatedImplicitSecrets }}
         - name: RUCIO_FTS_SECRETS
           value: "{{ .Release.Name }}-rucio-x509up"
-  {{- if or (eq .Values.ftsRenewal.vo "atlas") (eq .Values.ftsRenewal.vo "dteam") }}
+    {{- if or (eq .Values.ftsRenewal.vo "atlas") (eq .Values.ftsRenewal.vo "dteam") }}
         - name: RUCIO_LONG_PROXY
           value: {{ .Values.ftsRenewal.longProxy | quote }}
-  {{- end }}
+    {{- end }}
+  {{- else if .Values.proxyCertificateSecret.name }}
+        - name: RUCIO_FTS_SECRETS
+          value: {{.Values.proxyCertificateSecret.name | quote }}
   {{- end }}
   {{- with .Values.ftsRenewal.additionalEnvs }}
 {{ toYaml . | indent 8 }}
