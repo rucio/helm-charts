@@ -141,7 +141,7 @@ spec:
       containers:
 {{- if .Values.exposeErrorLogs }}
         - name: httpd-error-log
-          image: "{{ include "rucio.image.registry" . }}busybox"
+          image: "{{ include "rucio.image.registry" . }}{{ .Values.errorLog.image }}:{{ .Values.errorLog.tag }}"
           args: [/bin/sh, -c, 'tail -n+1 -F /var/log/httpd/error_log']
           volumeMounts:
           - name: httpdlog
