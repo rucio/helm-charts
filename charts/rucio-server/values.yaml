@@ -18,6 +18,10 @@ errorLogsExporterResources:
     cpu: 20m
     memory: 20Mi
 
+errorLog:
+  image: busybox
+  tag: latest
+
 # Set to true to enable SSL support for the different servers to be able accept X509 certificates and proxies.
 useSSL: false
 
