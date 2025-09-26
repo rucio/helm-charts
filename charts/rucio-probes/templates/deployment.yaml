@@ -52,10 +52,18 @@ spec:
         - name: config
           secret:
             secretName: {{ .Release.Name }}-probes.config.yaml
+{{- if .Values.probeSettings.useJobber}}
         - configMap:
             defaultMode: 0644
             name: {{ include "rucio-probes.fullname" . }}-jobber-config
           name: jobber-config
+{{- end }}
+{{- if .Values.probeSettings.useCron}}
+        - configMap:
+            defaultMode: 0644
+            name: {{ include "rucio-probes.fullname" . }}-crontab
+          name: crontab
+{{- end }}
 {{- if hasKey .Values.probeSettings "ftsProxySecret" }}
         - name: proxy-volume
           secret:
@@ -67,6 +75,14 @@ spec:
       - env:
         - name: RUCIO_OVERRIDE_CONFIGS
           value: "/opt/rucio/etc/conf.d/"
+{{- if .Values.probeSettings.useJobber}}
+        - name: RUCIO_USING_JOBBER
+          value: "1"
+{{- end }}
+{{- if .Values.probeSettings.useCron}}
+        - name: RUCIO_USING_CRON
+          value: "1"
+{{- end }}
         image: "{{ include "rucio.image.registry" . }}{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         name: {{ .Chart.Name }}
@@ -74,8 +90,14 @@ spec:
         - name: config
           mountPath: /opt/rucio/etc/conf.d/10_common.json
           subPath: common.json
+{{- if .Values.probeSettings.useJobber}}
         - mountPath: /etc/jobber-config/
           name: jobber-config
+{{- end }}
+{{- if .Values.probeSettings.useCron}}
+        - mountPath: /etc/cron.rucio/
+          name: crontab
+{{- end }}
 {{- if hasKey .Values.probeSettings "ftsProxySecret" }}
         - mountPath: /opt/proxy
           name: proxy-volume

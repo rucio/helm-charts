@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "rucio-probes.fullname" . }}-crontab
+data:
+  probes-crontab: |+
+    # This is an auto-generated crontab. 
+    # It uses "DeterministicDelay" to space out the running of probes within the interval specified.
+    # The deterministic delay script is at {{ $.Values.probeSettings.detDelay }}
+    SHELL=/bin/sh
+{{- range $probe, $config := .Values.probes }}
+{{ if gt $config.interval 0.0 }}
+    */{{ $config.interval }} * * * * root {{ $.Values.probeSettings.detDelay }} -d {{ $config.interval }}m /probes/common/{{ $probe }}
+{{- end }}
+{{- end }}
+
+{{- range $probe, $config := .Values.voProbes }}
+{{ if gt $config.interval 0.0 }}
+    */{{ $config.interval }} * * * * root {{ $.Values.probeSettings.detDelay }} -d {{ $config.interval }}m /probes/{{ $config.voName }}/{{ $probe }}
+{{- end }}
+{{- end }}
