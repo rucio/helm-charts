@@ -203,7 +203,7 @@ policyPackages:
 automaticRestart:
   enabled: 0
   image:
-    repository: bitnami/kubectl
+    repository: bitnamilegacy/kubectl
     tag: 1.29.4
     pullPolicy: IfNotPresent
   schedule: "0 0 * * *"
