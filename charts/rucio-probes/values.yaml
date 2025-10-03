@@ -19,10 +19,14 @@ imageRegistry: ""
 probeSettings:
   # This is the secret for the X509 proxy for FTS. Needed for "check_fts_backlog"
   ftsProxySecret: ruciod-release-rucio-x509up
+  # The path of the DeterministicDelay script
+  detDelay: /DeterministicDelay
+  useJobber: true
+  useCron: false
 
 probes:
   # By default all probes are turned off since they may have side effects. Set the interval to a positive number to run
-  # a probe every so many minutes. You may also set "onError" to change the jobber onError setting for a probe
+  # a probe every so many minutes.
   check_WebDAV_ping:
     interval: 0
   check_activemq_queue:
