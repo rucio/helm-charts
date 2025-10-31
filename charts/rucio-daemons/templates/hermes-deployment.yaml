@@ -76,15 +76,15 @@ spec:
         - name: config-component
           secret:
             secretName: {{ template "rucio.fullname" . }}.config.{{ $rucio_daemon }}
-      {{- if .Values.policyPackages.enabled }}
-      - name: policy-package-volume
-      {{- if .Values.policyPackages.ephemeralVolume }}
-        emptyDir: {}
-      {{- else }}
-        persistentVolumeClaim:
-          claimName: {{ include "rucio.pvc.claimName" . }}
-      {{- end }}
-      {{- end }}
+        {{- if .Values.policyPackages.enabled }}
+        - name: policy-package-volume
+        {{- if .Values.policyPackages.ephemeralVolume }}
+          emptyDir: {}
+        {{- else }}
+          persistentVolumeClaim:
+            claimName: {{ include "rucio.pvc.claimName" . }}
+        {{- end }}
+        {{- end }}
 {{ if $component_values.useSSL }}
         - name: usercert
           secret:
