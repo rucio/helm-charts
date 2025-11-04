@@ -120,7 +120,7 @@ spec:
                 echo "module {{ .moduleName }} version {{ .version }} is already installed"
             else
                 if [[ {{ .requirement | squote }} == git+* ]]; then
-                    dnf install --assumeyes git-all
+                    dnf install --assumeyes git
                 fi
                 dnf install --assumeyes python-pip
                 pip uninstall --yes {{ .moduleName }}
