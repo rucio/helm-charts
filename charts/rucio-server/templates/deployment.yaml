@@ -137,6 +137,10 @@ spec:
         volumeMounts:
         - name: policy-package-volume
           mountPath: {{ .Values.policyPackages.mountPath }}
+{{- if .Values.policyPackages.containerResources }}
+        resources:
+{{ toYaml .Values.policyPackages.containerResources | indent 10 }}
+{{- end }}
 {{- end }}
       containers:
 {{- if .Values.exposeErrorLogs }}

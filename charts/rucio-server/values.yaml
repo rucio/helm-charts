@@ -197,6 +197,13 @@ policyPackages:
     requests:
       # Storage required by the policy packages - resize if needed
       storage: 100Mi
+  containerResources:
+    requests:
+      cpu: 500m
+      memory: 500Mi
+    limits:
+      cpu: 500m
+      memory: 500Mi
   storageClass:
     name:
 
