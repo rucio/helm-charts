@@ -8,7 +8,7 @@ Rucio is a software framework that provides functionality to organize, manage, a
 
 Add the Rucio Helm repository to your local Helm installation:
 
-```bash
+```sh
 helm repo add rucio https://rucio.github.io/helm-charts
 ```
 
@@ -22,19 +22,17 @@ Rucio WebUI is a [NextJS](https://nextjs.org/) application that provides a web i
 
 The default configuration values for this chart are listed in `values.yaml` our you can get them with:
 
-```bash
-helm inspect values rucio/rucio-webui
+```sh
+helm show values rucio/rucio-webui
 ```
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install` as shown before.
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
-```bash
-helm install \
-    --name my-release \
-    -f values.yaml \
-    rucio/rucio-webui
+```sh
+helm install my-release rucio/rucio-webui \
+  -f values.yaml
 ```
 
 ### Basic Configuration
@@ -102,7 +100,7 @@ type: Opaque
 
 You can generate the secrets using the following commands:
 
-```bash
+```sh
 kubectl create secret generic <releasename>-server-hostcert --from-file=hostcert.pem=/path/to/hostcert.pem
 kubectl create secret generic <releasename>-server-hostkey --from-file=hostkey.pem=/path/to/hostkey.pem
 ```
@@ -222,11 +220,13 @@ If you want to use and ingress controller to expose the servers you will have to
 configure them separately. In this case the service type should stay as
 `ClusterIP`. A simple ingress for the api server would like this:
 
-    ingress:
-      enabled: true
-      path: /
-      hosts:
-        - my.rucio.test
+```yaml
+ingress:
+  enabled: true
+  path: /
+  hosts:
+    - my.rucio.test
+```
 
 In case you want to use HTTPS with an ingress you should not change the service
 as explained above but instead let the ingress controller handle the TLS
@@ -235,7 +235,7 @@ connection and then pass the requests using plain HTTP inside the cluster.
 You will have to install the valid certificate and key as a secret in the
 cluster that you can then configure in the ingress definition:
 
-```bash
+```sh
 kubectl create secret tls rucio-webui.tls-secret --key=tls.key --cert=tls.crt
 ```
 
@@ -263,7 +263,9 @@ The `config.logs.exposeWebuiLogs` parameter will start a sidecar container that 
 
 To uninstall/delete the `my-release` deployment:
 
-    $ helm delete my-release --purge
+```sh
+helm uninstall my-release
+```
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 

@@ -9,8 +9,10 @@ Rucio is a software framework that provides functionality to organize, manage, a
 Add the Rucio Helm repository to your local Helm installation and install it using:
 
 
-    $ helm repo add rucio https://rucio.github.io/helm-charts
-    $ helm install rucio/rucio-server
+  ```sh
+  helm repo add rucio https://rucio.github.io/helm-charts
+  helm install my-release rucio/rucio-server
+  ```
 
 ## Introduction
 
@@ -20,33 +22,34 @@ This chart bootstraps a Rucio server deployment and service on a Kubernetes clus
 
 To install the chart with the release name `my-release`:
 
-    $ helm install \
-      --name my-release \
-      rucio/rucio-server
+```sh
+helm install my-release rucio/rucio-server
+```
 
 The command deploys a Rucio server on the Kubernetes cluster in the default configuration, i.e., 2 replicas using an un-initialised SQLite database without an ingress. To fully use this chart an already bootstraped database is necessary. The server can then be configured to use the DB.
 
 To install the chart so that is will connected to a MySQL DB running at `mysql.db` with the user `rucio` and password `rucio`:
 
-    $ helm install \
-      --name my-release \
-      --set config.database.default="mysql://rucio:rucio@mysql.db/rucio" \
-      rucio/rucio-server
+```sh
+helm install my-release rucio/rucio-server \
+  --set config.database.default="mysql://rucio:rucio@mysql.db/rucio"
+```
 
 ## Configuration
 
 The default configuration values for this chart are listed in `values.yaml` our you can get them with:
 
-    $ helm inspect values rucio/rucio-server
+  ```sh
+  helm show values rucio/rucio-server
+  ```
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install` as shown before.
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
-    $ helm install \
-      --name my-release \
-      -f values.yaml \
-      rucio/rucio-server
+```sh
+helm install my-release rucio/rucio-server -f values.yaml
+```
 
 
 ## Certificates
@@ -69,22 +72,28 @@ corresponding servers:
 
 First create the secrets:
 
-    kubectl create secret generic <releasename>-server-hostcert --from-file=hostcert.pem=/path/to/hostcert.pem   
-    kubectl create secret generic <releasename>-server-hostkey --from-file=hostkey.pem=/path/to/hostkey.pem
-    kubectl create secret generic <releasename>-server-cafile --from-file=ca.pem=/path/to/ca.pem
+```sh
+kubectl create secret generic <releasename>-server-hostcert --from-file=hostcert.pem=/path/to/hostcert.pem
+kubectl create secret generic <releasename>-server-hostkey --from-file=hostkey.pem=/path/to/hostkey.pem
+kubectl create secret generic <releasename>-server-cafile --from-file=ca.pem=/path/to/ca.pem
+```
 
 Then you can use a switch in the config file to enable HTTPS per server type:
 
-    useSSL: true
+```yaml
+useSSL: true
+```
 
 You will then have to adapt the service to port 443:
 
-    service:
-      type: ClusterIP
-      port: 443
-      targetPort: 443
-      protocol: TCP
-      name: https
+```yaml
+service:
+  type: ClusterIP
+  port: 443
+  targetPort: 443
+  protocol: TCP
+  name: https
+```
 
 Furthermore, you can also change the service type depending on how you want to 
 expose your service outside of the cluster. If you don't use an ingress
@@ -96,11 +105,13 @@ If you want to use and ingress controller to expose the servers you will have to
 configure them separately. In this case the service type should stay as 
 `ClusterIP`. A simple ingress for the api server would like this:
 
-    ingress:
-      enabled: true
-      path: /
-      hosts:
-        - my.rucio.test
+```yaml
+ingress:
+  enabled: true
+  path: /
+  hosts:
+    - my.rucio.test
+```
 
 In case you want to use HTTPS with an ingress you should not change the service
 as explained above but instead let the ingress controller handle the TLS 
@@ -110,15 +121,19 @@ The exception being the authentication servers that will be explained below.
 You will have to install the valid certificate and key as a secret in the 
 cluster that you can then configure in the ingress definition:
 
-    $ kubectl create secret tls rucio-server.tls-secret --key=tls.key --cert=tls.crt
+  ```sh
+  kubectl create secret tls rucio-server.tls-secret --key=tls.key --cert=tls.crt
+  ```
 
-    ingress:
-      enabled: true
-      path: /
-      hosts:
-        - my.rucio.test
-      tls:
-        - secretName: rucio-server.tls-secret
+```yaml
+ingress:
+  enabled: true
+  path: /
+  hosts:
+    - my.rucio.test
+  tls:
+    - secretName: rucio-server.tls-secret
+```
 
 ## Authentication Ingress
 
@@ -132,15 +147,17 @@ will focus on the nginx ingress controller.
 First, the `service` has to be configured using HTTPS as described above. 
 Then, you can enable passthrough in the ingress definition:
 
-    ingress:
-      enabled: true
-      annotations:
-        kubernetes.io/ingress.class: nginx
-        nginx.ingress.kubernetes.io/ssl-passthrough: "true"
-        nginx.ingress.kubernetes.io/ssl-redirect: "true"
-      hosts:
-        - my.rucio-auth.test
-      path: /
+```yaml
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  hosts:
+    - my.rucio-auth.test
+  path: /
+```
 
 ## httpd config
 
@@ -152,12 +169,16 @@ In case you need any additional secrets, e.g., special cloud configurations,
 license keys, etc., you can use `secretMounts` in the configuration file. You 
 can install arbitrary secrets in the cluster and this config then makes it available in the pods:
 
-    $ kubectl create secret generic my-release-rse-accounts --from-file=rse-accounts.cfg
+  ```sh
+  kubectl create secret generic my-release-rse-accounts --from-file=rse-accounts.cfg
+  ```
 
-    secretMounts: 
-      - secretName: rse-accounts
-        mountPath: /opt/rucio/etc/rse-accounts.cfg
-        subPath: rse-accounts.cfg
+```yaml
+secretMounts: 
+  - secretName: rse-accounts
+    mountPath: /opt/rucio/etc/rse-accounts.cfg
+    subPath: rse-accounts.cfg
+```
 
 This will create the file from the secret and place it at `/opt/rucio/etc/rse-accounts.cfg` in every server container.
 
@@ -165,9 +186,11 @@ This will create the file from the secret and place it at `/opt/rucio/etc/rse-ac
 
 In case you want to add regular restarts for your pods there a is a cronjob available that can be configured like this:
 
-    automaticRestart:
-      enabled: 1
-      schedule: "15 1 * * *"
+```yaml
+automaticRestart:
+  enabled: 1
+  schedule: "15 1 * * *"
+```
 
 This will run according to the given schedule and do a `kubectl rollout restart deployment` for all servers.
 
@@ -175,19 +198,25 @@ This will run according to the given schedule and do a `kubectl rollout restart 
 
 In case you have Prometheus running in your cluster you can use the built-in exporter to let Prometheus automatically scrape your metrics:
 
-    monitoring:
-      enabled: true
+```yaml
+monitoring:
+  enabled: true
+```
 
 Additionally, you also have to enable the status page in httpd config:
 
-    httpd_config:
-      enable_status: "True"
+```yaml
+httpd_config:
+  enable_status: "True"
+```
 
 ## Uninstalling the Chart
 
 To uninstall/delete the `my-release` deployment:
 
-    $ helm delete my-release --purge
+  ```sh
+  helm uninstall my-release
+  ```
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 

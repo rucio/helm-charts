@@ -21,9 +21,10 @@ Just push to Git and Flux does the rest.
 
 Add the Rucio Helm repository to your local Helm installation then you can install the Rucio server like so.
 
-
-    $ helm repo add rucio https://rucio.github.io/helm-charts
-    $ helm install rucio/rucio-server
+```sh
+helm repo add rucio https://rucio.github.io/helm-charts
+helm install my-release rucio/rucio-server
+```
 
 ## Chart Versioning
 
