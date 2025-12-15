@@ -220,11 +220,13 @@ If you want to use and ingress controller to expose the servers you will have to
 configure them separately. In this case the service type should stay as
 `ClusterIP`. A simple ingress for the api server would like this:
 
-    ingress:
-      enabled: true
-      path: /
-      hosts:
-        - my.rucio.test
+```yaml
+ingress:
+  enabled: true
+  path: /
+  hosts:
+    - my.rucio.test
+```
 
 In case you want to use HTTPS with an ingress you should not change the service
 as explained above but instead let the ingress controller handle the TLS

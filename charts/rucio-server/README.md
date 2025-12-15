@@ -80,16 +80,20 @@ kubectl create secret generic <releasename>-server-cafile --from-file=ca.pem=/pa
 
 Then you can use a switch in the config file to enable HTTPS per server type:
 
-    useSSL: true
+```yaml
+useSSL: true
+```
 
 You will then have to adapt the service to port 443:
 
-    service:
-      type: ClusterIP
-      port: 443
-      targetPort: 443
-      protocol: TCP
-      name: https
+```yaml
+service:
+  type: ClusterIP
+  port: 443
+  targetPort: 443
+  protocol: TCP
+  name: https
+```
 
 Furthermore, you can also change the service type depending on how you want to 
 expose your service outside of the cluster. If you don't use an ingress
@@ -101,11 +105,13 @@ If you want to use and ingress controller to expose the servers you will have to
 configure them separately. In this case the service type should stay as 
 `ClusterIP`. A simple ingress for the api server would like this:
 
-    ingress:
-      enabled: true
-      path: /
-      hosts:
-        - my.rucio.test
+```yaml
+ingress:
+  enabled: true
+  path: /
+  hosts:
+    - my.rucio.test
+```
 
 In case you want to use HTTPS with an ingress you should not change the service
 as explained above but instead let the ingress controller handle the TLS 
@@ -119,13 +125,15 @@ cluster that you can then configure in the ingress definition:
   kubectl create secret tls rucio-server.tls-secret --key=tls.key --cert=tls.crt
   ```
 
-    ingress:
-      enabled: true
-      path: /
-      hosts:
-        - my.rucio.test
-      tls:
-        - secretName: rucio-server.tls-secret
+```yaml
+ingress:
+  enabled: true
+  path: /
+  hosts:
+    - my.rucio.test
+  tls:
+    - secretName: rucio-server.tls-secret
+```
 
 ## Authentication Ingress
 
@@ -139,15 +147,17 @@ will focus on the nginx ingress controller.
 First, the `service` has to be configured using HTTPS as described above. 
 Then, you can enable passthrough in the ingress definition:
 
-    ingress:
-      enabled: true
-      annotations:
-        kubernetes.io/ingress.class: nginx
-        nginx.ingress.kubernetes.io/ssl-passthrough: "true"
-        nginx.ingress.kubernetes.io/ssl-redirect: "true"
-      hosts:
-        - my.rucio-auth.test
-      path: /
+```yaml
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  hosts:
+    - my.rucio-auth.test
+  path: /
+```
 
 ## httpd config
 
@@ -163,10 +173,12 @@ can install arbitrary secrets in the cluster and this config then makes it avail
   kubectl create secret generic my-release-rse-accounts --from-file=rse-accounts.cfg
   ```
 
-    secretMounts: 
-      - secretName: rse-accounts
-        mountPath: /opt/rucio/etc/rse-accounts.cfg
-        subPath: rse-accounts.cfg
+```yaml
+secretMounts: 
+  - secretName: rse-accounts
+    mountPath: /opt/rucio/etc/rse-accounts.cfg
+    subPath: rse-accounts.cfg
+```
 
 This will create the file from the secret and place it at `/opt/rucio/etc/rse-accounts.cfg` in every server container.
 
@@ -174,9 +186,11 @@ This will create the file from the secret and place it at `/opt/rucio/etc/rse-ac
 
 In case you want to add regular restarts for your pods there a is a cronjob available that can be configured like this:
 
-    automaticRestart:
-      enabled: 1
-      schedule: "15 1 * * *"
+```yaml
+automaticRestart:
+  enabled: 1
+  schedule: "15 1 * * *"
+```
 
 This will run according to the given schedule and do a `kubectl rollout restart deployment` for all servers.
 
@@ -184,13 +198,17 @@ This will run according to the given schedule and do a `kubectl rollout restart 
 
 In case you have Prometheus running in your cluster you can use the built-in exporter to let Prometheus automatically scrape your metrics:
 
-    monitoring:
-      enabled: true
+```yaml
+monitoring:
+  enabled: true
+```
 
 Additionally, you also have to enable the status page in httpd config:
 
-    httpd_config:
-      enable_status: "True"
+```yaml
+httpd_config:
+  enable_status: "True"
+```
 
 ## Uninstalling the Chart
 

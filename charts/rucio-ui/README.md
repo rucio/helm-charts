@@ -56,12 +56,14 @@ helm install my-release rucio/rucio-ui -f values.yaml
 
 The service type and port can be configured in `values.yaml` like this:
 
-    service:
-      type: NodePort
-      useSSL: true
-      port: 443
-      targetPort: https
-      portName: https
+```yaml
+service:
+  type: NodePort
+  useSSL: true
+  port: 443
+  targetPort: https
+  portName: https
+```
 
 By default the WebUI uses HTTPS and expects the host certificate, key and CA file to be installed as secrets in the cluster: `<releasename>-hostcert`, `<releasename>-hostkey` and `<releasename>-cafile`. If only userpass authentication is used the service can also be changed to use plain HTTP (not advised). But the secrets still have to be installed in the cluster for the pods to start.
 
@@ -69,25 +71,29 @@ By default the WebUI uses HTTPS and expects the host certificate, key and CA fil
 
 If you want to use X509 user certificate authentication in the WebUI an ingress controller with TLS passthrough support is needed. This documentation will focus on the nginx ingress controller.
 
-    ingress:
-      enabled: true
-      annotations:
-        kubernetes.io/ingress.class: nginx
-        nginx.ingress.kubernetes.io/ssl-passthrough: "true"
-        nginx.ingress.kubernetes.io/ssl-redirect: "true"
-      hosts:
-        - my.rucio-webui.test
-      path: /
+```yaml
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  hosts:
+    - my.rucio-webui.test
+  path: /
+```
 
 ## Proxy
 
 The WebUI uses a local proxy to forward the requests to the api and authentication servers. They have to be configured in `values.yaml` for the WebUI to work:
 
-    proxy:
-      rucioProxy: "my.rucio.test"
-      rucioProxyScheme: "https"
-      rucioAuthProxy: "my.rucio-auth.test"
-      rucioAuthProxyScheme: "https"
+```yaml
+proxy:
+  rucioProxy: "my.rucio.test"
+  rucioProxyScheme: "https"
+  rucioAuthProxy: "my.rucio-auth.test"
+  rucioAuthProxyScheme: "https"
+```
 
 ## httpd config
 
