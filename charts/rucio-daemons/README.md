@@ -9,7 +9,7 @@ Rucio is a software framework that provides functionality to organize, manage, a
 Add the Rucio Helm repository to your local Helm installation and install it using:
 
     $ helm repo add rucio https://rucio.github.io/helm-charts
-    $ helm install rucio/rucio-daemons
+    $ helm install my-release rucio/rucio-daemons
 
 ## Introduction
 
@@ -19,20 +19,16 @@ This chart bootstraps a Rucio server deployment and service on a Kubernetes clus
 
 This chart can be used to install Rucio daemons. Not all of the possible daemons are necessary to run a instance of Rucio. Some daemons are optional. By default no daemon is activated and they have to be explicitly started. A simple daemon instance with one judge-cleaner daemon can be started like this:
 
-    $ helm install \
-      --name my-release \
-      --set judgeCleanerCount=1 \
-      rucio/rucio-daemons
+    $ helm install my-release rucio/rucio-daemons \
+      --set judgeCleanerCount=1
 
 This command will start 1 judge-cleaner using an un-initialised SQLite database. To fully use this chart an already bootstraped database is necessary. The daemons can then be configured to use the DB.
 
 To install the chart so that is will connected to a MySQL DB running at `mysql.db` with the user `rucio` and password `rucio`:
 
-    $ helm install \
-      --name my-release \
+    $ helm install my-release rucio/rucio-daemons \
       --set judgeCleanerCount=1 \
       --set config.database.default="mysql://rucio:rucio@mysql.db/rucio"
-      rucio/rucio-daemons
 
 ## Configuration
 
@@ -44,7 +40,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
-    $ helm install --name my-release -f values.yaml rucio/rucio-daemons
+  $ helm install my-release rucio/rucio-daemons -f values.yaml
 
 ## Certificates
 

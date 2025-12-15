@@ -10,7 +10,7 @@ Add the Rucio Helm repository to your local Helm installation and install it usi
 
 
     $ helm repo add rucio https://rucio.github.io/helm-charts
-    $ helm install rucio/rucio-server
+    $ helm install my-release rucio/rucio-server
 
 ## Introduction
 
@@ -20,18 +20,14 @@ This chart bootstraps a Rucio server deployment and service on a Kubernetes clus
 
 To install the chart with the release name `my-release`:
 
-    $ helm install \
-      --name my-release \
-      rucio/rucio-server
+  $ helm install my-release rucio/rucio-server
 
 The command deploys a Rucio server on the Kubernetes cluster in the default configuration, i.e., 2 replicas using an un-initialised SQLite database without an ingress. To fully use this chart an already bootstraped database is necessary. The server can then be configured to use the DB.
 
 To install the chart so that is will connected to a MySQL DB running at `mysql.db` with the user `rucio` and password `rucio`:
 
-    $ helm install \
-      --name my-release \
-      --set config.database.default="mysql://rucio:rucio@mysql.db/rucio" \
-      rucio/rucio-server
+    $ helm install my-release rucio/rucio-server \
+      --set config.database.default="mysql://rucio:rucio@mysql.db/rucio"
 
 ## Configuration
 
@@ -43,10 +39,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
-    $ helm install \
-      --name my-release \
-      -f values.yaml \
-      rucio/rucio-server
+  $ helm install my-release rucio/rucio-server -f values.yaml
 
 
 ## Certificates
