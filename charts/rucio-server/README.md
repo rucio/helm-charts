@@ -180,7 +180,7 @@ Additionally, you also have to enable the status page in httpd config:
 
 To uninstall/delete the `my-release` deployment:
 
-    $ helm delete my-release --purge
+    $ helm uninstall my-release
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
