@@ -8,8 +8,10 @@ Rucio is a software framework that provides functionality to organize, manage, a
 
 Add the Rucio Helm repository to your local Helm installation and install it using:
 
-    $ helm repo add rucio https://rucio.github.io/helm-charts
-    $ helm install my-release rucio/rucio-daemons
+  ```sh
+  helm repo add rucio https://rucio.github.io/helm-charts
+  helm install my-release rucio/rucio-daemons
+  ```
 
 ## Introduction
 
@@ -19,28 +21,36 @@ This chart bootstraps a Rucio server deployment and service on a Kubernetes clus
 
 This chart can be used to install Rucio daemons. Not all of the possible daemons are necessary to run a instance of Rucio. Some daemons are optional. By default no daemon is activated and they have to be explicitly started. A simple daemon instance with one judge-cleaner daemon can be started like this:
 
-    $ helm install my-release rucio/rucio-daemons \
-      --set judgeCleanerCount=1
+```sh
+helm install my-release rucio/rucio-daemons \
+  --set judgeCleanerCount=1
+```
 
 This command will start 1 judge-cleaner using an un-initialised SQLite database. To fully use this chart an already bootstraped database is necessary. The daemons can then be configured to use the DB.
 
 To install the chart so that is will connected to a MySQL DB running at `mysql.db` with the user `rucio` and password `rucio`:
 
-    $ helm install my-release rucio/rucio-daemons \
-      --set judgeCleanerCount=1 \
-      --set config.database.default="mysql://rucio:rucio@mysql.db/rucio"
+```sh
+helm install my-release rucio/rucio-daemons \
+  --set judgeCleanerCount=1 \
+  --set config.database.default="mysql://rucio:rucio@mysql.db/rucio"
+```
 
 ## Configuration
 
 The default configuration values for this chart are listed in `values.yaml` our you can get them with:
 
-    $ helm show values rucio/rucio-daemons
+  ```sh
+  helm show values rucio/rucio-daemons
+  ```
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install` as shown before.
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
-  $ helm install my-release rucio/rucio-daemons -f values.yaml
+```sh
+helm install my-release rucio/rucio-daemons -f values.yaml
+```
 
 ## Certificates
 
@@ -95,7 +105,9 @@ In case you need any additional secrets, e.g., special cloud configurations, lic
 `secretMounts` in the configuration file. You can install arbitrary secrets in the cluster and this config 
 then makes it available in the pods:
 
-    $ kubectl create secret generic my-release-automatix-input --from-file=automatix.json
+  ```sh
+  kubectl create secret generic my-release-automatix-input --from-file=automatix.json
+  ```
 
     secretMounts:
       - secretName: automatix-input
@@ -132,7 +144,9 @@ In case you have Prometheus running in your cluster you can use the built-in exp
 
 To uninstall/delete the `my-release` deployment:
 
-    $ helm uninstall my-release
+  ```sh
+  helm uninstall my-release
+  ```
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 

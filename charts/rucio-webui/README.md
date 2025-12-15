@@ -8,7 +8,7 @@ Rucio is a software framework that provides functionality to organize, manage, a
 
 Add the Rucio Helm repository to your local Helm installation:
 
-```bash
+```sh
 helm repo add rucio https://rucio.github.io/helm-charts
 ```
 
@@ -22,7 +22,7 @@ Rucio WebUI is a [NextJS](https://nextjs.org/) application that provides a web i
 
 The default configuration values for this chart are listed in `values.yaml` our you can get them with:
 
-```bash
+```sh
 helm show values rucio/rucio-webui
 ```
 
@@ -30,7 +30,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
-```bash
+```sh
 helm install my-release rucio/rucio-webui \
   -f values.yaml
 ```
@@ -100,7 +100,7 @@ type: Opaque
 
 You can generate the secrets using the following commands:
 
-```bash
+```sh
 kubectl create secret generic <releasename>-server-hostcert --from-file=hostcert.pem=/path/to/hostcert.pem
 kubectl create secret generic <releasename>-server-hostkey --from-file=hostkey.pem=/path/to/hostkey.pem
 ```
@@ -233,7 +233,7 @@ connection and then pass the requests using plain HTTP inside the cluster.
 You will have to install the valid certificate and key as a secret in the
 cluster that you can then configure in the ingress definition:
 
-```bash
+```sh
 kubectl create secret tls rucio-webui.tls-secret --key=tls.key --cert=tls.crt
 ```
 
@@ -261,7 +261,9 @@ The `config.logs.exposeWebuiLogs` parameter will start a sidecar container that 
 
 To uninstall/delete the `my-release` deployment:
 
-    $ helm uninstall my-release
+```sh
+helm uninstall my-release
+```
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 

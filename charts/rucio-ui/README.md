@@ -8,8 +8,10 @@ Rucio is a software framework that provides functionality to organize, manage, a
 
 Add the Rucio Helm repository to your local Helm installation and install it using:
 
-    $ helm repo add rucio https://rucio.github.io/helm-charts
-    $ helm install my-release rucio/rucio-ui
+  ```sh
+  helm repo add rucio https://rucio.github.io/helm-charts
+  helm install my-release rucio/rucio-ui
+  ```
 
 ## Introduction
 
@@ -19,28 +21,36 @@ This chart bootstraps a Rucio WebUI deployment and service on a Kubernetes clust
 
 To install the chart with the release name `my-release`:
 
-  $ helm install my-release rucio/rucio-ui
+```sh
+helm install my-release rucio/rucio-ui
+```
 
 The command deploys a Rucio webui server on the Kubernetes cluster in the default configuration, i.e., 1 replicas using an un-initialised SQLite database without an ingress. To fully use this chart an already bootstraped database together with a deployed rucio server and authentication server which have to configurated using the `proxy.rucioProxy` and `rucio.rucioAuthProxy` config variables.
 
 To install the chart so that is will connected to a MySQL DB running at `mysql.db` with the user `rucio` and password `rucio` and a rucio server running at `my.rucio.server` and a auth server at `my.auth.server`.
 
-    $ helm install my-release rucio/rucio-ui \
-      --set config.database.default="mysql://rucio:rucio@mysql.db/rucio" \
-      --set proxy.rucioProxy="my.rucio.server" \
-      --set proxy.rucioAuthProxy="my.auth.server"
+```sh
+helm install my-release rucio/rucio-ui \
+  --set config.database.default="mysql://rucio:rucio@mysql.db/rucio" \
+  --set proxy.rucioProxy="my.rucio.server" \
+  --set proxy.rucioAuthProxy="my.auth.server"
+```
 
 ## Configuration
 
 The default configuration values for this chart are listed in `values.yaml` our you can get them with:
 
-    $ helm show values rucio/rucio-ui
+  ```sh
+  helm show values rucio/rucio-ui
+  ```
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install` as shown before.
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
-  $ helm install my-release rucio/rucio-ui -f values.yaml
+```sh
+helm install my-release rucio/rucio-ui -f values.yaml
+```
 
 ## Service
 
@@ -87,7 +97,9 @@ The `httpd_config` can be used to configure the mpm mode. The default mpm mode i
 
 To uninstall/delete the `my-release` deployment:
 
-    $ helm uninstall my-release
+  ```sh
+  helm uninstall my-release
+  ```
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 

@@ -9,8 +9,10 @@ Rucio is a software framework that provides functionality to organize, manage, a
 Add the Rucio Helm repository to your local Helm installation and install it using:
 
 
-    $ helm repo add rucio https://rucio.github.io/helm-charts
-    $ helm install my-release rucio/rucio-server
+  ```sh
+  helm repo add rucio https://rucio.github.io/helm-charts
+  helm install my-release rucio/rucio-server
+  ```
 
 ## Introduction
 
@@ -20,26 +22,34 @@ This chart bootstraps a Rucio server deployment and service on a Kubernetes clus
 
 To install the chart with the release name `my-release`:
 
-  $ helm install my-release rucio/rucio-server
+```sh
+helm install my-release rucio/rucio-server
+```
 
 The command deploys a Rucio server on the Kubernetes cluster in the default configuration, i.e., 2 replicas using an un-initialised SQLite database without an ingress. To fully use this chart an already bootstraped database is necessary. The server can then be configured to use the DB.
 
 To install the chart so that is will connected to a MySQL DB running at `mysql.db` with the user `rucio` and password `rucio`:
 
-    $ helm install my-release rucio/rucio-server \
-      --set config.database.default="mysql://rucio:rucio@mysql.db/rucio"
+```sh
+helm install my-release rucio/rucio-server \
+  --set config.database.default="mysql://rucio:rucio@mysql.db/rucio"
+```
 
 ## Configuration
 
 The default configuration values for this chart are listed in `values.yaml` our you can get them with:
 
-    $ helm show values rucio/rucio-server
+  ```sh
+  helm show values rucio/rucio-server
+  ```
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install` as shown before.
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
-  $ helm install my-release rucio/rucio-server -f values.yaml
+```sh
+helm install my-release rucio/rucio-server -f values.yaml
+```
 
 
 ## Certificates
@@ -62,9 +72,11 @@ corresponding servers:
 
 First create the secrets:
 
-    kubectl create secret generic <releasename>-server-hostcert --from-file=hostcert.pem=/path/to/hostcert.pem   
-    kubectl create secret generic <releasename>-server-hostkey --from-file=hostkey.pem=/path/to/hostkey.pem
-    kubectl create secret generic <releasename>-server-cafile --from-file=ca.pem=/path/to/ca.pem
+```sh
+kubectl create secret generic <releasename>-server-hostcert --from-file=hostcert.pem=/path/to/hostcert.pem
+kubectl create secret generic <releasename>-server-hostkey --from-file=hostkey.pem=/path/to/hostkey.pem
+kubectl create secret generic <releasename>-server-cafile --from-file=ca.pem=/path/to/ca.pem
+```
 
 Then you can use a switch in the config file to enable HTTPS per server type:
 
@@ -103,7 +115,9 @@ The exception being the authentication servers that will be explained below.
 You will have to install the valid certificate and key as a secret in the 
 cluster that you can then configure in the ingress definition:
 
-    $ kubectl create secret tls rucio-server.tls-secret --key=tls.key --cert=tls.crt
+  ```sh
+  kubectl create secret tls rucio-server.tls-secret --key=tls.key --cert=tls.crt
+  ```
 
     ingress:
       enabled: true
@@ -145,7 +159,9 @@ In case you need any additional secrets, e.g., special cloud configurations,
 license keys, etc., you can use `secretMounts` in the configuration file. You 
 can install arbitrary secrets in the cluster and this config then makes it available in the pods:
 
-    $ kubectl create secret generic my-release-rse-accounts --from-file=rse-accounts.cfg
+  ```sh
+  kubectl create secret generic my-release-rse-accounts --from-file=rse-accounts.cfg
+  ```
 
     secretMounts: 
       - secretName: rse-accounts
@@ -180,7 +196,9 @@ Additionally, you also have to enable the status page in httpd config:
 
 To uninstall/delete the `my-release` deployment:
 
-    $ helm uninstall my-release
+  ```sh
+  helm uninstall my-release
+  ```
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
