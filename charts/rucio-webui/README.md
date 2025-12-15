@@ -23,7 +23,7 @@ Rucio WebUI is a [NextJS](https://nextjs.org/) application that provides a web i
 The default configuration values for this chart are listed in `values.yaml` our you can get them with:
 
 ```bash
-helm inspect values rucio/rucio-webui
+helm show values rucio/rucio-webui
 ```
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install` as shown before.

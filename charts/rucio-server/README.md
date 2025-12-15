@@ -33,7 +33,7 @@ To install the chart so that is will connected to a MySQL DB running at `mysql.d
 
 The default configuration values for this chart are listed in `values.yaml` our you can get them with:
 
-    $ helm inspect values rucio/rucio-server
+    $ helm show values rucio/rucio-server
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install` as shown before.
 
