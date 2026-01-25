@@ -258,7 +258,7 @@ spec:
 {{- end }}
           readinessProbe:
             httpGet:
-              path: /ping
+              path: /ping/
 {{- if .Values.useSSL }}
               port: 444
               scheme: HTTPS
@@ -270,7 +270,7 @@ spec:
             timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
           livenessProbe:
             httpGet:
-              path: /ping
+              path: /ping/
 {{- if .Values.useSSL }}
               port: 444
               scheme: HTTPS
