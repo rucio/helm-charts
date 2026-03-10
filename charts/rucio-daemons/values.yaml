@@ -350,10 +350,10 @@ reaper:
   podAnnotations: {}
   resources:
     limits:
-      memory: "200Mi"
-      cpu: "700m"
+      memory: "1200Mi"
+      cpu: "2000m"
     requests:
-      memory: "200Mi"
+      memory: "800Mi"
       cpu: "700m"
 
 replicaRecoverer:
