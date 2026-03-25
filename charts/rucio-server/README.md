@@ -126,21 +126,47 @@ For the authentication ingress the configuration is a bit different if you want
 to use the x509 certificate authentication in Rucio. In this case the TLS
 connection cannot be terminated by the ingress controller but instead it has to
 be forwarded to the pods so that they can verify the user certificate. You will
-need an ingress controller that supports TLS passthrough. This documentation
-will focus on the nginx ingress controller.
+need an ingress controller that supports TLS passthrough.
+
+This has been tested with the HAProxy Kubernetes Ingress controller and the
+now retired Ingress NGINX.
 
 First, the `service` has to be configured using HTTPS as described above. 
-Then, you can enable passthrough in the ingress definition:
 
-    ingress:
-      enabled: true
-      annotations:
-        kubernetes.io/ingress.class: nginx
-        nginx.ingress.kubernetes.io/ssl-passthrough: "true"
-        nginx.ingress.kubernetes.io/ssl-redirect: "true"
-      hosts:
-        - my.rucio-auth.test
-      path: /
+### HAProxy Kubernetes Ingress Controller
+
+```
+rucio-server:
+  useSSL: true
+  ingress:
+    enabled: true
+    ingressClassName: haproxy
+    annotations:
+      haproxy.org/ssl-passthrough: "true"
+    hosts:
+      - my.rucio-auth.test
+    tls:
+      - secretName:  # we use passthrough, so no secret required for ingress
+```
+
+
+### ingress-controller-nginx
+
+Should not be used anymore, for reference:
+
+```
+rucio-server:
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    annotations:
+      nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    hosts:
+      - my.rucio-auth.test
+    tls:
+      - secretName:  # we use passthrough, so no secret required for ingress
+```
 
 ## httpd config
 
