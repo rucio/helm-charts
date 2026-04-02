@@ -214,6 +214,7 @@ spec:
           {{- range $key, $val := .Values.persistentVolumes }}
           - name: {{ $key }}
             mountPath: {{ $val.mountPath }}
+            readOnly: {{ $val.readOnly | default false }}
           {{- end}}
           {{- range $collection := tuple .Values.hostPathMounts }}
           {{- range $key, $val := $collection }}
