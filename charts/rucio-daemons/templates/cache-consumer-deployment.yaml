@@ -140,6 +140,7 @@ spec:
           {{- range $key, $val := .Values.persistentVolumes }}
             - name: {{ $key }}
               mountPath: {{ $val.mountPath }}
+              readOnly: {{ $val.readOnly | default false }}
           {{- end}}
           {{- range $collection := tuple (hasKey $component_values "hostPathMounts" | ternary $component_values.hostPathMounts .Values.hostPathMounts) $component_values.extraHostPathMounts }}
           {{- range $key, $val := $collection }}
