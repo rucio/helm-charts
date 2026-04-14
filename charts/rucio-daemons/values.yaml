@@ -26,6 +26,7 @@ oauthManagerCount: 0
 undertakerCount: 0
 reaperCount: 0
 replicaRecovererCount: 0
+rseDecommissionerCount: 0
 transmogrifierCount: 0
 tracerKronosCount: 0
 minosCount: 0
@@ -358,6 +359,16 @@ reaper:
 
 replicaRecoverer:
   threads: 1
+  podAnnotations: {}
+  resources:
+    limits:
+      memory: "200Mi"
+      cpu: "700m"
+    requests:
+      memory: "200Mi"
+      cpu: "700m"
+
+rseDecommissioner:
   podAnnotations: {}
   resources:
     limits:
