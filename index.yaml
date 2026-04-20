@@ -2,6 +2,23 @@ apiVersion: v1
 entries:
   rucio-daemons:
   - apiVersion: v1
+    created: "2026-04-20T14:44:46.277626597Z"
+    description: A Helm chart to deploy daemons for Rucio
+    digest: 847c73a3edbce004cf2ea3a17f5074601568046149ef927500e6e653897e9774
+    home: https://rucio.cern.ch/
+    keywords:
+    - data-management
+    - science
+    maintainers:
+    - email: rucio-dev@cern.ch
+      name: Rucio development team
+    name: rucio-daemons
+    sources:
+    - https://github.com/rucio/rucio
+    urls:
+    - https://github.com/rucio/helm-charts/releases/download/rucio-daemons-40.0.0/rucio-daemons-40.0.0.tgz
+    version: 40.0.0
+  - apiVersion: v1
     created: "2025-12-15T14:28:00.63986447Z"
     description: A Helm chart to deploy daemons for Rucio
     digest: ce7255bf9bbe19ac490ad6b2fa712e0e963b69fdef642ac1fb0d1f8f398514b3
@@ -1857,6 +1874,15 @@ entries:
   rucio-probes:
   - apiVersion: v1
     appVersion: "1.0"
+    created: "2026-04-20T14:44:46.513987046Z"
+    description: Helm chart for probe cron jobs needed in Rucio
+    digest: d9edfe10846ccddb6af15c9e34ea2327cfd6ef6a2efd58dd9e0eb35393e39311
+    name: rucio-probes
+    urls:
+    - https://github.com/rucio/helm-charts/releases/download/rucio-probes-40.0.0/rucio-probes-40.0.0.tgz
+    version: 40.0.0
+  - apiVersion: v1
+    appVersion: "1.0"
     created: "2026-02-09T20:09:31.944488031Z"
     description: Helm chart for probe cron jobs needed in Rucio
     digest: 5cf2f53802ca57bfdf2e9e4871ef6d0699eff45135aad7ae9b4903c1e253948f
@@ -2036,6 +2062,23 @@ entries:
     - rucio-probes-0.1.0.tgz
     version: 0.1.0
   rucio-server:
+  - apiVersion: v1
+    created: "2026-04-20T14:44:46.780047922Z"
+    description: A Helm chart to deploy servers for Rucio
+    digest: 67b568058528f873ef37fb4340124afc18c165429d86e64647bdfc5dca353648
+    home: https://rucio.cern.ch/
+    keywords:
+    - data-management
+    - science
+    maintainers:
+    - email: rucio-dev@cern.ch
+      name: Rucio development team
+    name: rucio-server
+    sources:
+    - https://github.com/rucio/rucio
+    urls:
+    - https://github.com/rucio/helm-charts/releases/download/rucio-server-40.0.0/rucio-server-40.0.0.tgz
+    version: 40.0.0
   - apiVersion: v1
     created: "2025-12-15T14:28:01.237567863Z"
     description: A Helm chart to deploy servers for Rucio
@@ -3687,6 +3730,23 @@ entries:
     version: 0.2.0
   rucio-ui:
   - apiVersion: v1
+    created: "2026-04-20T14:44:47.000892618Z"
+    description: A Helm chart to deploy webui servers for Rucio
+    digest: 24560c77cfbfd0c47053f97af7a10e7aeddc0923cc792a355f45291ffc9a8454
+    home: https://rucio.cern.ch/
+    keywords:
+    - data-management
+    - science
+    maintainers:
+    - email: rucio-dev@cern.ch
+      name: Rucio development team
+    name: rucio-ui
+    sources:
+    - https://github.com/rucio/rucio
+    urls:
+    - https://github.com/rucio/helm-charts/releases/download/rucio-ui-40.0.0/rucio-ui-40.0.0.tgz
+    version: 40.0.0
+  - apiVersion: v1
     created: "2025-12-15T14:28:01.511898159Z"
     description: A Helm chart to deploy webui servers for Rucio
     digest: dac66d82d1608fe57495d4b35a739d594e87bdee9927a8125a4d97e289fbbefd
@@ -4436,6 +4496,23 @@ entries:
     version: 0.1.0
   rucio-webui:
   - apiVersion: v1
+    created: "2026-04-20T14:44:47.244973162Z"
+    description: A Helm chart to deploy the new Rucio Webui
+    digest: fd6e2e73d82f68625ec7f3abc47f9b78a3f13d80ca2bf45e0be24c3fda1aac65
+    home: https://rucio.cern.ch/
+    keywords:
+    - data-management
+    - science
+    maintainers:
+    - email: rucio-dev@cern.ch
+      name: Rucio development team
+    name: rucio-webui
+    sources:
+    - https://github.com/rucio/webui
+    urls:
+    - https://github.com/rucio/helm-charts/releases/download/rucio-webui-40.0.0/rucio-webui-40.0.0.tgz
+    version: 40.0.0
+  - apiVersion: v1
     created: "2025-12-15T14:28:01.724012137Z"
     description: A Helm chart to deploy the new Rucio Webui
     digest: b895150979a39a78b68e541882a0098f169e00a323c093da4577df035e071bc0
@@ -4996,4 +5073,4 @@ entries:
     urls:
     - https://github.com/rucio/helm-charts/releases/download/rucio-webui-1.30.0/rucio-webui-1.30.0.tgz
     version: 1.30.0
-generated: "2026-02-09T20:09:31.945074508Z"
+generated: "2026-04-20T14:44:47.246165852Z"
