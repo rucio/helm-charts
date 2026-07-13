@@ -17,7 +17,7 @@ Helm Charts help you define, install, and upgrade  Kubernetes applications.
 Further, Helm Charts can be combined with Flux (https://fluxcd.io) to fully implement GitOps. 
 Just push to Git and Flux does the rest.
 
-Responsible for PR merging in [rucio/helm-charts](https://github.com/rucio/helm-charts): [Mario Lassnig](https://github.com/mlassnig), [Eric Vaandering](https://github.com/ericvaandering), [Hugo Gonzalez Labrador](https://github.com/labkode)
+Responsible for PR merging in [rucio/helm-charts](https://github.com/rucio/helm-charts): [Benedikt Ziemons](https://github.com/bziemons) and [Mayank Sharma](https://github.com/maany)
 
 ### Installation example
 
