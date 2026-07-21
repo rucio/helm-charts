@@ -159,6 +159,9 @@ config:
       refresh_token_url: ""
       userinfo_url: ""
       redirect_url: ""
+      # optional: URL to a raster icon (png/jpg) shown on this provider's login button.
+      # It is downloaded locally at container start and served via next/image.
+      icon_url: ""
 
   vo:
     def:
