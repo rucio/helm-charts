@@ -36,7 +36,7 @@ I. e., Helm Chart 34.0.3 contains Helm improvements over chart 34.0.2 and both a
 Developers: Please make pull requests for charts for the current Rucio version against the `main` or `master` branch. 
 Fixes which are relevant to previous versions may also have pull requests made against the relevant release-X (e.g. release-34) branch.
 Patches against old, non-LTS Rucio releases will be accepted, but no effort will be made to make sure all fixes are made.
-For LTS releases (currently 1.29 and 32), the charts for those releases should be kept up to date.
+For LTS releases, the charts for those releases should be kept up to date.
 
 For details on installing a particular chart, see the README.md in that portion of this repository.
 
