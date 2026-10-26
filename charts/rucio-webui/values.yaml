@@ -125,10 +125,10 @@ config:
 
   ## Rucio WebUI specific configuration for apache
   webui:
-    # hostname of the rucio server, include http:// or https://
-    rucio_host: "rucio-server"
-    # hostname of the rucio-auth server, include http:// or https://
-    rucio_auth_host: "rucio-server"
+    # URL of the rucio server, including http:// or https:// (validated when the webui starts)
+    rucio_host: "http://rucio-server"
+    # URL of the rucio-auth server, including http:// or https:// (validated when the webui starts)
+    rucio_auth_host: "http://rucio-server"
     # hostname of the webui (without http:// or https://, just the hostname, no port or scheme required)
     hostname: "webui-host"
     project_url: "https://rucio.cern.ch"
@@ -190,6 +190,13 @@ hostPathMounts: []
 
 # additional volumes to be mounted in the webui container from config maps, secrets, etc.
 additionalEnvs: []
+# Set the secret that encrypts the session cookie. Without it, every pod generates its own random
+# secret, so sessions do not survive restarts and are not shared between replicas.
+# - name: RUCIO_WEBUI_NEXTAUTH_SECRET
+#   valueFrom:
+#     secretKeyRef:
+#       name: rucio-webui-auth
+#       key: nextauth-secret
 # - name: MY_ENV
 #   value: "my_value"
 #   valueFrom:
