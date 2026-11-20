@@ -1,3 +1,4 @@
+{{- $secretMounts := concat (.Values.secretMounts | default (list)) (.Values.extraSecretMounts | default (list)) }}
 apiVersion: v1
 kind: Secret
 metadata:
@@ -87,7 +88,7 @@ spec:
           secretName: {{ .Release.Name }}-cafile
       {{- end }}
       {{- end }}
-      {{- range $key, $val := .Values.secretMounts }}
+      {{- range $key, $val := $secretMounts }}
       - name: {{ coalesce $val.volumeName $val.secretName $val.secretFullName }}
         secret:
           secretName: {{ coalesce $val.secretFullName (printf "%s-%s" $.Release.Name $val.secretName) }}
@@ -199,7 +200,7 @@ spec:
               subPath: hostkey.pem
               readOnly: true
             {{- end }}
-            {{- range $key, $val := .Values.secretMounts }}
+            {{- range $key, $val := $secretMounts }}
             - name: {{ coalesce $val.volumeName $val.secretName $val.secretFullName }}
               mountPath: {{ $val.mountPath }}
               subPath: {{ $val.subPath }}
@@ -220,8 +221,9 @@ spec:
             - name: RUCIO_HTTPD_{{ $key | snakecase | upper }}
               value: {{ $val | quote }}
             {{- end }}
+            {{- $allEnvs := concat (.Values.additionalEnvs | default (list)) (.Values.extraEnvs | default (list)) }}
             {{- $explicitEnvMap := dict }}
-            {{- range .Values.additionalEnvs }}
+            {{- range $allEnvs }}
             {{- $explicitEnvMap = merge $explicitEnvMap (dict (index . "name") (index . "valueFrom")) }}
             {{- end }}
             {{- range $key, $val := .Values.config.webui }}
@@ -263,7 +265,7 @@ spec:
             - name: PYTHONPATH
               value: {{.Values.policyPackages.mountPath}}
           {{- end}}
-{{- with .Values.additionalEnvs }}
+{{- with $allEnvs }}
 {{ toYaml . | indent 12 }}
 {{- end}}
           resources:

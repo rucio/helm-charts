@@ -101,6 +101,9 @@ secretMounts: []
 #   mountPath: /opt/rucio/etc/gcs_rucio.json
 #   subPath: gcs_rucio.json
 
+# Additional Secret mounts appended to secretMounts.
+extraSecretMounts: []
+
 config:
   ## values used to configure apache, sets environment variables in the webui container that begin with RUCIO_HTTPD_
   httpd:
@@ -196,6 +199,10 @@ additionalEnvs: []
 #     secretKeyRef:
 #       name: my-secret
 #       key: my-key
+
+# Additional environment variables appended to additionalEnvs.
+# Useful for deployment-specific configuration without overriding shared values.
+extraEnvs: []
 
 persistentVolumes: {}
 
