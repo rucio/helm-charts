@@ -222,6 +222,8 @@ secretMounts: []
   #   mountPath: /opt/rucio/etc/gcs_rucio.json
   #   subPath: gcs_rucio.json
 
+extraSecretMounts: []
+
 hostPathMounts: []
   # - volumeName: igtf-ca
   #   hostPath: /etc/grid-security/certificates/
@@ -234,6 +236,9 @@ additionalEnvs: []
   #   valueFrom:
   #     fieldRef:
   #       status.hostIP
+
+# Additional environment variables appended to additionalEnvs.
+extraEnvs: []
 
 wsgi:
   daemonProcesses: "4"
