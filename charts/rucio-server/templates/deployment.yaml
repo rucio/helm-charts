@@ -1,5 +1,6 @@
 {{- if gt .Values.replicaCount 0.0 -}}
 {{- $common_config := .Values.config | default dict | mustToPrettyJson | b64enc }}
+{{- $secretMounts := concat (.Values.secretMounts | default (list)) (.Values.extraSecretMounts | default (list)) }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -75,7 +76,7 @@ spec:
           claimName: {{ include "rucio.pvc.claimName" . }}
       {{- end }}
       {{- end }}
-      {{- range $key, $val := .Values.secretMounts }}
+      {{- range $key, $val := $secretMounts }}
       - name: {{ coalesce $val.volumeName $val.secretName $val.secretFullName }}
         secret:
           secretName: {{ coalesce $val.secretFullName (printf "%s-%s" $.Release.Name $val.secretName) }}
@@ -197,7 +198,7 @@ spec:
           {{- end }}
           - name: httpdlog
             mountPath: /var/log/httpd
-          {{- range $key, $val := .Values.secretMounts }}
+          {{- range $key, $val := $secretMounts }}
           {{- /* TODO: depreacte and remove support for subPaths (at plural) case */}}
           {{-  if $val.subPaths }}
           {{-   range $val.subPaths }}
@@ -321,7 +322,8 @@ spec:
               value: "{{ .Values.wsgi.daemonProcesses }}"
             - name: RUCIO_WSGI_DAEMON_THREADS
               value: "{{ .Values.wsgi.daemonThreads }}"
-{{- with .Values.additionalEnvs }}
+{{- $allEnvs := concat (.Values.additionalEnvs | default (list)) (.Values.extraEnvs | default (list)) }}
+{{- with $allEnvs }}
 {{ toYaml . | indent 12 }}
 {{- end}}
 {{- with .Values.imagePullSecrets }}
