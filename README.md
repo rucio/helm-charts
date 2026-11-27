@@ -9,6 +9,10 @@ The data can be spread across globally distributed locations and across heteroge
 Rucio offers advanced features such as distributed data recovery or adaptive replication, and is highly scalable, modular, and extensible. 
 Rucio has been originally developed to meet the requirements of the high-energy physics experiment ATLAS, and is continuously extended to support LHC experiments and other diverse scientific communities.
 
+## Development Environment
+ 
+This repository provides [development container configuration for IDEs supporting dev containers to test Helm charts with Kind](./.devcontainer/kind/devcontainer.json). The setup includes Kind cluster with kubectl/Helm and chart-testing tools for validation.
+
 ## Helm Charts
 
 This repository contains Helm Charts for the major different components of Rucio (https://rucio.cern.ch), the Rucio server, daemons, probes, and the Rucio WebUI.

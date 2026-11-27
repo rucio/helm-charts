@@ -3,3 +3,7 @@
 
 # macOS
 .DS_Store
+
+# chart-testing
+ct.yaml
+lintconf.yaml
